@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 215,
     height: 190
+    //deneme TaxBill
   },
   logoFrame: {
     paddingTop: 40,
