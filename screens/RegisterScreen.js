@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet,ScrollView,Image,View } from 'react-native';
 import * as Yup from 'yup';
 
 import Colors from '../utils/colors';
@@ -13,9 +13,18 @@ import { registerWithEmail } from '../components/Firebase/firebase';
 import useStatusBar from '../hooks/useStatusBar';
 
 const validationSchema = Yup.object().shape({
+  tc: Yup.string()
+    .required()
+    .label('Tc No'),
   name: Yup.string()
     .required()
     .label('Name'),
+  surname: Yup.string()
+    .required()
+    .label('Surname'),
+  birtday: Yup.string()
+    .required()
+    .label('BirtDay'),  
   email: Yup.string()
     .required('Please enter a valid email')
     .email()
@@ -70,10 +79,18 @@ export default function RegisterScreen({ navigation }) {
   }
 
   return (
-    <SafeView style={styles.container}>
+    <ScrollView style={styles.container}>
+      <View style={styles.logoFrame}>
+      <Image source={require('../assets/logo.png')} style={styles.logo} />
+    </View>
+    <SafeView >
+     
       <Form
         initialValues={{
+          tc:'',
           name: '',
+          surname:'',
+          birtday:'',
           email: '',
           password: '',
           confirmPassword: ''
@@ -82,10 +99,28 @@ export default function RegisterScreen({ navigation }) {
         onSubmit={values => handleOnSignUp(values)}
       >
         <FormField
+          name="tc"
+          leftIcon="account"
+          placeholder="Enter TC No"
+          autoFocus={false}
+        />
+        <FormField
           name="name"
           leftIcon="account"
           placeholder="Enter name"
-          autoFocus={true}
+          autoFocus={false}
+        />
+        <FormField
+          name="surname"
+          leftIcon="account"
+          placeholder="Enter surname"
+          autoFocus={false}
+        />
+        <FormField
+          name="birtday"
+          leftIcon="account"
+          placeholder="Enter birtday"
+          autoFocus={false}
         />
         <FormField
           name="email"
@@ -123,18 +158,28 @@ export default function RegisterScreen({ navigation }) {
       <IconButton
         style={styles.backButton}
         iconName="keyboard-backspace"
-        color={Colors.white}
+        color={Colors.black}
         size={30}
         onPress={() => navigation.goBack()}
       />
+      
     </SafeView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    backgroundColor: Colors.mediumGrey
+    backgroundColor: Colors.backgroundColor
+  },
+  logo: {
+    width: 215,
+    height: 190
+  },
+  logoFrame: {
+    paddingTop: 40,
+    alignItems: 'center',
   },
   backButton: {
     justifyContent: 'center',

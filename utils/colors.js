@@ -11,5 +11,6 @@ export default {
   appButtonColor: "#b7ab4d",
   backgroundColor : "#988600",
   textColor: "white",
-  textColor2: "#2b2812"
+  textColor2: "#444",
+  textColar3: "#666"
 };
