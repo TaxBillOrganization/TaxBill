@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, Text, View, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, Text, View, Image,KeyboardAvoidingView,
+  ScrollView} from 'react-native';
 import * as Yup from 'yup';
 
 import Colors from '../utils/colors';
@@ -11,6 +12,8 @@ import IconButton from '../components/IconButton';
 import { loginWithEmail } from '../components/Firebase/firebase';
 import FormErrorMessage from '../components/Forms/FormErrorMessage';
 import useStatusBar from '../hooks/useStatusBar';
+import colors from '../utils/colors';
+import { color } from 'react-native-reanimated';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -51,15 +54,19 @@ export default function LoginScreen({ navigation }) {
   }
 
   return (
+    <ScrollView>
     <SafeView style={styles.container}>
-       <View style={styles.logoFrame}>
+      
+    <View style={styles.logoFrame}>
       <Image source={require('../assets/logo.png')} style={styles.logo} />
     </View>
+    
       <Form
         initialValues={{ email: '', password: '' }}
         validationSchema={validationSchema}
         onSubmit={values => handleOnLogin(values)}
       >
+        <KeyboardAvoidingView>
         <FormField
           name="email"
           leftIcon="email"
@@ -67,8 +74,10 @@ export default function LoginScreen({ navigation }) {
           autoCapitalize="none"
           keyboardType="email-address"
           textContentType="emailAddress"
-          autoFocus={true}
+          autoFocus={false}
         />
+        </KeyboardAvoidingView>
+        <KeyboardAvoidingView>
         <FormField
           name="password"
           leftIcon="lock"
@@ -80,6 +89,7 @@ export default function LoginScreen({ navigation }) {
           rightIcon={rightIcon}
           handlePasswordVisibility={handlePasswordVisibility}
         />
+        </KeyboardAvoidingView>
         <FormButton title={'Login'} />
         {<FormErrorMessage error={loginError} visible={true} />}
       </Form>
@@ -91,26 +101,28 @@ export default function LoginScreen({ navigation }) {
       <IconButton
         style={styles.backButton}
         iconName="keyboard-backspace"
-        color="#fff"
+        color={colors.black}
         size={30}
         onPress={() => navigation.goBack()}
       />
+      
     </SafeView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    backgroundColor: Colors.mediumGrey
+    backgroundColor: Colors.backgroundColor
   },
   footerButtonContainer: {
     marginVertical: 15,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   forgotPasswordButtonText: {
-    color: Colors.white,
+    color: Colors.black,
     fontSize: 18,
     fontWeight: '600'
   },
@@ -120,11 +132,14 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 215,
-    height: 190
+    height: 190,
+    marginBottom:20,
     //deneme TaxBill
   },
   logoFrame: {
-    paddingTop: 40,
+    paddingTop: 25,
     alignItems: 'center',
+    
+    
   },
 });

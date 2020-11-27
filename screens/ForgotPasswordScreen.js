@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet,Image,View } from 'react-native';
 import * as Yup from 'yup';
 
 import Colors from '../utils/colors';
@@ -37,6 +37,10 @@ export default function ForgotPasswordScreen({ navigation }) {
 
   return (
     <SafeView style={styles.container}>
+    <View style={styles.logoFrame}>
+      <Image source={require('../assets/logo.png')} style={styles.logo} />
+    </View>
+
       <Form
         initialValues={{ email: '' }}
         validationSchema={validationSchema}
@@ -68,11 +72,20 @@ export default function ForgotPasswordScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    backgroundColor: Colors.mediumGrey
+    backgroundColor: Colors.backgroundColor
   },
   backButton: {
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 10
-  }
+  },
+  logo: {
+    width: 215,
+    height: 190
+    //deneme TaxBill
+  },
+  logoFrame: {
+    paddingTop: 40,
+    alignItems: 'center',
+  },
 });

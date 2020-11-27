@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     height: 190
   },
   logoFrame: {
-    paddingTop: 40,
+    paddingTop: 45,
     alignItems: 'center',
   },
   backButton: {
