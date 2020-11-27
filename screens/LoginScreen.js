@@ -52,6 +52,9 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <SafeView style={styles.container}>
+       <View style={styles.logoFrame}>
+      <Image source={require('../assets/logo.png')} style={styles.logo} />
+    </View>
       <Form
         initialValues={{ email: '', password: '' }}
         validationSchema={validationSchema}
@@ -114,5 +117,13 @@ const styles = StyleSheet.create({
   backButton: {
     justifyContent: 'center',
     alignItems: 'center'
-  }
+  },
+  logo: {
+    width: 215,
+    height: 190
+  },
+  logoFrame: {
+    paddingTop: 40,
+    alignItems: 'center',
+  },
 });
