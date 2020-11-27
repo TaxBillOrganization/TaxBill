@@ -103,7 +103,6 @@ const styles = StyleSheet.create({
   container: {
     padding: 15,
     backgroundColor: Colors.mediumGrey
-    //deneme github
   },
   footerButtonContainer: {
     marginVertical: 15,
