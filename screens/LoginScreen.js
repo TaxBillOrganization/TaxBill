@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, Text, View,Image } from 'react-native';
 import * as Yup from 'yup';
 
 import Colors from '../utils/colors';
@@ -52,6 +52,9 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <SafeView style={styles.container}>
+      <View style={styles.logoFrame}>
+        <Image source={require('../assets/logo.png')} style={styles.logo} />
+      </View>
       <Form
         initialValues={{ email: '', password: '' }}
         validationSchema={validationSchema}
@@ -64,7 +67,7 @@ export default function LoginScreen({ navigation }) {
           autoCapitalize="none"
           keyboardType="email-address"
           textContentType="emailAddress"
-          autoFocus={true}
+          autoFocus={false}
         />
         <FormField
           name="password"
@@ -88,7 +91,7 @@ export default function LoginScreen({ navigation }) {
       <IconButton
         style={styles.backButton}
         iconName="keyboard-backspace"
-        color="#fff"
+        color={Colors.black}
         size={30}
         onPress={() => navigation.goBack()}
       />
@@ -99,7 +102,16 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    backgroundColor: Colors.mediumGrey
+    backgroundColor: Colors.backgroundColor,
+  },
+  logoFrame: {
+    paddingTop: 10,
+    alignItems: 'center',
+    marginBottom:45,
+  },
+  logo: {
+    width: 215,
+    height: 190
   },
   footerButtonContainer: {
     marginVertical: 15,
@@ -107,7 +119,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   forgotPasswordButtonText: {
-    color: Colors.white,
+    color: Colors.black,
     fontSize: 18,
     fontWeight: '600'
   },
