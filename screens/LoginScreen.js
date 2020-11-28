@@ -54,9 +54,9 @@ export default function LoginScreen({ navigation }) {
   }
 
   return (
-    <ScrollView>
+    
     <SafeView style={styles.container}>
-      
+     <ScrollView>
     <View style={styles.logoFrame}>
       <Image source={require('../assets/logo.png')} style={styles.logo} />
     </View>
@@ -105,9 +105,9 @@ export default function LoginScreen({ navigation }) {
         size={30}
         onPress={() => navigation.goBack()}
       />
-      
+     </ScrollView> 
     </SafeView>
-    </ScrollView>
+    
   );
 }
 
@@ -134,7 +134,6 @@ const styles = StyleSheet.create({
     width: 215,
     height: 190,
     marginBottom:20,
-    //deneme TaxBill
   },
   logoFrame: {
     paddingTop: 25,
