@@ -4,7 +4,6 @@ import { View, StyleSheet, Text, Image } from 'react-native';
 import AppButton from '../components/AppButton';
 import Colors from '../utils/colors';
 import useStatusBar from '../hooks/useStatusBar';
-import colors from '../utils/colors';
 
 export default function WelcomeScreen({ navigation }) {
   useStatusBar('light-content');
