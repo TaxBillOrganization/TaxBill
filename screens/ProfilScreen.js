@@ -9,6 +9,6 @@ import { logout } from '../components/Firebase/firebase';
 export default function Home(){
 
     return(
-      <Text>Home Screen</Text>
+      <Text>Profil Screen</Text>
     );
 }

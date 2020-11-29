@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     paddingVertical: 20,
-    color: Colors.textColor2
+    color: Colors.textColor
   },
   buttonContainer: {
     padding: 20,

@@ -5,6 +5,11 @@ import WelcomeScreen from '../screens/WelcomeScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import LoginScreen from '../screens/LoginScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+import ChatScreen from '../screens/ChatScreen';
+import ProfilScreen from '../screens/ProfilScreen';
+import TravelScreen from '../screens/TravelScreen';
+import SearchScreen from '../screens/SearchScreen';
+
 
 const Stack = createStackNavigator();
 

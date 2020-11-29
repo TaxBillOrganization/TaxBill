@@ -1,6 +1,4 @@
 export default {
-  primary: '#f57c00',
-  secondary: '#039be5',
   black: '#222222',
   white: '#ffffff',
   ghostWhite: '#f8f8ff',
@@ -10,7 +8,6 @@ export default {
   appButtonTextColor: "#2b2812",
   appButtonColor: "#b7ab4d",
   backgroundColor : "#988600",
-  textColor: "white",
-  textColor2: "#444",
-  textColar3: "#666"
+  textColor: "#444",
+  tabBar: "#eed74d"
 };
