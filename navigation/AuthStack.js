@@ -20,6 +20,10 @@ export default function AuthStack() {
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+      <Stack.Screen name="Search" component={SearchScreen} />
+      <Stack.Screen name="Chat" component={ChatScreen} />
+      <Stack.Screen name="Travel" component={TravelScreen} />
+      <Stack.Screen name="Profil" component={ProfilScreen} />
     </Stack.Navigator>
   );
 }
