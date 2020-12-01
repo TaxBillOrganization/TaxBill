@@ -23,7 +23,7 @@ export default function AppTextInput({
       )}
       <TextInput
         style={styles.input}
-        placeholderTextColor={Colors.textColor3}
+        placeholderTextColor={Colors.textColor}
         {...otherProps}
       />
       {rightIcon && (
@@ -31,7 +31,7 @@ export default function AppTextInput({
           <MaterialCommunityIcons
             name={rightIcon}
             size={20}
-            color={Colors.textColor2}
+            color={Colors.textColor}
             style={styles.rightIconStyles}
           />
         </TouchableOpacity>
