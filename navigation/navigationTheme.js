@@ -5,11 +5,10 @@ import Colors from '../utils/colors';
 const navigationTheme = {
   ...DefaultTheme,
   // override colors
-  colors: {
+    colors: {
     ...DefaultTheme.colors,
-    primary: Colors.primary,
-    text: Colors.primary,
-    border: Colors.mediumGrey,
+    text: Colors.black,
+    border: Colors.tabBar,
     background: Colors.ghostWhite
   }
 };

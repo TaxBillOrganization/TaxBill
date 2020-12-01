@@ -12,7 +12,6 @@ import IconButton from '../components/IconButton';
 import { loginWithEmail } from '../components/Firebase/firebase';
 import FormErrorMessage from '../components/Forms/FormErrorMessage';
 import useStatusBar from '../hooks/useStatusBar';
-import colors from '../utils/colors';
 import { color } from 'react-native-reanimated';
 
 const validationSchema = Yup.object().shape({
@@ -101,7 +100,7 @@ export default function LoginScreen({ navigation }) {
       <IconButton
         style={styles.backButton}
         iconName="keyboard-backspace"
-        color={colors.black}
+        color={Colors.black}
         size={30}
         onPress={() => navigation.goBack()}
       />

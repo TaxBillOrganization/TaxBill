@@ -16,51 +16,23 @@ import Colors from '../utils/colors';
 const Tab = createBottomTabNavigator();
 
 export default function HomeScreen() {
-  useStatusBar('dark-content');
-  async function handleSignOut() {
-    try {
-      await logout();
-    } catch (error) {
-      console.log(error);
-    }
-  }
+
   function HomePage() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-         <Home/>
-         <Button title="Sign Out" onPress={handleSignOut} />
-      </View>
-    );
+    return (<Home/>);
   }
   function SearchPage() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Search/>
-      </View>
-    );
+    return (<Search/>);
   }
   function ChatPage() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Chat/>
-      </View>
-    );
+    return (<Chat/>);
   }
   function TravelPage() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Travel/>
-      </View>
-    );
+    return (<Travel/>);
   }
   function ProfilPage() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Profil/>
-      </View>
-    );
+    return (<Profil/>);
   }
-
+  
   return (
       <Tab.Navigator
         screenOptions={({ route }) => ({
@@ -68,46 +40,31 @@ export default function HomeScreen() {
             if (route.name === 'Home') {
               return (
                 <Ionicons
-                  name={focused? 'ios-navigate' : 'ios-navigate'}
-                  size={size}
-                  color={color}
-                />
+                  name={focused? 'ios-navigate' : 'ios-navigate'} size={size} color={color}/>
               );
             } 
               else if (route.name === 'Search') {
               return (
                 <Ionicons
-                  name={focused ? 'ios-search' : 'ios-search'}
-                  size={size}
-                  color={color}
-                />
+                  name={focused ? 'ios-search' : 'ios-search'} size={size} color={color} />
               );
             }
             else if (route.name === 'Chat') {
               return (
                 <Ionicons
-                  name={focused ? 'ios-chatboxes' : 'ios-chatboxes'}
-                  size={size}
-                  color={color}
-                />
+                  name={focused ? 'ios-chatboxes' : 'ios-chatboxes'} size={size} color={color}/>
               );
             }
             else if (route.name === 'Travel') {
               return (
                 <Ionicons
-                  name={focused ? 'logo-model-s' : 'logo-model-s'}
-                  size={size}
-                  color={color}
-                />
+                  name={focused ? 'logo-model-s' : 'logo-model-s'} size={size} color={color}/>
               );
             }
             else if (route.name === 'Profil') {
               return (
                 <Ionicons
-                  name={focused ? 'md-person' : 'md-person'}
-                  size={size}
-                  color={color}
-                />
+                  name={focused ? 'md-person' : 'md-person'} size={size} color={color}/>
               );
             }
           },
@@ -127,9 +84,3 @@ export default function HomeScreen() {
       </Tab.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  }
-});

@@ -61,7 +61,7 @@ export default function ForgotPasswordScreen({ navigation }) {
       <IconButton
         style={styles.backButton}
         iconName="keyboard-backspace"
-        color={Colors.white}
+        color={Colors.black}
         size={30}
         onPress={() => navigation.goBack()}
       />
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 215,
     height: 190
-    //deneme TaxBill
+    
   },
   logoFrame: {
     paddingTop: 40,
