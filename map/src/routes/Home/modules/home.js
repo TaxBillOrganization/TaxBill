@@ -1,10 +1,19 @@
 import update from "react-addons-update";
 import constants from "./actionConstants";
 import {Dimensions} from "react-native";
+import RNGooglePlaces from "react-native-google-places";
+
+
+//import { func } from "prop-types";
 //-------------------
 //Constants
 //------------------
-const { GET_CURRENT_LOCATION } = constants;
+const { 
+    GET_CURRENT_LOCATION,
+    GET_INPUT,
+    TOGGLE_SEARCH_RESULT,
+    GET_ADDRESS_PREDICTIONS
+ } = constants;
 
 const {width, height} = Dimensions.get("window");
 
@@ -18,6 +27,7 @@ const LONGITUDE_DELTA = ASPECT_RATIO * LATITUDE_DELTA;
 //-------------------
 //Actions
 //------------------
+
 export function getCurrentLocation(){
     return (dispatch)=>{
         navigator.geolocation.getCurrentPosition(
@@ -33,6 +43,39 @@ export function getCurrentLocation(){
     }
 }
 
+//USER INPUT
+export function getInputData(payload){
+    return {
+        type:GET_INPUT,
+        payload
+    }
+}
+
+//GET_ADDRESS FROM GOOGLE PLACE
+
+export function getAddressPrediction(){
+    return(dispatch,store)=>{
+        let userInput = store().home.resultTypes.pickUp ? store().home.inputData.pickUp : store().home.inputData.dropOff;
+        RNGooglePlaces.getAutocompletePredictions(userInput,
+                {country:"tr"}
+            )
+            .then((results) =>
+                dispatch({
+                    type:GET_ADDRESS_PREDICTIONS,
+                    payload:results
+                })
+            )
+            .catch((error)=> console.log(error.message));
+    };
+}
+
+//search results 
+export function toggleSearchResultModal(payload){
+    return {
+        type:TOGGLE_SEARCH_RESULT,
+        payload
+    }
+}
 
 //-------------------
 //Action Handlers
@@ -58,11 +101,72 @@ function handleGetCurrentLocation(state,action){
     })
 }
 
+function handleGetInputData(state,action){
+    const { key,value } = action.payload;
+    return update(state,{
+        inputData:{
+            [key]:{
+                $set:value
+            }
+        }
+        
+    });
+}
+
+function handleToggleSearchResult(state,action){
+
+    if(action.payload ==="pickUp"){
+        return update(state,{
+            resultTypes: {
+                pickUp:{
+                    $set:true,
+                },
+                dropOff:{
+                    $set:false,
+                }
+            },
+            predictions:{
+                $set:{}
+            }
+        });
+    }
+    if(action.payload ==="dropOff"){
+        return update(state,{
+            resultTypes: {
+                pickUp:{
+                    $set:false,
+                },
+                dropOff:{
+                    $set:true,
+                }
+            },
+            predictions:{
+                $set:{}
+            }
+        });
+    }
+}
+
+function handleGetAddressPredictions(state,action){
+    return update(state,{
+        predictions:{
+            $set:action.payload
+        }
+    });
+}
 
 const ACTION_HANDLER = {
-    GET_CURRENT_LOCATION:handleGetCurrentLocation
+    GET_CURRENT_LOCATION:handleGetCurrentLocation,
+    GET_INPUT:handleGetInputData,
+    TOGGLE_SEARCH_RESULT:handleToggleSearchResult,
+    GET_ADDRESS_PREDICTIONS:handleGetAddressPredictions,
 }
-const initialState = {region:{}};
+const initialState = {
+    region:{},
+    inputData:{},
+    resultTypes:{},
+};
+
 export function HomeReducer(state = initialState,action){
 
     const handler = ACTION_HANDLER[action.type];
