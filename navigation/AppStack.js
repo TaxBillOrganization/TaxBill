@@ -9,9 +9,9 @@ const Stack = createStackNavigator();
 
 export default function AppStack() {
   return (
-    <Stack.Navigator
-      screenOptions={{ 
-        headerStyle: { backgroundColor: Colors.tabBar, } }}>
+    <Stack.Navigator options={{headerShown: false}} screenOptions={{
+      headerShown: false
+    }}>
       <Stack.Screen name=" " component={Navbar} />
     </Stack.Navigator>
   );

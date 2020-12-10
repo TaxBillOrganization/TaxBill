@@ -2,7 +2,9 @@ import update from "react-addons-update";
 import constants from "./actionConstants";
 import {Dimensions} from "react-native";
 import RNGooglePlaces from "react-native-google-places";
+import axios from 'axios';
 
+import Request from "../../../../util/request";
 
 //import { func } from "prop-types";
 //-------------------
@@ -12,7 +14,9 @@ const {
     GET_CURRENT_LOCATION,
     GET_INPUT,
     TOGGLE_SEARCH_RESULT,
-    GET_ADDRESS_PREDICTIONS
+    GET_ADDRESS_PREDICTIONS,
+    GET_SELECTED_ADDRESS,
+    GET_DISTANCE_MATRIX,
  } = constants;
 
 const {width, height} = Dimensions.get("window");
@@ -52,22 +56,82 @@ export function getInputData(payload){
 }
 
 //GET_ADDRESS FROM GOOGLE PLACE
-
+searchLocation = async (text) => {
+    //this.setState({searchKeyword: text});
+    
+  };
 export function getAddressPrediction(){
     return(dispatch,store)=>{
         let userInput = store().home.resultTypes.pickUp ? store().home.inputData.pickUp : store().home.inputData.dropOff;
-        RNGooglePlaces.getAutocompletePredictions(userInput,
-                {country:"tr"}
+        
+        axios
+      .request({
+        method: 'post',
+        url: `https://maps.googleapis.com/maps/api/place/autocomplete/json?key=AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI&input=${userInput}`,
+      })
+      .then((results)=>
+			dispatch({
+				type:GET_ADDRESS_PREDICTIONS,
+				payload:results.data.predictions
+			})
+		)
+      .catch((e) => {
+        console.log(e.response);
+      });
+     
+
+     /*   RNGooglePlaces.getAutocompletePredictions(userInput,{
+                country:"TR"
+                
+                 }
             )
-            .then((results) =>
-                dispatch({
-                    type:GET_ADDRESS_PREDICTIONS,
-                    payload:results
-                })
-            )
-            .catch((error)=> console.log(error.message));
+            .then((place) => {
+            console.log("!");
+            })
+            .catch(error => console.log(error.message)); */
+            
     };
 }
+
+//Selected Address
+export function getSelectedAdress(payload){
+    return(dispatch,store)=>{
+        axios
+        .request({
+          method: 'post',
+          url: `https://maps.googleapis.com/maps/api/place/details/json?placeid=${payload}&key=AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI`,
+        })
+        .then((results)=>
+              dispatch({
+                  type:GET_SELECTED_ADDRESS,
+                  payload:results.data.result.geometry.location
+              })
+          )
+          .then(()=>{
+              if(store().home.selectedAddress.selectedPickUp && store().home.selectedAddress.selectedDropOff){
+                  axios
+                  .request.get("//maps.googleapis.com/maps/api/distancematrix/json",{
+                      origins:store().home.selectedAddress.selectedPickUp.latitude +','+store().home.selectedAddress.selectedPickUp.longitude,
+                      destinations : store().home.selectedAddress.selectedDropOff.latitude +','+store().home.selectedAddress.selectedDropOff.longitude,
+                    mode:"driving",
+                    key:"AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI"
+                    })
+                    .then((error,res)=>{
+                        dispatch({
+                            type:GET_DISTANCE_MATRIX,
+                            payload:res.body
+                        });
+                    })
+              }
+          })
+        .catch((e) => {
+          console.log(e.response);
+        });
+       
+        
+    }
+}
+
 
 //search results 
 export function toggleSearchResultModal(payload){
@@ -80,6 +144,15 @@ export function toggleSearchResultModal(payload){
 //-------------------
 //Action Handlers
 //------------------
+
+function handleGetDistanceMatrix(state,action){
+    return update(state,{
+        distanceMatrix:{
+            $set:action.payload
+        }
+    });
+}
+
 
 function handleGetCurrentLocation(state,action){
     return update(state,{
@@ -155,16 +228,40 @@ function handleGetAddressPredictions(state,action){
     });
 }
 
+function handleGetSelectedAddress(state,action){
+    let selectedTitle = state.resultTypes.pickUp ? "selectedPickUp" : "selectedDropOff"
+	return update(state, {
+		selectedAddress:{
+			[selectedTitle]:{
+                $set:action.payload
+                
+            },
+            
+		},
+		resultTypes:{
+			pickUp:{
+				$set:false
+			},
+			dropOff:{
+				$set:false
+			}
+		}
+	})
+}
+
 const ACTION_HANDLER = {
     GET_CURRENT_LOCATION:handleGetCurrentLocation,
     GET_INPUT:handleGetInputData,
     TOGGLE_SEARCH_RESULT:handleToggleSearchResult,
     GET_ADDRESS_PREDICTIONS:handleGetAddressPredictions,
+    GET_SELECTED_ADDRESS:handleGetSelectedAddress,
+    GET_DISTANCE_MATRIX : handleGetDistanceMatrix,
 }
 const initialState = {
     region:{},
     inputData:{},
     resultTypes:{},
+    selectedAddress:{},
 };
 
 export function HomeReducer(state = initialState,action){
