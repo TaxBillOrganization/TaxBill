@@ -8,7 +8,10 @@ import { ScrollView } from "react-native-gesture-handler";
 export const SearchResult = ({predictions,getSelectedAdress}) => {
 
     function handleSelectedAddress(placeID){
+
         getSelectedAdress(placeID);
+       
+
     }
   
  

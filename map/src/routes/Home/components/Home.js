@@ -1,16 +1,17 @@
 import React from "react";
-import {View,Text} from "react-native";
+import {View,Text, Button} from "react-native";
 import MapContanier from "./mapContainer";
 import HeaderComponent from "../../../components/HeaderComponent";
-import {Button, Container} from "native-base";
+import { Container} from "native-base";
 import { ScrollView } from "react-native-gesture-handler";
 const logo = require('../../../../../assets/logo.png');
+
 class Home extends React.Component{
 
     componentDidMount(){
         this.props.getCurrentLocation();
     }
-
+    
     render(){
         const region ={
             
@@ -27,11 +28,14 @@ class Home extends React.Component{
                 predictions ={this.props.predictions}
                 getSelectedAdress = {this.props.getSelectedAdress}
                 selectedAddress ={this.props.selectedAddress}
+                saveTrack = {this.props.saveTrack}
                 />
-    }
-        
+    }          
+
             </Container>
-          
+                 
+                    
+                 
         );
     }
 }

@@ -17,6 +17,7 @@ const {
     GET_ADDRESS_PREDICTIONS,
     GET_SELECTED_ADDRESS,
     GET_DISTANCE_MATRIX,
+    SAVE_TRACK,
  } = constants;
 
 const {width, height} = Dimensions.get("window");
@@ -141,6 +142,7 @@ export function toggleSearchResultModal(payload){
     }
 }
 
+
 //-------------------
 //Action Handlers
 //------------------
@@ -248,6 +250,59 @@ function handleGetSelectedAddress(state,action){
 		}
 	})
 }
+export function saveTrack(payload){
+    
+    var dropOffLat = payload.selectedDropOff.lat;
+    var pickUppLat = payload.selectedPickUp.lat;
+
+    var dropOffLng = payload.selectedDropOff.lng;
+    var pickUppLng = payload.selectedPickUp.lng;
+
+    var midX = ((dropOffLat + pickUppLat) / 2);
+    var midY = ((dropOffLng + pickUppLng) / 2);
+
+    var deltaLat = dropOffLng -  pickUppLng;
+    var deltaLng = dropOffLat - pickUppLat;
+    
+    if(deltaLat < 0){
+        deltaLat = deltaLat * (-1);
+    }
+    if(deltaLng < 0 ){
+        deltaLng = deltaLng * (-1);
+    }
+
+console.log(midX+"*"+midY+"*"+deltaLat+"*"+deltaLng);
+return ({
+    type: SAVE_TRACK,
+    payload:{
+        middleX:midX,
+        middleY:midY,
+        deltaLatitude:deltaLat+0.5,
+        deltaLongitude:deltaLng+0.1
+    }
+    }
+);
+}
+
+function handeleSaveTrack(state,action){
+    return update(state,{
+        region:{
+            latitude:{
+                $set:action.payload.middleX
+            },
+            longitude:{
+                $set:action.payload.middleY
+            },
+            latitudeDelta: {
+                $set:action.payload.deltaLatitude
+            },
+            longitudeDelta: {
+                $set:action.payload.deltaLongitude
+            }
+
+        }
+    })
+}
 
 const ACTION_HANDLER = {
     GET_CURRENT_LOCATION:handleGetCurrentLocation,
@@ -256,6 +311,7 @@ const ACTION_HANDLER = {
     GET_ADDRESS_PREDICTIONS:handleGetAddressPredictions,
     GET_SELECTED_ADDRESS:handleGetSelectedAddress,
     GET_DISTANCE_MATRIX : handleGetDistanceMatrix,
+    SAVE_TRACK:handeleSaveTrack,
 }
 const initialState = {
     region:{},

@@ -1,20 +1,20 @@
 import React from "react";
-import {View, SafeAreaView,Text} from "react-native";
+import {View,Dimensions} from "react-native";
 import MapView from "react-native-maps";
 import styles from "./MapContainerStyles";
 import SearchBox from "../SearchBox";
 import SearchResult from "../SearchResults";
-import { Button } from "native-base";
 import MapViewDirections from 'react-native-maps-directions';
-import { ScrollView } from "react-native-gesture-handler";
+import InfoButton from "../saveButton";
 
 export const MapContainer = ({region, getInputData,toggleSearchResultModal,getAddressPrediction,
-     resultTypes, predictions, getSelectedAdress, selectedAddress}) => {
+     resultTypes, predictions, getSelectedAdress, selectedAddress, saveTrack}) => {
         const { selectedPickUp, selectedDropOff } = selectedAddress || {};
-        const origin = {latitude:41.0224664, longitude:29.0391322};
-        const destination = {latitude:40.98186700000001, longitude:29.0576302};
         const GOOGLE_MAPS_APIKEY = 'AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI';
+
+
     return(
+        
     <View style={styles.container}>
             
             <MapView
@@ -66,15 +66,21 @@ export const MapContainer = ({region, getInputData,toggleSearchResultModal,getAd
                 <SearchResult predictions={predictions} getSelectedAdress={getSelectedAdress}/>
                 
             }
-            <View  style={{      top:400,
-        position:"absolute",
-       
-        height:1000,
-        backgroundColor:"#fff",
-        opacity:0.9}}>
-           
-        <Text>SA</Text>
-        </View>
+
+            {   (resultTypes.pickUp || resultTypes.dropOff) &&
+            
+            <SearchResult predictions={predictions} getSelectedAdress={getSelectedAdress}/>
+            
+            }
+            
+            {    (selectedDropOff && selectedPickUp) &&
+
+                <InfoButton selectedAddress={selectedAddress} saveTrack={saveTrack}
+                styles={{top:600}}/>
+            
+            
+            
+            }
     </View>
         
     );
