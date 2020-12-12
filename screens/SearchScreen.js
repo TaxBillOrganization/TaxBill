@@ -1,16 +1,20 @@
 import React from 'react';
-import {Text, View, StyleSheet, Button,ScrollView } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import useStatusBar from '../hooks/useStatusBar';
-import { logout } from '../components/Firebase/firebase';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
-export default function Home(){
+const GooglePlacesInput = () => {
+  return (
+    <GooglePlacesAutocomplete
+      placeholder='Search'
+      onPress={(data, details = null) => {
+        // 'details' is provided when fetchDetails = true
+        console.log(data, details);
+      }}
+      query={{
+        key: 'AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI',
+        language: 'en',
+      }}
+    />
+  );
+};
 
-    return(
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Search Screen</Text>
-      </View>
-    );
-}
+export default GooglePlacesInput;

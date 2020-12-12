@@ -1,51 +1,41 @@
 import React from "react";
-import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView,TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { symbol } from "prop-types";
 import IconButton from '../components/IconButton';
 import Star from "react-native-star-view";
+
 
 export default function App({navigation}) {
     return (
         <SafeAreaView style={styles.container}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.titleBar}>
-                <View style={styles.profileImage}>
-                    <Image source={require("../assets/logo.png")} style={styles.image} resizeMode="center"></Image>                        
-                </View>
-                <Text style={[styles.text, {marginRight: 50,marginTop:"3%" ,fontWeight: "300", fontSize: 30 }]}>Arda Vural</Text>
-                <IconButton style = {{marginTop:"3%"}}iconName="settings" color="black" size={30} onPress={() => navigation.navigate('Settings')}/>                          
-            </View>
-                 <View style={styles.infoContainer}>
-                    <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18  }]}>Age: 22</Text>
-                    <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18 }]}>Sex: Man</Text>
-                </View>
-            <View style={styles.statsContainer}>
-                <View style={styles.statsBox}>
-                    <Text style={[styles.text, { fontSize: 24 }]}>483</Text>
-                    <Text style={[styles.text, styles.subText]}>Travel</Text>
-                </View>
-                <View style={styles.statsBox}>
-                    <Star  style={styles.starStyle} score={3.8} />
-                    <Text style={[styles.text, styles.subText]}>Companion Score</Text>
-                </View>
-            </View>
-  
-            <View style={{ marginTop: 32 }}>
-                <ScrollView>
-                    <View style={styles.mediaImageContainer}>
-                        <Image source={require("../assets/flame.png")} style={styles.image} resizeMode="cover"></Image>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={styles.titleBar2}>
+                    <View style={styles.profileImage}>
+                        <Image source={require("../assets/logo.png")} style={styles.image} resizeMode="center"></Image>                        
                     </View>
-                    <View style={styles.mediaImageContainer}>
-                        <Image source={require("../assets/logo.png")} style={styles.image} resizeMode="cover"></Image>
+                    <Text style={[styles.text, {marginRight: 50,marginTop:"3%" ,fontWeight: "300", fontSize: 30 }]}>Arda</Text> 
+                    <IconButton style = {{marginTop:"3%"}}iconName="keyboard-backspace" color="black" size={30} onPress={() => navigation.goBack()}/>                        
+                </View>
+                     <View style={styles.infoContainer}>
+                        <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18  }]}>Age: 22</Text>
+                        <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18 }]}>Sex: Man</Text>
                     </View>
-                    <View style={styles.mediaImageContainer}>
-                        <Image source={require("../assets/splash.png")} style={styles.image} resizeMode="cover"></Image>
+                <View style={styles.statsContainer}>
+                    <View style={styles.statsBox}>
+                        <Text style={[styles.text, { fontSize: 24 }]}>483</Text>
+                        <Text style={[styles.text, styles.subText]}>Travel</Text>
                     </View>
-                </ScrollView>
-            </View>
-        </ScrollView>
-    </SafeAreaView>);
+                    <View style={styles.statsBox}>
+                        <Star  style={styles.starStyle} score={3.8} />
+                        <Text style={[styles.text, styles.subText]}>Companion Score</Text>
+                    </View>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
+    );
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
