@@ -5,6 +5,7 @@ const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 
 export const infoSave  = ({selectedAddress,saveTrack}) => {
+    
 function handleSelectedAdress(selectedAddress){
      saveTrack(selectedAddress);
 }

@@ -29,6 +29,10 @@ class Home extends React.Component{
                 getSelectedAdress = {this.props.getSelectedAdress}
                 selectedAddress ={this.props.selectedAddress}
                 saveTrack = {this.props.saveTrack}
+                settings = {this.props.settings}
+                openSettings = {this.props.openSettings}
+                getSettings = {this.props.getSettings}
+                setSettings = {this.props.setSettings}
                 />
     }          
 

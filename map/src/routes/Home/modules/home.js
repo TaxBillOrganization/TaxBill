@@ -18,6 +18,9 @@ const {
     GET_SELECTED_ADDRESS,
     GET_DISTANCE_MATRIX,
     SAVE_TRACK,
+    OPEN_SETTINGS,
+    GET_SETTINGS,
+    SET_SETTINGS,
  } = constants;
 
 const {width, height} = Dimensions.get("window");
@@ -79,18 +82,7 @@ export function getAddressPrediction(){
       .catch((e) => {
         console.log(e.response);
       });
-     
 
-     /*   RNGooglePlaces.getAutocompletePredictions(userInput,{
-                country:"TR"
-                
-                 }
-            )
-            .then((place) => {
-            console.log("!");
-            })
-            .catch(error => console.log(error.message)); */
-            
     };
 }
 
@@ -270,8 +262,6 @@ export function saveTrack(payload){
     if(deltaLng < 0 ){
         deltaLng = deltaLng * (-1);
     }
-
-console.log(midX+"*"+midY+"*"+deltaLat+"*"+deltaLng);
 return ({
     type: SAVE_TRACK,
     payload:{
@@ -304,6 +294,72 @@ function handeleSaveTrack(state,action){
     })
 }
 
+export function openSettings(payload){
+    var result = true;
+
+    if(payload.options == true){
+        result=false;
+    }
+    
+    return ({
+        type:OPEN_SETTINGS,
+        payload :{
+            options:result
+        }
+    });
+}
+
+function handleOpenSettings(state,action){
+
+    return update(state,{
+        settings:{
+            options:{
+                $set:action.payload.options
+            }
+
+        }
+    })
+}
+
+export function setSettings(payload,type,Value){
+    var settingsType = type;
+   var resultValue = true;
+   if(Value){
+    resultValue = false;
+   }
+    return ({
+        type:SET_SETTINGS,
+        payload :{
+            selectedItem:[settingsType],
+            value:resultValue
+        }
+    });
+}
+
+function handleSetSettings(state,action){
+    
+   var itemType = action.payload.selectedItem;
+  
+    return update(state,{
+        settings:{
+            [itemType]:{
+                    $set:action.payload.value
+            }
+
+        }
+    })
+}
+
+
+export function getSettings(payload){
+    
+}
+
+function handleGetSettings(state,action){
+
+
+}
+
 const ACTION_HANDLER = {
     GET_CURRENT_LOCATION:handleGetCurrentLocation,
     GET_INPUT:handleGetInputData,
@@ -312,12 +368,17 @@ const ACTION_HANDLER = {
     GET_SELECTED_ADDRESS:handleGetSelectedAddress,
     GET_DISTANCE_MATRIX : handleGetDistanceMatrix,
     SAVE_TRACK:handeleSaveTrack,
+    OPEN_SETTINGS:handleOpenSettings,
+    GET_SETTINGS:handleGetSettings,
+    SET_SETTINGS:handleSetSettings,
+
 }
 const initialState = {
     region:{},
     inputData:{},
     resultTypes:{},
     selectedAddress:{},
+    settings:{},
 };
 
 export function HomeReducer(state = initialState,action){

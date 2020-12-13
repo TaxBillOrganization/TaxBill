@@ -6,9 +6,14 @@ import SearchBox from "../SearchBox";
 import SearchResult from "../SearchResults";
 import MapViewDirections from 'react-native-maps-directions';
 import InfoButton from "../saveButton";
+import SettingBox from "../options";
+import OptionsBox from "../options/optionsItems";
+import DateTime from "../Date";
 
 export const MapContainer = ({region, getInputData,toggleSearchResultModal,getAddressPrediction,
-     resultTypes, predictions, getSelectedAdress, selectedAddress, saveTrack}) => {
+     resultTypes, predictions, getSelectedAdress, selectedAddress, saveTrack,settings,openSettings,getSettings,
+     setSettings }) => {
+     
         const { selectedPickUp, selectedDropOff } = selectedAddress || {};
         const GOOGLE_MAPS_APIKEY = 'AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI';
 
@@ -61,6 +66,7 @@ export const MapContainer = ({region, getInputData,toggleSearchResultModal,getAd
             <SearchBox getInputData={getInputData} toggleSearchResultModal={toggleSearchResultModal}
             getAddressPrediction={getAddressPrediction} selectedAddress = {selectedAddress}
             />
+            <DateTime/>
             {   (resultTypes.pickUp || resultTypes.dropOff) &&
             
                 <SearchResult predictions={predictions} getSelectedAdress={getSelectedAdress}/>
@@ -81,7 +87,17 @@ export const MapContainer = ({region, getInputData,toggleSearchResultModal,getAd
             
             
             }
-    </View>
+            {
+            <SettingBox settings={settings} openSettings={openSettings} getSettings={getSettings}
+                setSettings={setSettings}
+            />
+            }
+            {
+            <OptionsBox settings={settings} openSettings={openSettings} getSettings={getSettings}
+                setSettings={setSettings}
+            />
+            }
+        </View>
         
     );
 }

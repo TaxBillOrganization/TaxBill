@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet,ScrollView,Image,View } from 'react-native';
+import { StyleSheet,ScrollView,Image,View,Text} from 'react-native';
 import * as Yup from 'yup';
+import { RadioButton } from 'react-native-paper';
 
 import Colors from '../utils/colors';
 import SafeView from '../components/SafeView';
@@ -77,7 +78,8 @@ export default function RegisterScreen({ navigation }) {
       setRegisterError(error.message);
     }
   }
-
+  const [checked, setChecked] = React.useState('m');
+  
   return (
     <ScrollView style={styles.container}>
       <View style={styles.logoFrame}>
@@ -93,7 +95,8 @@ export default function RegisterScreen({ navigation }) {
           birtday:'',
           email: '',
           password: '',
-          confirmPassword: ''
+          confirmPassword: '',
+          
         }}
         validationSchema={validationSchema}
         onSubmit={values => handleOnSignUp(values)}
@@ -122,6 +125,29 @@ export default function RegisterScreen({ navigation }) {
           placeholder="Enter birtday"
           autoFocus={false}
         />
+
+        <View style={{ flexDirection: 'row',fontSize:20,backgroundColor:"#b7ab4d",borderRadius:25,height:45,
+        marginVertical: 10
+      }}>
+              <View style={{ flexDirection: 'row',alignItems:"center"}}>
+                <RadioButton
+                  value="f"
+                  status={checked === 'f' ? 'checked' : 'unchecked'}
+                  onPress={() => setChecked('f')}
+                />
+                <Text style={{fontSize:20}}>Female</Text>
+              </View>
+
+              <View style={{ flexDirection: 'row',marginLeft:"15%",alignItems:"center"}}>
+                <RadioButton
+                  value="m"
+                  status={checked === 'm' ? 'checked' : 'unchecked'}
+                  onPress={()=>setChecked('m')}
+                />
+                <Text style={{fontSize:20}}>Male</Text>
+              </View>
+      </View>
+
         <FormField
           name="email"
           leftIcon="email"
@@ -152,6 +178,7 @@ export default function RegisterScreen({ navigation }) {
           rightIcon={confirmPasswordIcon}
           handlePasswordVisibility={handleConfirmPasswordVisibility}
         />
+
         <FormButton title={'Register'} />
         {<FormErrorMessage error={registerError} visible={true} />}
       </Form>
@@ -162,7 +189,7 @@ export default function RegisterScreen({ navigation }) {
         size={30}
         onPress={() => navigation.goBack()}
       />
-      
+
     </SafeView>
     </ScrollView>
   );

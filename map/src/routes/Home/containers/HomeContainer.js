@@ -6,7 +6,10 @@ import {
     toggleSearchResultModal,
     getAddressPrediction,
     getSelectedAdress,
-    saveTrack
+    saveTrack,
+    openSettings,
+    getSettings,
+    setSettings,
 } from "../modules/home";
 
 const mapStateToProps = (state) => ({
@@ -15,6 +18,7 @@ const mapStateToProps = (state) => ({
     resultTypes :state.home.resultTypes || {},
     predictions:state.home.predictions || [],
     selectedAddress : state.home.selectedAddress || [],
+    settings : state.home.settings || {},
     
 });
 const mapActionCreators ={getCurrentLocation,
@@ -22,7 +26,10 @@ const mapActionCreators ={getCurrentLocation,
      toggleSearchResultModal,
      getAddressPrediction,
      getSelectedAdress,
-     saveTrack
+     saveTrack,
+     openSettings,
+     getSettings,
+     setSettings
     };
 
 export default connect(mapStateToProps, mapActionCreators)(Home);
