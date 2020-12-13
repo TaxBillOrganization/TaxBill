@@ -6,10 +6,9 @@ import RegisterScreen from '../screens/RegisterScreen';
 import LoginScreen from '../screens/LoginScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import ChatScreen from '../screens/ChatScreen';
-import Profil from '../screens/ProfilScreen';
+import Profil from '../screens/ProfileScreen';
 import TravelScreen from '../screens/TravelScreen';
 import SearchScreen from '../screens/SearchScreen';
-import SettingsScreen from '../screens/ProfilSettingsScreen';
 
 
 const Stack = createStackNavigator();
@@ -25,7 +24,6 @@ export default function AuthStack() {
       <Stack.Screen name="Chat" component={ChatScreen} />
       <Stack.Screen name="Travel" component={TravelScreen} />
       <Stack.Screen name="Profil" component={Profil} />
-      <Stack.Screen name="Settings" component={SettingsScreen} />
     </Stack.Navigator>
   );
 }
