@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { StyleSheet,ScrollView,Image,View,Text} from 'react-native';
+import { StyleSheet,ScrollView,Image,View,Text,TouchableOpacity} from 'react-native';
 import * as Yup from 'yup';
 import { RadioButton } from 'react-native-paper';
-
+import { Ionicons } from '@expo/vector-icons';
 import Colors from '../utils/colors';
 import SafeView from '../components/SafeView';
 import Form from '../components/Forms/Form';
@@ -10,22 +10,24 @@ import FormField from '../components/Forms/FormField';
 import FormButton from '../components/Forms/FormButton';
 import IconButton from '../components/IconButton';
 import FormErrorMessage from '../components/Forms/FormErrorMessage';
-import { registerWithEmail } from '../components/Firebase/firebase';
+import { registerWithEmail, pushProfil } from '../components/Firebase/firebase';
 import useStatusBar from '../hooks/useStatusBar';
+import {getEmail} from '../screens/ProfileScreen'
 
 const validationSchema = Yup.object().shape({
   tc: Yup.string()
     .required()
-    .label('Tc No'),
+    .length(11,'TC length must be 11 character')
+    .label('TC No'),
   name: Yup.string()
     .required()
     .label('Name'),
   surname: Yup.string()
     .required()
     .label('Surname'),
-  birtday: Yup.string()
+  age: Yup.string()
     .required()
-    .label('BirtDay'),  
+    .label('Age'),  
   email: Yup.string()
     .required('Please enter a valid email')
     .email()
@@ -71,35 +73,52 @@ export default function RegisterScreen({ navigation }) {
   }
 
   async function handleOnSignUp(values, actions) {
-    const { email, password } = values;
+    const {tc, name, surname, age, email, password } = values;
+    var uid;
     try {
-      await registerWithEmail(email, password);
+      await registerWithEmail(email, password).then((User)=>uid=User.user.uid);
     } catch (error) {
       setRegisterError(error.message);
     }
+    pushProfil (tc, uid, name, surname, age, email, checked );
   }
-  const [checked, setChecked] = React.useState('m');
-  
+
+  const [checked, setChecked] = React.useState('male');
+  const initialValues={
+    tc:'',
+    uid:'',
+    name: '',
+    surname:'',
+    age:'',
+    email: '',
+    gender :'',
+    password: '',
+    confirmPassword: '',
+    avatar:null   
+  };
+
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.logoFrame}>
-      <Image source={require('../assets/logo.png')} style={styles.logo} />
-    </View>
+      <TouchableOpacity style={styles.avatarPlaceHolder}>
+        <Image source={{uri:initialValues.avatar}} style={styles.avatar}/>
+        <Ionicons name="ios-add" size={40} color="black" />
+      </TouchableOpacity>
     <SafeView >
-     
       <Form
         initialValues={{
           tc:'',
+          uid:'',
           name: '',
           surname:'',
-          birtday:'',
+          age:'',
           email: '',
+          gender :'',
           password: '',
           confirmPassword: '',
-          
+          avatar:null   
         }}
         validationSchema={validationSchema}
-        onSubmit={values => handleOnSignUp(values)}
+        onSubmit={values=>handleOnSignUp(values)}
       >
         <FormField
           name="tc"
@@ -120,9 +139,9 @@ export default function RegisterScreen({ navigation }) {
           autoFocus={false}
         />
         <FormField
-          name="birtday"
+          name="age"
           leftIcon="account"
-          placeholder="Enter birtday"
+          placeholder="Enter age"
           autoFocus={false}
         />
 
@@ -131,18 +150,18 @@ export default function RegisterScreen({ navigation }) {
       }}>
               <View style={{ flexDirection: 'row',alignItems:"center"}}>
                 <RadioButton
-                  value="f"
-                  status={checked === 'f' ? 'checked' : 'unchecked'}
-                  onPress={() => setChecked('f')}
+                  value="Female"
+                  status={checked === 'Female' ? 'checked' : 'unchecked'}
+                  onPress={() => setChecked('Female')}
                 />
                 <Text style={{fontSize:20}}>Female</Text>
               </View>
 
               <View style={{ flexDirection: 'row',marginLeft:"15%",alignItems:"center"}}>
                 <RadioButton
-                  value="m"
-                  status={checked === 'm' ? 'checked' : 'unchecked'}
-                  onPress={()=>setChecked('m')}
+                  value="male"
+                  status={checked === 'male' ? 'checked' : 'unchecked'}
+                  onPress={()=>setChecked('male')}
                 />
                 <Text style={{fontSize:20}}>Male</Text>
               </View>
@@ -212,5 +231,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 10
+  },
+  avatarPlaceHolder:{
+    width:100,
+    height:100,
+    backgroundColor:"#E1E2E6",
+    borderRadius:50,
+    marginTop:48,
+    justifyContent:"center",
+    alignItems:"center"
+  },
+  avatar:{
+    position:"absolute",
+    width:100,
+    height:100,
+    borderRadius:50
   }
 });

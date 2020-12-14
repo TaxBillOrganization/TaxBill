@@ -20,3 +20,14 @@ export const registerWithEmail = (email, password) =>
 export const logout = () => auth.signOut();
 
 export const passwordReset = email => auth.sendPasswordResetEmail(email);
+
+export const pushProfil = (tc, uid, name, surname, age, email, gender,) => 
+firebase.database().ref('Users/'+ uid +('/ProfileInformation')).set({
+  name:name,
+  uid:uid,
+  surname:surname,
+  tc:tc,
+  age:age,
+  email:email,
+  gender:gender
+});

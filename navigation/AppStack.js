@@ -10,7 +10,7 @@ import Profil from '../screens/ProfileScreen'
 
 const Tab = createBottomTabNavigator();
 
-export default function AppStack() {
+export default function AppStack(User) {
   function HomePage() {
     return (<Home/>);
   }
@@ -24,7 +24,7 @@ export default function AppStack() {
     return (<Travel/>);
   }
   function ProfilPage() { 
-    return (<Profil/>);
+    return (<Profil kullanıcı={User}/>);
   }
   
   return (

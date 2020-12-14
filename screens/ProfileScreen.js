@@ -4,11 +4,23 @@ import IconButton from '../components/IconButton';
 import { createStackNavigator } from '@react-navigation/stack';
 import Star from 'react-native-star-view';
 import styles from './Styles/ProfileScreenStyles';
-
+import firebase from 'firebase';
 const ProfilStack = createStackNavigator();
 
-export default function ProfilStackPage() { 
-    return (
+const user ={email:'',Username:'',Usersurname:'',Userage:'', Usergender:''};
+var uid=' ';
+export default function ProfilStackPage(kullanıcı) { 
+    uid=kullanıcı.User.uid
+    return (    
+    console.error(JSON.stringify(kullanıcı)), 
+    firebase.database().ref(('Users/') + uid + ('/ProfileInformation')).once('value').then((snapshot) => {
+    user.Username = (snapshot.val() && snapshot.val().name) || 'Anonymous';
+    user.Usersurname = (snapshot.val() && snapshot.val().surname) || 'Anonymous';
+    user.Userage = (snapshot.val() && snapshot.val().age) || 'Anonymous';
+    user.Usergender = (snapshot.val() && snapshot.val().gender) || 'Anonymous';
+    }),
+
+    
     <ProfilStack.Navigator options={{headerShown: false}} screenOptions={{
       headerShown: false
     }}>
@@ -17,6 +29,7 @@ export default function ProfilStackPage() {
     </ProfilStack.Navigator>
     );
   }
+
   function ProfilPage({navigation}) {
     return (
       <SafeAreaView style={styles.container}>
@@ -26,13 +39,13 @@ export default function ProfilStackPage() {
               <View style={styles.profileImage}>
                   <Image source={require("../assets/logo.png")} style={styles.image} resizeMode="center"></Image>                        
               </View>
-              <Text style={[styles.text, {marginTop:"3%" ,fontWeight: "300", fontSize: 30 }]}>Arda Vural</Text>
+              <Text style={[styles.text, {marginTop:"3%" ,fontWeight: "300", fontSize: 30 }]}>{user.Username + user.Usersurname }</Text>
             </View>
               <IconButton style = {{marginTop:"3%"}}iconName="settings" color="black" size={30} onPress={() => navigation.navigate('Settings')}/>                          
           </View>
                <View style={styles.infoContainer}>
-                  <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18  }]}>Age: 22</Text>
-                  <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18 }]}>Sex: Man</Text>
+                  <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18  }]}>{('Age:' )+user.Userage}</Text>
+                  <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18 }]}>{('Gender:' )+user.Usergender}</Text>
               </View>
           <View style={styles.statsContainer}>
               <View style={styles.statsBox}>
@@ -61,6 +74,7 @@ export default function ProfilStackPage() {
       </ScrollView>
   </SafeAreaView>);
   }
+
   function ProfilSettingsPage({navigation}) {
     return (
       <SafeAreaView style={styles.container}>
