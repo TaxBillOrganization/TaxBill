@@ -21,6 +21,7 @@ const {
     OPEN_SETTINGS,
     GET_SETTINGS,
     SET_SETTINGS,
+    GET_DATE,
  } = constants;
 
 const {width, height} = Dimensions.get("window");
@@ -360,6 +361,25 @@ function handleGetSettings(state,action){
 
 }
 
+export function getDate(Payload){
+    return ({
+        type:GET_DATE,
+        payload :{
+            Date:Payload,
+        }
+    });
+}
+
+
+function handleGetDate(state,action){
+    return update(state,{
+        Date:{
+            $set:action.payload.Date
+        }
+    })
+
+}
+
 const ACTION_HANDLER = {
     GET_CURRENT_LOCATION:handleGetCurrentLocation,
     GET_INPUT:handleGetInputData,
@@ -371,6 +391,7 @@ const ACTION_HANDLER = {
     OPEN_SETTINGS:handleOpenSettings,
     GET_SETTINGS:handleGetSettings,
     SET_SETTINGS:handleSetSettings,
+    GET_DATE:handleGetDate,
 
 }
 const initialState = {
@@ -379,6 +400,7 @@ const initialState = {
     resultTypes:{},
     selectedAddress:{},
     settings:{},
+    Date:{},
 };
 
 export function HomeReducer(state = initialState,action){

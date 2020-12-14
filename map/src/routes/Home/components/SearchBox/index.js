@@ -22,7 +22,7 @@ export const SearchBox = ({getInputData, toggleSearchResultModal, getAddressPred
                 <View style={styles.inputWrapper}>
                     <Text style ={styles.label}>PICK UP</Text>
                     <InputGroup>
-                    <Icon name="search" size={15} color="#FF5E3A"/>
+                    <Icon name="home" size={15} color="#FF5E3A"/>
                         <Input onFocus={()=>toggleSearchResultModal("pickUp")}  style ={styles.inputSearch} 
                         placeholder="Choose pick up location" onChangeText={handleInput.bind(this,"pickUp")}
                        value={selectedPickUp && selectedPickUp.name}
@@ -32,7 +32,7 @@ export const SearchBox = ({getInputData, toggleSearchResultModal, getAddressPred
                 <View style={styles.secondInputWrapper}>
                     <Text style ={styles.label}>DROP-OFF</Text>
                     <InputGroup>
-                    <Icon name="search" size={15} color="#FF5E3A"/>
+                    <Icon name="send" size={15} color="#FF5E3A"/>
                         <Input onFocus={()=>toggleSearchResultModal("dropOff")}  style ={styles.inputSearch} 
                         placeholder="Choose drop-off location" onChangeText={handleInput.bind(this,"dropOff")}
                         value={selectedDropOff && selectedDropOff.name}

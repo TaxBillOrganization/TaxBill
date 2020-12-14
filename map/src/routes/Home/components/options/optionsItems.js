@@ -100,8 +100,8 @@ const styles = StyleSheet.create({
 
     },
     container: {
-      top:(windowHeight/14),
-      right:(windowWidth/14),
+      top:(windowHeight/6),
+      right:(windowWidth/20),
       backgroundColor:"black",
       opacity:0.7,
       height:(windowHeight/3),

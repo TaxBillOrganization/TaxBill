@@ -10,6 +10,7 @@ import {
     openSettings,
     getSettings,
     setSettings,
+    getDate,
 } from "../modules/home";
 
 const mapStateToProps = (state) => ({
@@ -19,6 +20,7 @@ const mapStateToProps = (state) => ({
     predictions:state.home.predictions || [],
     selectedAddress : state.home.selectedAddress || [],
     settings : state.home.settings || {},
+    Date : state.home.Date || {},
     
 });
 const mapActionCreators ={getCurrentLocation,
@@ -29,7 +31,8 @@ const mapActionCreators ={getCurrentLocation,
      saveTrack,
      openSettings,
      getSettings,
-     setSettings
+     setSettings,
+     getDate
     };
 
 export default connect(mapStateToProps, mapActionCreators)(Home);

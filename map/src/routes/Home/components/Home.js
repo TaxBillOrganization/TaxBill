@@ -33,6 +33,7 @@ class Home extends React.Component{
                 openSettings = {this.props.openSettings}
                 getSettings = {this.props.getSettings}
                 setSettings = {this.props.setSettings}
+                getDate = {this.props.getDate}
                 />
     }          
 

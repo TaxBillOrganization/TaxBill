@@ -9,5 +9,5 @@ export default {
     OPEN_SETTINGS:"OPEN_SETTINGS",
     GET_SETTINGS:"GET_SETTINGS",
     SET_SETTINGS:"SET_SETTINGS",
-    
+    GET_DATE:"GET_DATE",
 };

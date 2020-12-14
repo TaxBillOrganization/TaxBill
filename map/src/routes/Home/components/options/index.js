@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         width:40,
         height:40,
         left:(windowWidth/2)+(windowWidth/3),
-        top:(windowHeight/3.5),
+        top:(windowHeight/2.7),
         opacity:0.8,
         flexDirection:"row",
        
