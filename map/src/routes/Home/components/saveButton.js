@@ -4,10 +4,10 @@ import {View,Button,Dimensions, StyleSheet} from "react-native";
 const windowHeight = Dimensions.get('window').height;   
 const windowWidth = Dimensions.get('window').width;
 
-export const infoSave  = ({selectedAddress,saveTrack}) => {
+export const infoSave  = ({selectedAddress,saveTrack,date}) => {
     
 function handleSelectedAdress(selectedAddress){
-     saveTrack(selectedAddress);
+     saveTrack(selectedAddress,date);
 }
 
     return(

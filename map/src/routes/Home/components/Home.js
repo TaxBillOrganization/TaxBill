@@ -34,13 +34,11 @@ class Home extends React.Component{
                 getSettings = {this.props.getSettings}
                 setSettings = {this.props.setSettings}
                 getDate = {this.props.getDate}
+                date = {this.props.Date}
                 />
-    }          
+                }          
 
-            </Container>
-                 
-                    
-                 
+            </Container>           
         );
     }
 }

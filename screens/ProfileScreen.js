@@ -10,7 +10,6 @@ const ProfilStack = createStackNavigator();
 const user ={email:'',Username:'',Usersurname:'',Userage:'', Usergender:''};
 var uid='';
 
-
 export default function ProfilStackPage(kullanıcı) {
     const [userstate,setUser] = useState({});
 
@@ -59,10 +58,6 @@ export default function ProfilStackPage(kullanıcı) {
       </SafeAreaView>);
       }
 
-
-
-
-    
       function ProfilSettingsPage({navigation}) {
         return (
           <SafeAreaView style={styles.container}>
@@ -72,13 +67,13 @@ export default function ProfilStackPage(kullanıcı) {
                     <View style={styles.profileImage}>
                         <Image source={require("../assets/logo.png")} style={styles.image} resizeMode="center"></Image>                        
                     </View>
-                    <Text style={[styles.text, {marginTop:"3%" ,fontWeight: "300", fontSize: 30 }]}>Arda Vural</Text>
+                    <Text style={[styles.text, {marginTop:"3%" ,fontWeight: "300", fontSize: 30 }]}>{userstate.Username+'\n'+userstate.Usersurname}</Text>
                   </View>
                     <IconButton style = {{marginTop:"3%"}}iconName="keyboard-backspace" color="black" size={30} onPress={() => navigation.goBack()}/>                          
                 </View>
                        <View style={styles.infoContainer}>
-                          <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18  }]}>Age: 22</Text>
-                          <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18 }]}>Sex: Man</Text>
+                          <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18  }]}>{('Age:' )+userstate.Userage }</Text>
+                          <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18 }]}>{('Gender:' )+userstate.Usergender}</Text>
                       </View>
                   <View style={styles.statsContainer}>
                       <View style={styles.statsBox}>
@@ -94,7 +89,6 @@ export default function ProfilStackPage(kullanıcı) {
           </SafeAreaView>
       );
       }
-
    
     uid=kullanıcı.kullanıcı.User.uid;
     
@@ -108,9 +102,7 @@ export default function ProfilStackPage(kullanıcı) {
     });
     return (    
 
-    <ProfilStack.Navigator options={{headerShown: false}} screenOptions={{
-      headerShown: false
-    }}>
+    <ProfilStack.Navigator options={{headerShown: false}} screenOptions={{headerShown: false}}>
         <ProfilStack.Screen name="Profile" component={ProfilPage} />
         <ProfilStack.Screen name="Settings" component={ProfilSettingsPage} />
         </ProfilStack.Navigator>

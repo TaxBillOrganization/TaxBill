@@ -3,7 +3,7 @@ import constants from "./actionConstants";
 import {Dimensions} from "react-native";
 import RNGooglePlaces from "react-native-google-places";
 import axios from 'axios';
-
+import firebase from 'firebase';
 import Request from "../../../../util/request";
 
 //import { func } from "prop-types";
@@ -243,7 +243,7 @@ function handleGetSelectedAddress(state,action){
 		}
 	})
 }
-export function saveTrack(payload){
+export function saveTrack(payload,date){
     
     var dropOffLat = payload.selectedDropOff.lat;
     var pickUppLat = payload.selectedPickUp.lat;
@@ -266,6 +266,11 @@ export function saveTrack(payload){
 return ({
     type: SAVE_TRACK,
     payload:{
+        dropOffLatidute : dropOffLat,
+        dropOffLongitude: dropOffLng,
+        pickUppLatidute: pickUppLat,
+        pickUppLongitude: pickUppLng,
+        date:date,
         middleX:midX,
         middleY:midY,
         deltaLatitude:deltaLat+0.5,
@@ -274,8 +279,27 @@ return ({
     }
 );
 }
+function guidGenerator() {
+    var S4 = function() {
+       return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    };
+    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+}
 
 function handeleSaveTrack(state,action){
+    var user = firebase.auth().currentUser;
+    console.error(JSON.stringify(user.uid))
+    var travelID = guidGenerator()
+    
+    firebase.database().ref('Travels/'+ travelID ).set({
+    pickUppLatidute:action.payload.pickUppLatidute,
+    pickUppLongitude:action.payload.pickUppLongitude,
+    dropOffLatidute:action.payload.dropOffLatidute,
+    dropOffLongitude:action.payload.dropOffLongitude,
+    statu:"c",
+    date:action.payload.date.toString(),
+    creater:user.uid
+    });
     return update(state,{
         region:{
             latitude:{
@@ -290,7 +314,6 @@ function handeleSaveTrack(state,action){
             longitudeDelta: {
                 $set:action.payload.deltaLongitude
             }
-
         }
     })
 }

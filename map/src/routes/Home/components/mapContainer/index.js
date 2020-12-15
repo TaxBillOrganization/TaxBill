@@ -10,7 +10,7 @@ import SettingBox from "../options";
 import OptionsBox from "../options/optionsItems";
 import DateTime from "../Date/index";
 
-export const MapContainer = ({region, getInputData,toggleSearchResultModal,getAddressPrediction,
+export const MapContainer = ({region, date, getInputData,toggleSearchResultModal,getAddressPrediction,
      resultTypes, predictions, getSelectedAdress, selectedAddress, saveTrack,settings,openSettings,getSettings,
      setSettings, getDate}) => {
      
@@ -79,9 +79,11 @@ export const MapContainer = ({region, getInputData,toggleSearchResultModal,getAd
             
             }
             
-            {    (selectedDropOff && selectedPickUp) &&
+            {    (selectedDropOff && selectedPickUp && date) &&
 
-                <InfoButton selectedAddress={selectedAddress} saveTrack={saveTrack}
+                <InfoButton selectedAddress={selectedAddress} 
+                saveTrack={saveTrack}
+                date={date}
                 styles={{top:600}}/>
             
             

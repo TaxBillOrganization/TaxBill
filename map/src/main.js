@@ -12,7 +12,7 @@ export default class Root extends React.Component{
         const store =  createStore(initialState);
         return (
           
-                <Appcontainer store={store}/>
+                <Appcontainer user={this.props.kulanici} store={store}/>
             
         );
     }
