@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, StyleSheet, Button, Text, View, Alert, TouchableOpacity} from 'react-native';
+import { StyleSheet, Alert, TouchableOpacity} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as firebase from 'firebase';

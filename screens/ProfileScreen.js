@@ -6,6 +6,7 @@ import Star from 'react-native-star-view';
 import styles from './Styles/ProfileScreenStyles';
 import firebase from 'firebase';
 import Photo from '../components/Firebase/storagePhoto'
+import Change from '../components/Firebase/changeEmailPassword'
 const ProfilStack = createStackNavigator();
 
 const user ={email:'',Username:'',Usersurname:'',Userage:'', Usergender:'', image:''};
@@ -13,7 +14,7 @@ var uid='';
 export default function ProfilStackPage(kullanıcı) {
     const [userstate,setUser] = useState({});
 
-    function ProfilPage({navigation,user}) {
+    function ProfilPage({navigation}) {
         return (
           <SafeAreaView style={styles.container}>
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -22,13 +23,13 @@ export default function ProfilStackPage(kullanıcı) {
                   <View style={styles.profileImage}>
                       <Image source={{uri:userstate.image}} style={styles.image} resizeMode="center"></Image>                                     
                   </View>
-                  <Text style={[styles.text, {marginTop:"3%" ,fontWeight: "300", fontSize: 30,flexDirection: "column"}]}>{userstate.Username+'\n'+userstate.Usersurname}</Text>
+                  <Text style={[styles.text, {marginTop:"3%" ,fontWeight: "300", fontSize: 30,flexDirection: "column"}]}>{userstate.Username+' '+userstate.Usersurname}</Text>
                 </View>
                   <IconButton style = {{marginTop:"3%"}}iconName="settings" color="black" size={30} onPress={() => navigation.navigate('Settings')}/>                          
               </View>
                    <View style={styles.infoContainer}>
-                      <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18  }]}>{('Age:' )+userstate.Userage }</Text>
-                      <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18 }]}>{('Gender:' )+userstate.Usergender}</Text>
+                      <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18  }]}>{('Age: ')+userstate.Userage }</Text>
+                      <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18 }]}>{('Gender: ')+userstate.Usergender}</Text>
                   </View>
               <View style={styles.statsContainer}>
                   <View style={styles.statsBox}>
@@ -65,13 +66,13 @@ export default function ProfilStackPage(kullanıcı) {
                 <View style={styles.titleBar}>
                   <View style={styles.titleBar}>
                     <Photo style={styles.profileImage}></Photo>
-                    <Text style={[styles.text, {marginTop:"3%" ,fontWeight: "300", fontSize: 30 }]}>{userstate.Username+'\n'+userstate.Usersurname}</Text>
+                    <Text style={[styles.text, {marginTop:"3%" ,fontWeight: "300", fontSize: 30 }]}>{userstate.Username+' '+userstate.Usersurname}</Text>
                   </View>
-                    <IconButton style = {{marginTop:"3%"}}iconName="keyboard-backspace" color="black" size={30} onPress={() => navigation.navigate('P')}/>                          
+                    <IconButton style = {{marginTop:"3%"}}iconName="keyboard-backspace" color="black" size={30} onPress={() => navigation.navigate('Profile')}/>                          
                 </View>
                        <View style={styles.infoContainer}>
-                          <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18  }]}>{('Age:' )+userstate.Userage }</Text>
-                          <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18 }]}>{('Gender:' )+userstate.Usergender}</Text>
+                          <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18  }]}>{('Age: ')+userstate.Userage }</Text>
+                          <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18 }]}>{('Gender: ')+userstate.Usergender}</Text>
                       </View>
                   <View style={styles.statsContainer}>
                       <View style={styles.statsBox}>
@@ -83,12 +84,15 @@ export default function ProfilStackPage(kullanıcı) {
                           <Text style={[styles.text, styles.subText]}>Companion Score</Text>
                       </View>
                   </View>
+                    <Change/>
+                  <View>
+                  </View>
               </ScrollView>
           </SafeAreaView>
       );
       }
-        uid=kullanıcı.kullanıcı.User.uid;
-        
+
+    uid=kullanıcı.kullanıcı.User.uid;        
     firebase.database().ref('Users/'+uid+'/ProfileInformation').once('value',function (snapshot) {
         user.Username = (snapshot.val() && snapshot.val().name) || 'Anonymous';
         user.Usersurname = (snapshot.val() && snapshot.val().surname) || 'Anonymous';
@@ -99,10 +103,9 @@ export default function ProfilStackPage(kullanıcı) {
     });
 
     return (    
-
     <ProfilStack.Navigator options={{headerShown: false}} screenOptions={{headerShown: false}}>
         <ProfilStack.Screen name="Profile" component={ProfilPage} />
         <ProfilStack.Screen name="Settings" component={ProfilSettingsPage} />
-        </ProfilStack.Navigator>
+    </ProfilStack.Navigator>
     );
   }

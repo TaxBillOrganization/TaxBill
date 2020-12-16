@@ -9,6 +9,7 @@ export default {
   red: '#fc5c65',
   appButtonTextColor: "#2b2812",
   appButtonColor: "#b7ab4d",
+  changeButtonColor:"#E1E2E6",
   backgroundColor : "#988600",
   textColor: "#444",
   tabBar: "#eed74d"

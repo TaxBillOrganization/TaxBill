@@ -81,7 +81,7 @@ export default function RegisterScreen({ navigation }) {
     pushProfil (tc, uid, name, surname, age, email, checked );
   }
 
-  const [checked, setChecked] = React.useState('male');
+  const [checked, setChecked] = React.useState('Male');
   const initialValues={
     tc:'',
     uid:'',
@@ -154,9 +154,9 @@ export default function RegisterScreen({ navigation }) {
 
               <View style={{ flexDirection: 'row',marginLeft:"15%",alignItems:"center"}}>
                 <RadioButton
-                  value="male"
-                  status={checked === 'male' ? 'checked' : 'unchecked'}
-                  onPress={()=>setChecked('male')}
+                  value="Male"
+                  status={checked === 'Male' ? 'checked' : 'unchecked'}
+                  onPress={()=>setChecked('Male')}
                 />
                 <Text style={{fontSize:20}}>Male</Text>
               </View>
