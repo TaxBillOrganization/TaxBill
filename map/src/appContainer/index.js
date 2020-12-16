@@ -10,7 +10,7 @@ export default class Appcontainer extends Component{
     }
     render(){
         return (
-            <Provider store={this.props.store} user={this.props.user}>
+            <Provider store={this.props.store}>
                 <Router scenes={scenes}/>
             </Provider>
         );

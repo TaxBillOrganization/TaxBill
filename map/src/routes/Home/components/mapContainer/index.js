@@ -12,7 +12,7 @@ import DateTime from "../Date/index";
 
 export const MapContainer = ({region, date, getInputData,toggleSearchResultModal,getAddressPrediction,
      resultTypes, predictions, getSelectedAdress, selectedAddress, saveTrack,settings,openSettings,getSettings,
-     setSettings, getDate}) => {
+     setSettings, getDate,startEndAddress,startEnd}) => {
      
         const { selectedPickUp, selectedDropOff } = selectedAddress || {};
         const GOOGLE_MAPS_APIKEY = 'AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI';
@@ -75,7 +75,7 @@ export const MapContainer = ({region, date, getInputData,toggleSearchResultModal
 
             {   (resultTypes.pickUp || resultTypes.dropOff) &&
             
-            <SearchResult predictions={predictions} getSelectedAdress={getSelectedAdress}/>
+            <SearchResult predictions={predictions} getSelectedAdress={getSelectedAdress} startEnd={startEnd}/>
             
             }
             
@@ -84,17 +84,18 @@ export const MapContainer = ({region, date, getInputData,toggleSearchResultModal
                 <InfoButton selectedAddress={selectedAddress} 
                 saveTrack={saveTrack}
                 date={date}
+                settings={settings}
                 styles={{top:600}}/>
-            
+                
             
             
             }
-            {
+            {(!resultTypes.pickUp && !resultTypes.dropOff) &&
             <SettingBox settings={settings} openSettings={openSettings} getSettings={getSettings}
                 setSettings={setSettings}
             />
             }
-            {
+            {(!resultTypes.pickUp && !resultTypes.dropOff) &&
             <OptionsBox settings={settings} openSettings={openSettings} getSettings={getSettings}
                 setSettings={setSettings}
             />

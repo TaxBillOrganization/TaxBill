@@ -5,12 +5,13 @@ import {View,List,ListItem, Left, Body} from "native-base";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { ScrollView } from "react-native-gesture-handler";
 
-export const SearchResult = ({predictions,getSelectedAdress}) => {
+export const SearchResult = ({predictions,getSelectedAdress,startEnd}) => {
 
     function handleSelectedAddress(placeID){
 
         getSelectedAdress(placeID);
-       
+        //console.error(JSON.stringify(predictions));
+        //startEnd(placeID);
 
     }
   

@@ -12,7 +12,7 @@ const Tab = createBottomTabNavigator();
 
 export default function AppStack(User) {
   function HomePage() {
-    return (<Home kullanıcı={User}/>);
+    return (<Home/>);
   }
   function SearchPage() {
     return (<Search/>);

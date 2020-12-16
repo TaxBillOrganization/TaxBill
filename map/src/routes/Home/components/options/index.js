@@ -9,11 +9,11 @@ const windowWidth = Dimensions.get('window').width;
 export const options = ({settings,openSettings,setSettings,getSettings}) => {
 
 
-    const [isSelectedFemale, setFemale] = useState(false);
+    const [isSelectedFemale, setFemale] = useState(true);
 
-    const [isSelectedMale, setMale] = useState(false);
-    const [isSelectedOnePerson, setOnePerson] = useState(false);
-    const [isSelectedMultiplePeople, setMultiplePeople] = useState(false);
+    const [isSelectedMale, setMale] = useState(true);
+    const [isSelectedOnePerson, setOnePerson] = useState(true);
+    const [isSelectedMultiplePeople, setMultiplePeople] = useState(true);
 
     function handleOpen(parameter){
         openSettings(parameter);

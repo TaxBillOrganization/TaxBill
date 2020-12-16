@@ -35,6 +35,7 @@ class Home extends React.Component{
                 setSettings = {this.props.setSettings}
                 getDate = {this.props.getDate}
                 date = {this.props.Date}
+                startEndPoint={this.props.startEndPoint}
                 />
                 }          
 

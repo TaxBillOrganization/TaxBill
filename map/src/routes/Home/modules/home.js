@@ -22,6 +22,7 @@ const {
     GET_SETTINGS,
     SET_SETTINGS,
     GET_DATE,
+    SET_START_END,
  } = constants;
 
 const {width, height} = Dimensions.get("window");
@@ -52,6 +53,7 @@ export function getCurrentLocation(){
     }
 }
 
+
 //USER INPUT
 export function getInputData(payload){
     return {
@@ -68,7 +70,7 @@ searchLocation = async (text) => {
 export function getAddressPrediction(){
     return(dispatch,store)=>{
         let userInput = store().home.resultTypes.pickUp ? store().home.inputData.pickUp : store().home.inputData.dropOff;
-        
+      
         axios
       .request({
         method: 'post',
@@ -77,7 +79,7 @@ export function getAddressPrediction(){
       .then((results)=>
 			dispatch({
 				type:GET_ADDRESS_PREDICTIONS,
-				payload:results.data.predictions
+                payload:results.data.predictions,
 			})
 		)
       .catch((e) => {
@@ -89,7 +91,14 @@ export function getAddressPrediction(){
 
 //Selected Address
 export function getSelectedAdress(payload){
+    
     return(dispatch,store)=>{
+        var selectedItem;
+        if(store().home.resultTypes.pickUp){
+            selectedItem="pickUp";
+        }else{
+            selectedItem="dropOff";
+        }
         axios
         .request({
           method: 'post',
@@ -98,8 +107,11 @@ export function getSelectedAdress(payload){
         .then((results)=>
               dispatch({
                   type:GET_SELECTED_ADDRESS,
-                  payload:results.data.result.geometry.location
-              })
+                  payload:results.data.result.geometry.location,
+                  selectedTitle:selectedItem,
+                  selectedPlaceId:payload
+              }),
+              
           )
           .then(()=>{
               if(store().home.selectedAddress.selectedPickUp && store().home.selectedAddress.selectedDropOff){
@@ -117,6 +129,16 @@ export function getSelectedAdress(payload){
                         });
                     })
               }
+          }).then(()=>{
+            
+                dispatch({
+                    type:SET_START_END,
+                    payload :{
+                        title:[baslik],
+                        value:point
+                    }
+                });
+            
           })
         .catch((e) => {
           console.log(e.response);
@@ -222,8 +244,9 @@ function handleGetAddressPredictions(state,action){
         }
     });
 }
-
+/////////////////////////////////////////////////////////////
 function handleGetSelectedAddress(state,action){
+   
     let selectedTitle = state.resultTypes.pickUp ? "selectedPickUp" : "selectedDropOff"
 	return update(state, {
 		selectedAddress:{
@@ -232,7 +255,11 @@ function handleGetSelectedAddress(state,action){
                 
             },
             
-		},
+        },
+        startEndPoint:{
+            [action.selectedTitle]:{$set:action.selectedPlaceId}
+            
+        },
 		resultTypes:{
 			pickUp:{
 				$set:false
@@ -243,8 +270,7 @@ function handleGetSelectedAddress(state,action){
 		}
 	})
 }
-export function saveTrack(payload,date){
-    
+export function saveTrack(payload,date,settings){
     var dropOffLat = payload.selectedDropOff.lat;
     var pickUppLat = payload.selectedPickUp.lat;
 
@@ -274,7 +300,11 @@ return ({
         middleX:midX,
         middleY:midY,
         deltaLatitude:deltaLat+0.5,
-        deltaLongitude:deltaLng+0.1
+        deltaLongitude:deltaLng+0.1,
+        isSelectedFemale : (settings.isSelectedFemale ? settings.isSelectedFemale: true),
+        isSelectedMale : (settings.isSelectedMale ? settings.isSelectedMale:true),
+        isSelectedPerson : (settings.isSelectedPerson ? settings.isSelectedPerson:true),
+        isSelectedPeople : (settings.isSelectedPeople ? settings.isSelectedPeople:true),
     }
     }
 );
@@ -288,17 +318,22 @@ function guidGenerator() {
 
 function handeleSaveTrack(state,action){
     var user = firebase.auth().currentUser;
-    console.error(JSON.stringify(user.uid))
     var travelID = guidGenerator()
-    
     firebase.database().ref('Travels/'+ travelID ).set({
+    Id:travelID,
     pickUppLatidute:action.payload.pickUppLatidute,
     pickUppLongitude:action.payload.pickUppLongitude,
     dropOffLatidute:action.payload.dropOffLatidute,
     dropOffLongitude:action.payload.dropOffLongitude,
+    female: action.payload.isSelectedFemale,
+    male: action.payload.isSelectedMale,
+    person: action.payload.isSelectedPerson,
+    people: action.payload.isSelectedPeople,
     statu:"c",
     date:action.payload.date.toString(),
-    creater:user.uid
+    creater:user.uid,
+    startPointId:state.startEndPoint.pickUp,
+    endPointId:state.startEndPoint.dropOff
     });
     return update(state,{
         region:{
@@ -374,6 +409,32 @@ function handleSetSettings(state,action){
     })
 }
 
+function startEnd(title,point){
+    
+    var baslik = title;
+    if(title=="pickUp"){
+        baslik="pickUp";
+    }
+    return ({
+        type:SET_START_END,
+        payload :{
+            title:[baslik],
+            value:point
+        }
+    });
+}
+
+function handleStartEndPoint(state,action){
+    var title = action.payload.baslik;
+    return update(state,{
+        startEndPoint:{
+            [title]:{
+                $set:action.payload.value
+             } 
+        }
+    })
+}
+
 
 export function getSettings(payload){
     
@@ -403,6 +464,9 @@ function handleGetDate(state,action){
 
 }
 
+
+
+
 const ACTION_HANDLER = {
     GET_CURRENT_LOCATION:handleGetCurrentLocation,
     GET_INPUT:handleGetInputData,
@@ -415,6 +479,7 @@ const ACTION_HANDLER = {
     GET_SETTINGS:handleGetSettings,
     SET_SETTINGS:handleSetSettings,
     GET_DATE:handleGetDate,
+    SET_START_END:handleStartEndPoint,
 
 }
 const initialState = {
@@ -422,8 +487,10 @@ const initialState = {
     inputData:{},
     resultTypes:{},
     selectedAddress:{},
+    startEndAddress:{},
     settings:{},
     Date:{},
+    startEndPoint:{}
 };
 
 export function HomeReducer(state = initialState,action){

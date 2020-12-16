@@ -11,6 +11,7 @@ import {
     getSettings,
     setSettings,
     getDate,
+    startEnd,
 } from "../modules/home";
 
 const mapStateToProps = (state) => ({
@@ -21,6 +22,7 @@ const mapStateToProps = (state) => ({
     selectedAddress : state.home.selectedAddress || [],
     settings : state.home.settings || {},
     Date : state.home.Date || {},
+    startEndPoint : state.home.startEndPoint || {},
     
 });
 const mapActionCreators ={getCurrentLocation,
@@ -32,7 +34,8 @@ const mapActionCreators ={getCurrentLocation,
      openSettings,
      getSettings,
      setSettings,
-     getDate
+     getDate,
+     startEnd
     };
 
 export default connect(mapStateToProps, mapActionCreators)(Home);
