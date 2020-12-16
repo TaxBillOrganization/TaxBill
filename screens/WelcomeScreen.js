@@ -33,8 +33,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   logo: {
-    width: 215,
-    height: 190
+    width: 200,
+    height: 200
   },
   subtitle: {
     fontSize: 24,

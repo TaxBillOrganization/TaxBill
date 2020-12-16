@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { StyleSheet,ScrollView,Image,View,Text,TouchableOpacity} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet,ScrollView,Image,View,Text} from 'react-native';
 import * as Yup from 'yup';
 import { RadioButton } from 'react-native-paper';
-import { Ionicons } from '@expo/vector-icons';
 import Colors from '../utils/colors';
 import SafeView from '../components/SafeView';
 import Form from '../components/Forms/Form';
@@ -12,7 +11,6 @@ import IconButton from '../components/IconButton';
 import FormErrorMessage from '../components/Forms/FormErrorMessage';
 import { registerWithEmail, pushProfil } from '../components/Firebase/firebase';
 import useStatusBar from '../hooks/useStatusBar';
-import {getEmail} from '../screens/ProfileScreen'
 
 const validationSchema = Yup.object().shape({
   tc: Yup.string()
@@ -93,16 +91,14 @@ export default function RegisterScreen({ navigation }) {
     email: '',
     gender :'',
     password: '',
-    confirmPassword: '',
-    avatar:null   
+    confirmPassword: '' 
   };
 
   return (
     <ScrollView style={styles.container}>
-      <TouchableOpacity style={styles.avatarPlaceHolder}>
-        <Image source={{uri:initialValues.avatar}} style={styles.avatar}/>
-        <Ionicons name="ios-add" size={40} color="black" />
-      </TouchableOpacity>
+      <View style={styles.logoFrame}>
+      <Image source={require("../assets/logo.png")} style={styles.logo}/>
+      </View>
     <SafeView >
       <Form
         initialValues={{
@@ -114,8 +110,7 @@ export default function RegisterScreen({ navigation }) {
           email: '',
           gender :'',
           password: '',
-          confirmPassword: '',
-          avatar:null   
+          confirmPassword: '' 
         }}
         validationSchema={validationSchema}
         onSubmit={values=>handleOnSignUp(values)}
@@ -220,8 +215,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundColor
   },
   logo: {
-    width: 215,
-    height: 190
+    width: 180,
+    height: 180,
   },
   logoFrame: {
     paddingTop: 45,
@@ -232,19 +227,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 10
   },
-  avatarPlaceHolder:{
-    width:100,
-    height:100,
-    backgroundColor:"#E1E2E6",
-    borderRadius:50,
-    marginTop:48,
-    justifyContent:"center",
-    alignItems:"center"
-  },
-  avatar:{
-    position:"absolute",
-    width:100,
-    height:100,
-    borderRadius:50
-  }
 });

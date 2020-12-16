@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native";
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -119,5 +118,11 @@ const styles = StyleSheet.create({
         marginTop: 3,
         marginRight: 20
     },
+    buttonContainer: {
+        padding: 20,
+        paddingBottom: 60,
+        color: "black",
+        width: '30%'
+      },
   });
   export default styles;

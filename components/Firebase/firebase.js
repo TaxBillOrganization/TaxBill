@@ -21,7 +21,7 @@ export const logout = () => auth.signOut();
 
 export const passwordReset = email => auth.sendPasswordResetEmail(email);
 
-export const pushProfil = (tc, uid, name, surname, age, email, gender,) => 
+export const pushProfil = (tc, uid, name, surname, age, email, gender) => 
 firebase.database().ref('Users/'+ uid +('/ProfileInformation')).set({
   name:name,
   uid:uid,
@@ -29,5 +29,6 @@ firebase.database().ref('Users/'+ uid +('/ProfileInformation')).set({
   tc:tc,
   age:age,
   email:email,
-  gender:gender
+  gender:gender,
+  profilePhoto:'https://firebasestorage.googleapis.com/v0/b/taxbill-e4abb.appspot.com/o/images%2Flogo.png?alt=media&token=f7aee502-f1c1-4b78-852c-81138730b66f',
 });

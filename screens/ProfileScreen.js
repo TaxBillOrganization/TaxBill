@@ -5,11 +5,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Star from 'react-native-star-view';
 import styles from './Styles/ProfileScreenStyles';
 import firebase from 'firebase';
+import Photo from '../components/Firebase/storagePhoto'
 const ProfilStack = createStackNavigator();
 
-const user ={email:'',Username:'',Usersurname:'',Userage:'', Usergender:''};
+const user ={email:'',Username:'',Usersurname:'',Userage:'', Usergender:'', image:''};
 var uid='';
-
 export default function ProfilStackPage(kullanıcı) {
     const [userstate,setUser] = useState({});
 
@@ -20,7 +20,7 @@ export default function ProfilStackPage(kullanıcı) {
               <View style={styles.titleBar}>
                 <View style={styles.titleBar}>
                   <View style={styles.profileImage}>
-                      <Image source={require("../assets/logo.png")} style={styles.image} resizeMode="center"></Image>                        
+                      <Image source={{uri:userstate.image}} style={styles.image} resizeMode="center"></Image>                                     
                   </View>
                   <Text style={[styles.text, {marginTop:"3%" ,fontWeight: "300", fontSize: 30,flexDirection: "column"}]}>{userstate.Username+'\n'+userstate.Usersurname}</Text>
                 </View>
@@ -64,12 +64,10 @@ export default function ProfilStackPage(kullanıcı) {
               <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.titleBar}>
                   <View style={styles.titleBar}>
-                    <View style={styles.profileImage}>
-                        <Image source={require("../assets/logo.png")} style={styles.image} resizeMode="center"></Image>                        
-                    </View>
+                    <Photo style={styles.profileImage}></Photo>
                     <Text style={[styles.text, {marginTop:"3%" ,fontWeight: "300", fontSize: 30 }]}>{userstate.Username+'\n'+userstate.Usersurname}</Text>
                   </View>
-                    <IconButton style = {{marginTop:"3%"}}iconName="keyboard-backspace" color="black" size={30} onPress={() => navigation.goBack()}/>                          
+                    <IconButton style = {{marginTop:"3%"}}iconName="keyboard-backspace" color="black" size={30} onPress={() => navigation.navigate('P')}/>                          
                 </View>
                        <View style={styles.infoContainer}>
                           <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18  }]}>{('Age:' )+userstate.Userage }</Text>
@@ -89,17 +87,17 @@ export default function ProfilStackPage(kullanıcı) {
           </SafeAreaView>
       );
       }
-   
-    uid=kullanıcı.kullanıcı.User.uid;
-    
+        uid=kullanıcı.kullanıcı.User.uid;
+        
     firebase.database().ref('Users/'+uid+'/ProfileInformation').once('value',function (snapshot) {
         user.Username = (snapshot.val() && snapshot.val().name) || 'Anonymous';
         user.Usersurname = (snapshot.val() && snapshot.val().surname) || 'Anonymous';
         user.Userage = (snapshot.val() && snapshot.val().age) || 'Anonymous';
         user.Usergender = (snapshot.val() && snapshot.val().gender) || 'Anonymous';
-        
+        user.image=(snapshot.val() && snapshot.val().profilePhoto);
         setUser(user);
     });
+
     return (    
 
     <ProfilStack.Navigator options={{headerShown: false}} screenOptions={{headerShown: false}}>
