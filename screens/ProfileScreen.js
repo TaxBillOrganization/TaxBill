@@ -1,5 +1,5 @@
 import React,{ useState } from 'react';
-import { Text, View, SafeAreaView, Image, ScrollView,Button } from "react-native";
+import { Text, View, SafeAreaView, Image, ScrollView,Button,LogBox  } from "react-native";
 import IconButton from '../components/IconButton';
 import { createStackNavigator } from '@react-navigation/stack';
 import Star from 'react-native-star-view';
@@ -7,6 +7,8 @@ import styles from './Styles/ProfileScreenStyles';
 import firebase from 'firebase';
 import Photo from '../components/Firebase/storagePhoto'
 import Change from '../components/Firebase/changeEmailPassword'
+import Comment from '../components/Firebase/comment'
+
 const ProfilStack = createStackNavigator();
 
 const user ={email:'',Username:'',Usersurname:'',Userage:'', Usergender:'', image:''};
@@ -37,23 +39,12 @@ export default function ProfilStackPage(kullanıcı) {
                       <Text style={[styles.text, styles.subText]}>Travel</Text>
                   </View>
                   <View style={styles.statsBox}>
-                      <Star  style={styles.starStyle} score={3.8} />
+                      <Star  style={styles.starStyle} score={5} />
                       <Text style={[styles.text, styles.subText]}>Companion Score</Text>
                   </View>
               </View>
-    
-              <View style={{ marginTop: 32 }}>
-                  <ScrollView>
-                      <View style={styles.mediaImageContainer}>
-                          <Image source={require("../assets/flame.png")} style={styles.image} resizeMode="cover"></Image>
-                      </View>
-                      <View style={styles.mediaImageContainer}>
-                          <Image source={require("../assets/logo.png")} style={styles.image} resizeMode="cover"></Image>
-                      </View>
-                      <View style={styles.mediaImageContainer}>
-                          <Image source={require("../assets/splash.png")} style={styles.image} resizeMode="cover"></Image>
-                      </View>
-                  </ScrollView>
+              <View style={{ marginTop: "1.5%" }}>
+                  <Comment/>
               </View>
           </ScrollView>
       </SafeAreaView>);
@@ -109,3 +100,8 @@ export default function ProfilStackPage(kullanıcı) {
     </ProfilStack.Navigator>
     );
   }
+
+  LogBox.ignoreLogs([
+    'VirtualizedLists should never be nested ',
+    'Warning: Can\'t perform a React state update on an unmounted component. '
+])

@@ -17,36 +17,45 @@ export default class Change extends React.Component {
     };
   }
 
-  // Occurs when signout is pressed...
   onSignoutPress = () => {
     firebase.auth().signOut();
   }
 
-  // Reauthenticates the current user and returns a promise...
   reauthenticate = (currentPassword) => {
     var user = firebase.auth().currentUser;
     var cred = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
     return user.reauthenticateWithCredential(cred);
   }
 
-  // Changes user's password...
   onChangePasswordPress = () => {
-    this.reauthenticate(this.state.currentPassword).then(() => {
-      var user = firebase.auth().currentUser;
-      user.updatePassword(this.state.newPassword).then(() => {
-        Alert.alert("Password was changed");
-      }).catch((error) => { console.log(error.message); });
-    }).catch((error) => { console.log(error.message) });
+    if(this.state.currentPassword==""){
+      console.error("You must enter your current password");
+    }
+      else {
+      this.reauthenticate(this.state.currentPassword).then(() => {
+        var user = firebase.auth().currentUser;
+        user.updatePassword(this.state.newPassword).then(() => {
+          Alert.alert("Password was changed");
+        }).catch((error) => { console.log(error.message); });
+      }).catch((error) => { console.log(error.message) });
+    }
   }
 
-  // Changes user's email...
   onChangeEmailPress = () => {
-    this.reauthenticate(this.state.currentPassword).then(() => {
-      var user = firebase.auth().currentUser;
-      user.updateEmail(this.state.newEmail).then(() => {
-        Alert.alert("Email was changed");
-      }).catch((error) => { console.log(error.message); });
-    }).catch((error) => { console.log(error.message) });
+    if(this.state.currentPassword==""){
+      console.error("You must enter your current password");
+    }
+    else {
+      this.reauthenticate(this.state.currentPassword).then(() => {
+        var user = firebase.auth().currentUser;
+        user.updateEmail(this.state.newEmail).then(() => {
+          Alert.alert("Email was changed");
+          firebase.database().ref('Users/'+ user.uid +('/ProfileInformation')).update({
+          email:this.state.newEmail,
+          });
+        }).catch((error) => { console.log(error.message); });
+      }).catch((error) => { console.log(error.message) });
+    }
   }
   
   render() {
@@ -65,10 +74,6 @@ export default class Change extends React.Component {
 
         <AppButton title="Change Password" onPress={this.onChangePasswordPress} />
 
-        <TextInput style={styles.textInput} value={this.state.currentPassword}
-          placeholder="Current Password" autoCapitalize="none" secureTextEntry={true}
-          onChangeText={(text) => { this.setState({currentPassword: text}) }}
-        />
 
         <TextInput style={styles.textInput} value={this.state.newEmail}
           placeholder="New Email" autoCapitalize="none" keyboardType="email-address"

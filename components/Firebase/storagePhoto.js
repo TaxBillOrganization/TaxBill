@@ -12,13 +12,14 @@ export default class Photo extends React.Component {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       quality: 1,
+      aspect: [4, 4],
     });
     var user = firebase.auth().currentUser;
     if (!result.cancelled) {
         image=result.uri
         this.uploadImage(result.uri, user.uid)
         .then(() => {
-          Alert.alert("Success");
+          Alert.alert("Porifle picture has been changed");
           this.getLink(user.uid)
         })
         .catch((error) => {
@@ -36,6 +37,9 @@ export default class Photo extends React.Component {
   
   getLink = async (uid) => {
     const url = await firebase.storage().ref().child("images/" + uid).getDownloadURL().catch((error) => { throw error });
+    firebase.database().ref('Users/'+ uid +('/ProfileInformation')).update({
+    profilePhoto:url,
+    });
     firebase.database().ref('Users/'+ uid +('/ProfileInformation')).update({
     profilePhoto:url,
     });

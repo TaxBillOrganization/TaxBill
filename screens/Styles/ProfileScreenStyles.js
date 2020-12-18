@@ -9,8 +9,12 @@ const styles = StyleSheet.create({
     },
     image: {
         flex: 1,
-        height: undefined,
-        width: undefined
+        width: null,
+        alignSelf: "stretch",
+        borderRadius:50,
+        borderColor:"#f5f5f5",
+        borderWidth:1,
+
     },
     titleBar: {
         flexDirection: "row",
@@ -27,8 +31,10 @@ const styles = StyleSheet.create({
     profileImage: {
         width: 150,
         height: 150,
-        borderRadius: 70,
-        overflow: "hidden"
+        borderRadius: 80,
+        overflow: "hidden",
+        borderColor:"#f5f5f5",
+        borderWidth :4
     },
     dm: {
         backgroundColor: "#41444B",
