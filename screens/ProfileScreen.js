@@ -1,5 +1,5 @@
 import React,{ useState } from 'react';
-import { Text, View, SafeAreaView, Image, ScrollView,Button,LogBox  } from "react-native";
+import { Text, View, SafeAreaView, Image, ScrollView,LogBox,TouchableOpacity} from "react-native";
 import IconButton from '../components/IconButton';
 import { createStackNavigator } from '@react-navigation/stack';
 import Star from 'react-native-star-view';
@@ -8,14 +8,13 @@ import firebase from 'firebase';
 import Photo from '../components/Firebase/storagePhoto'
 import Change from '../components/Firebase/changeEmailPassword'
 import Comment from '../components/Firebase/comment'
-
 const ProfilStack = createStackNavigator();
 
 const user ={email:'',Username:'',Usersurname:'',Userage:'', Usergender:'', image:''};
 var uid='';
 export default function ProfilStackPage(kullanıcı) {
     const [userstate,setUser] = useState({});
-
+    
     function ProfilPage({navigation}) {
         return (
           <SafeAreaView style={styles.container}>
@@ -44,7 +43,10 @@ export default function ProfilStackPage(kullanıcı) {
                   </View>
               </View>
               <View style={{ marginTop: "1.5%" }}>
-                  <Comment/>
+              <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+                <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18,alignSelf:"center",marginBottom:"1%" }]}>COMMENTS</Text>
+              </TouchableOpacity>         
+              <Comment/>     
               </View>
           </ScrollView>
       </SafeAreaView>);
@@ -84,7 +86,7 @@ export default function ProfilStackPage(kullanıcı) {
       }
 
     uid=kullanıcı.kullanıcı.User.uid;        
-    firebase.database().ref('Users/'+uid+'/ProfileInformation').once('value',function (snapshot) {
+    firebase.database().ref('Users/'+uid+'/ProfileInformation').once('value', function (snapshot) {
         user.Username = (snapshot.val() && snapshot.val().name) || 'Anonymous';
         user.Usersurname = (snapshot.val() && snapshot.val().surname) || 'Anonymous';
         user.Userage = (snapshot.val() && snapshot.val().age) || 'Anonymous';
@@ -92,7 +94,6 @@ export default function ProfilStackPage(kullanıcı) {
         user.image=(snapshot.val() && snapshot.val().profilePhoto);
         setUser(user);
     });
-
     return (    
     <ProfilStack.Navigator options={{headerShown: false}} screenOptions={{headerShown: false}}>
         <ProfilStack.Screen name="Profile" component={ProfilPage} />

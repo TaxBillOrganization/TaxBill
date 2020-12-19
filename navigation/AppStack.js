@@ -18,7 +18,7 @@ export default function AppStack(User) {
     return (<Search/>);
   }
   function ChatPage() {
-    return (<Chat/>);
+    return (<Chat kullanıcı={User}/>);
   }
   function TravelPage() {
     return (<Travel/>);

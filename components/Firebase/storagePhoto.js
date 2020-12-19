@@ -20,7 +20,7 @@ export default class Photo extends React.Component {
         this.uploadImage(result.uri, user.uid)
         .then(() => {
           Alert.alert("Porifle picture has been changed");
-          this.getLink(user.uid)
+          this.getLink(user)
         })
         .catch((error) => {
           Alert.alert(error);
@@ -36,13 +36,14 @@ export default class Photo extends React.Component {
   }
   
   getLink = async (uid) => {
-    const url = await firebase.storage().ref().child("images/" + uid).getDownloadURL().catch((error) => { throw error });
-    firebase.database().ref('Users/'+ uid +('/ProfileInformation')).update({
+    const url = await firebase.storage().ref().child("images/" + uid.uid).getDownloadURL().catch((error) => { throw error });
+    firebase.database().ref('Users/'+ uid.uid +('/ProfileInformation')).update({
     profilePhoto:url,
     });
-    firebase.database().ref('Users/'+ uid +('/ProfileInformation')).update({
+    firebase.database().ref('Users/'+ uid.uid +('/ProfileInformation')).update({
     profilePhoto:url,
     });
+    uid.Object.photoURL=url
   }
 
   render() {

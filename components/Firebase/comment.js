@@ -12,18 +12,24 @@ export default class Comment extends Component{
    
    componentDidMount(){
          var user = firebase.auth().currentUser;
-         firebase.database().ref('Users/'+ user.uid + ('/Comments')).on('value', (snapshot) =>{
+         firebase.database().ref('Users/'+ user.uid + ('/Comments')).once('value', (data) =>{
             var li = []
-            snapshot.forEach((child)=>{
-            li.push({
-            key: child.val().key,
-            text:child.val().text,
-            name:child.val().name,
-            surname:child.val().surname,
-            photo:child.val().photo,
+            data.forEach((child)=>{          
+               var user = {Username:'',Usersurname:'', image:''}              
+               firebase.database().ref('Users/'+ child.val().key +'/ProfileInformation').on('value',function (information) {
+                  user.Username = information.val().name
+                  user.Usersurname = information.val().surname
+                  user.image= information.val().profilePhoto
+                  li.push({
+                     key: child.val().key,
+                     text:child.val().text,
+                     name:user.Username,
+                     surname:user.Usersurname,
+                     photo:user.image
+                  })   
+               });
             })
-         })
-         this.setState({list:li})
+         this.setState({list:li})   
       })
    }
    
@@ -37,10 +43,10 @@ export default class Comment extends Component{
                return(
                   <View style={styles.titleBar}>
                      <View style={styles.profileImage}>
-                        <Image source={{uri:item.photo}} style={styles.image} resizeMode="center"></Image>                                     
+                     <Image source={{uri:item.photo}} style={styles.image} resizeMode="center"></Image>                                     
                      </View>
                      <View style={styles.textBar}>
-                        <Text style={styles.subTextName}>{item.name} {item.surname}</Text>
+                     <Text style={styles.subTextName}>{item.name} {item.surname}</Text>
                         <Text style={styles.subText}>{item.text}</Text> 
                      </View>
                   </View>)

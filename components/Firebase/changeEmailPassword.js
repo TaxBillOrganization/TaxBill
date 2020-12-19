@@ -18,6 +18,9 @@ export default class Change extends React.Component {
   }
 
   onSignoutPress = () => {
+    var user = firebase.auth().currentUser;
+    firebase.database().ref('Users/'+ user.uid + ('/Comments')).off()
+    firebase.database().ref('Users/'+ user.uid + ('/ProfileInformation')).off()
     firebase.auth().signOut();
   }
 
