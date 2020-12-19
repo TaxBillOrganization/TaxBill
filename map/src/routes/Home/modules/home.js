@@ -333,7 +333,8 @@ function handeleSaveTrack(state,action){
     date:action.payload.date.toString(),
     creater:user.uid,
     startPointId:state.startEndPoint.pickUp,
-    endPointId:state.startEndPoint.dropOff
+    endPointId:state.startEndPoint.dropOff,
+    passenger:0
     });
     return update(state,{
         region:{
