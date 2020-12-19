@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import {View,StyleSheet,Text,FlatList,TouchableOpacity,ActivityIndicator,Button} from 'react-native'
 import * as firebase from 'firebase';
-import Separator from '../components/Firebase/Separator'
+import Separator from '../../components/Firebase/Separator'
 
 export default function ChatRoom({navigation}) {
    const [threads, setThreads] = useState([])
