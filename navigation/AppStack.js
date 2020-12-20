@@ -3,7 +3,7 @@ import { Ionicons} from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/HomeScreen';
 import Search from '../screens/SearchScreen';
-import Chat from '../screens/ChatScreen';
+import Chat from '../screens/ChatScreens/ChatScreen';
 import Travel from '../screens/TravelScreen';
 import Colors from '../utils/colors';
 import Profil from '../screens/ProfileScreen'
@@ -18,7 +18,7 @@ export default function AppStack(User) {
     return (<Search/>);
   }
   function ChatPage() {
-    return (<Chat kullanıcı={User}/>);
+    return (<Chat/>);
   }
   function TravelPage() {
     return (<Travel/>);

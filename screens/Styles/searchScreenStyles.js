@@ -104,7 +104,24 @@ const styles = {
         flexDirection:"row",
        marginLeft:(windowWidth/11),
         marginTop:(windowHeight/45),
-      }
+      },
+      image: {
+        flex: 1,
+        width: null,
+        alignSelf: "stretch",
+
+    },
+    profileImage: {
+        width: 140,
+        height: 140,
+        overflow: "hidden",
+        marginTop:"2.7%"
+    },
+    text: { 
+        color: "black", 
+        fontWeight: "bold", 
+        fontSize: 20, 
+    },
 };
 
 export default styles;

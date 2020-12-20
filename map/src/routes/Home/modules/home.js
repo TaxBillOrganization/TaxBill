@@ -336,6 +336,11 @@ function handeleSaveTrack(state,action){
     endPointId:state.startEndPoint.dropOff,
     passenger:0
     });
+    firebase.database().ref('Users/'+user.uid+"/Travels/"+travelID ).set({
+        Id:travelID,
+        role:"c",
+        statu:"c"
+    });
     return update(state,{
         region:{
             latitude:{

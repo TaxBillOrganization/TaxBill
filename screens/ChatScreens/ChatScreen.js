@@ -7,11 +7,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 const chatStack = createStackNavigator()
 export default function ProfilStackPage(kullanıcı) {
-return (    
-  <chatStack.Navigator options={{headerShown: true}} screenOptions={{headerShown: true}}>
-      <chatStack.Screen name="ChatRoom" component={ChatRoom} />
+return (
+  <chatStack.Navigator options={{headerShown: false}} screenOptions={{headerShown: false}}>
+      <chatStack.Screen name="ChatRoom" component={ChatRoom}/>
       <chatStack.Screen name="CreateChatRoom" component={CreateChatRoom} user = {kullanıcı} />
-      <chatStack.Screen name='Messages' component={Messages} 
+      <chatStack.Screen name='Messages' component={Messages}
       options={({ route }) => ({
       title: route.params.thread.name
       })} 

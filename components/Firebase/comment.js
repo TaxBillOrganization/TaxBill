@@ -1,20 +1,21 @@
 import * as firebase from 'firebase';
 import React, {Component} from 'react';
-import {View,Text, FlatList, StyleSheet, Image} from 'react-native';
-
+import {View,Text, FlatList, StyleSheet, TextInput,Image} from 'react-native';
+import AppButton from '../../components/commentButton';
 
 export default class Comment extends Component{
    constructor(props){
    super(props);
    this.state={ 
    list:[],
+   answer:"",
    } }
    
    componentDidMount(){
          var user = firebase.auth().currentUser;
          firebase.database().ref('Users/'+ user.uid + ('/Comments')).once('value', (data) =>{
             var li = []
-            data.forEach((child)=>{          
+            data.forEach((child)=>{    
                var user = {Username:'',Usersurname:'', image:''}              
                firebase.database().ref('Users/'+ child.val().key +'/ProfileInformation').on('value',function (information) {
                   user.Username = information.val().name
@@ -23,6 +24,7 @@ export default class Comment extends Component{
                   li.push({
                      key: child.val().key,
                      text:child.val().text,
+                     answer:child.val().answer,
                      name:user.Username,
                      surname:user.Usersurname,
                      photo:user.image
@@ -32,6 +34,19 @@ export default class Comment extends Component{
          this.setState({list:li})   
       })
    }
+
+   onAnswerPress = (commentId) => {
+      if(this.state.answer==""){
+         console.error("You must enter your answer");
+       }
+       else{
+         var user = firebase.auth().currentUser;
+         firebase.database().ref('Users/'+ user.uid +('/Comments/')+ commentId).update({
+         answer:this.state.answer,
+         });
+       }
+    }
+    
    
    render(){
    return(
@@ -43,11 +58,25 @@ export default class Comment extends Component{
                return(
                   <View style={styles.titleBar}>
                      <View style={styles.profileImage}>
-                     <Image source={{uri:item.photo}} style={styles.image} resizeMode="center"></Image>                                     
+                        <Image source={{uri:item.photo}} style={styles.image} resizeMode="center"></Image>                                     
                      </View>
                      <View style={styles.textBar}>
-                     <Text style={styles.subTextName}>{item.name} {item.surname}</Text>
-                        <Text style={styles.subText}>{item.text}</Text> 
+                        <Text style={styles.subTextName}>{item.name} {item.surname}</Text>
+                        <Text style={styles.subText}>{item.text}</Text>
+                        {(!item.answer || item.answer == "")&&
+                           <View>
+                              <TextInput style={styles.textInput} 
+                              placeholder="Your Answer" autoCapitalize="words"
+                              onChangeText={(text) => { this.setState({answer: text})}}
+                              />
+                              <AppButton title="Answer" onPress={() => this.onAnswerPress(item.key)}/>
+                           </View>
+                        }  
+                        {(item.answer)&&
+                           <View>
+                              <Text style={styles.subText1}>{item.answer}</Text> 
+                           </View>
+                        }  
                      </View>
                   </View>)
                }}/>
@@ -61,7 +90,8 @@ const styles = StyleSheet.create({
         alignSelf:'auto', 
         justifyContent:'center',
         paddingLeft:"2%",
-        paddingRight:"2%"
+        paddingRight:"2%",
+        marginHorizontal:"2%"
     },
     image: {
       flex: 1,
@@ -87,6 +117,11 @@ const styles = StyleSheet.create({
         color: "black",
         fontWeight: "500"
     },
+    subText1: {
+      fontSize: 16,
+      color: "red",
+      fontWeight: "500"
+  },
     subTextName: {
         fontSize: 18,
         color: "black",
@@ -104,4 +139,15 @@ const styles = StyleSheet.create({
         borderColor:"#f5f5f5",
         borderWidth :2
     },
+   textInput: {
+      textAlign: "center",
+      borderWidth:1, 
+      borderColor:"gray", 
+      borderRadius: 30,
+      marginVertical: 5, 
+      padding:10, 
+      height:40, 
+      alignSelf: "stretch", 
+      fontSize: 18, 
+  },
 });

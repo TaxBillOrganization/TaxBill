@@ -2,11 +2,11 @@ import React,{ useState } from 'react';
 import { Text, View, Button,TouchableOpacity,TextInput,StyleSheet } from 'react-native';
 import * as firebase from 'firebase';
 var User ={Username:'',Usersurname:''};
-export default function CreateChatRoom({navigation}) {
+export default function CreateChatRoom({navigation,route}) {
   // ... rest remains same
   const [roomName, onChangeText] = React.useState();
   const [userstate,setUser] = useState({});
-
+ 
   const user = firebase.auth().currentUser.toJSON();
             firebase.database().ref('Users/'+ user.uid +'/ProfileInformation').once('value',function (snapshot) {
                 User.Username = (snapshot.val() && snapshot.val().name);

@@ -19,8 +19,8 @@ const styles = StyleSheet.create({
     titleBar: {
         flexDirection: "row",
         justifyContent: "space-between",
-        marginTop: "3%",
-        marginHorizontal:"2%"
+        marginHorizontal:"1%",
+        marginTop:"1%"
     },
     subText: {
         fontSize: 12,

@@ -8,8 +8,9 @@ import firebase from 'firebase';
 import Photo from '../components/Firebase/storagePhoto'
 import Change from '../components/Firebase/changeEmailPassword'
 import Comment from '../components/Firebase/comment'
+import HeaderComponent from "../components/Header";
 const ProfilStack = createStackNavigator();
-
+const logo = require('../assets/logo.png');
 const user ={email:'',Username:'',Usersurname:'',Userage:'', Usergender:'', image:''};
 var uid='';
 export default function ProfilStackPage(kullanıcı) {
@@ -18,6 +19,7 @@ export default function ProfilStackPage(kullanıcı) {
     function ProfilPage({navigation}) {
         return (
           <SafeAreaView style={styles.container}>
+          <HeaderComponent logo={logo}/>
           <ScrollView showsVerticalScrollIndicator={false}>
               <View style={styles.titleBar}>
                 <View style={styles.titleBar}>
@@ -34,7 +36,7 @@ export default function ProfilStackPage(kullanıcı) {
                   </View>
               <View style={styles.statsContainer}>
                   <View style={styles.statsBox}>
-                      <Text style={[styles.text, { fontSize: 24 }]}>483</Text>
+                      <Text style={[styles.text, { fontSize: 24 }]}>2</Text>
                       <Text style={[styles.text, styles.subText]}>Travel</Text>
                   </View>
                   <View style={styles.statsBox}>
@@ -55,6 +57,7 @@ export default function ProfilStackPage(kullanıcı) {
       function ProfilSettingsPage({navigation}) {
         return (
           <SafeAreaView style={styles.container}>
+            <HeaderComponent logo={logo}/>
               <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.titleBar}>
                   <View style={styles.titleBar}>
@@ -69,11 +72,11 @@ export default function ProfilStackPage(kullanıcı) {
                       </View>
                   <View style={styles.statsContainer}>
                       <View style={styles.statsBox}>
-                          <Text style={[styles.text, { fontSize: 24 }]}>483</Text>
+                          <Text style={[styles.text, { fontSize: 24 }]}>2</Text>
                           <Text style={[styles.text, styles.subText]}>Travel</Text>
                       </View>
                       <View style={styles.statsBox}>
-                          <Star  style={styles.starStyle} score={3.8} />
+                          <Star  style={styles.starStyle} score={5} />
                           <Text style={[styles.text, styles.subText]}>Companion Score</Text>
                       </View>
                   </View>

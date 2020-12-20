@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import Colors from '../utils/colors';
 
-export default function changeButton({ title, onPress,color = 'changeButtonColor' }) {
+export default function commentButton({ title, onPress,color = 'tabBar' }) {
   return (
     <TouchableOpacity
       style={[styles.button, { backgroundColor: Colors[color] }]}
@@ -17,12 +17,11 @@ export default function changeButton({ title, onPress,color = 'changeButtonColor
 const styles = StyleSheet.create({
   button: {
     marginVertical: 5,
-    borderRadius: 30,
+    borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    alignSelf: "center", 
+    alignSelf: "flex-end", 
     padding: 12,
-    width: '100%'
   },
   buttonText: {
     color: Colors.textColor2,

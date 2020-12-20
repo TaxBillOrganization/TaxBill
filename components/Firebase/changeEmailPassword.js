@@ -94,7 +94,6 @@ const styles = StyleSheet.create({
     text: { 
         color: "white", 
         fontWeight: "bold", 
-        textAlign: "center", 
         fontSize: 20, 
     },
     textInput: {
@@ -106,5 +105,6 @@ const styles = StyleSheet.create({
         height:40, 
         alignSelf: "stretch", 
         fontSize: 18, 
+        textAlign: "center", 
     },
 });

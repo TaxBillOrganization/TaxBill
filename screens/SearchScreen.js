@@ -1,13 +1,14 @@
 import  React,{useState} from 'react';
-import { Text, View, SafeAreaView, Image, ScrollView,Button,RefreshControl,TouchableOpacity } from "react-native";
+import { Text, View, SafeAreaView, Image, ScrollView,Button,RefreshControl,TouchableOpacity,StyleSheet } from "react-native";
 import IconButton from '../components/IconButton';
 import Icon from "react-native-vector-icons/FontAwesome";
 import Fontisto from "react-native-vector-icons/Fontisto";
+import AppButton from "../components/commentButton"
 import { createStackNavigator } from '@react-navigation/stack';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Star from 'react-native-star-view';
 import axios from 'axios';
-import {InputGroup,Input,List,ListItem, Left, Body} from "native-base";
+import {InputGroup,Input,List,ListItem, Left, Body, Right} from "native-base";
 import styles from "./Styles/searchScreenStyles";
 import Profilstyles from "./Styles/ProfileScreenStyles";
 import firebase from 'firebase';
@@ -15,7 +16,13 @@ const GOOGLE_MAPS_APIKEY = 'AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI';
 import MapView from "react-native-maps";
 import MapViewDirections from 'react-native-maps-directions';
 import mapStyle from "./Styles/mapStyle";
+import ChatPage from "./ChatScreens/ChatRoom";
 const ProfilStack = createStackNavigator();
+import ChatRoom from './ChatScreens/ChatRoom';
+import Messages from './ChatScreens/Messages';
+import CreateChatRoom from './ChatScreens/CreateChatRoom'
+import HeaderComponent from "../components/Header";
+const logo = require('../assets/logo.png');
 
 const wait = (timeout) => {
     return new Promise(resolve => {
@@ -77,7 +84,7 @@ export default function SearchStackPage() {
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={Profilstyles.titleBar}>
                   <View style={Profilstyles.titleBar}>
-                    <View style={mapStyle.profileImage}>
+                    <View style={Profilstyles.profileImage}>
                         <Image source={{uri:userstate.image}} style={Profilstyles.image} resizeMode="center"></Image>                                     
                     </View>
                     <Text style={[Profilstyles.text, {marginTop:"3%" ,fontWeight: "300", fontSize: 30,flexDirection: "column"}]}>{userstate.Username+' '+userstate.Usersurname}</Text>
@@ -90,16 +97,16 @@ export default function SearchStackPage() {
                     </View>
                 <View style={mapStyle.statsContainer}>
                     <View style={Profilstyles.statsBox}>
-                        <Text style={[Profilstyles.text, { fontSize: 24 }]}>483</Text>
+                        <Text style={[Profilstyles.text, { fontSize: 24 }]}>2</Text>
                         <Text style={[Profilstyles.text, Profilstyles.subText]}>Travel</Text>
                     </View>
                     <View style={Profilstyles.statsBox}>
-                        <Star  style={mapStyle.starStyle} score={3.8} />
+                        <Star  style={mapStyle.starStyle} score={5} />
                         <Text style={[Profilstyles.text, Profilstyles.subText]}>Companion Score</Text>
                     </View>
                 </View>
       
-                <View style={mapStyle.viewContainer}>
+                <View style={mapStyle.viewContainer2}>
                    
                     <MapView
                         provider={MapView.PROVIDER_GOOGLE}
@@ -128,21 +135,22 @@ export default function SearchStackPage() {
                     </MapView>
                     {isAvailable &&
                     <View>
-                        <TouchableOpacity style={mapStyle.buttonDelete} onPress={()=> deleteTravel()}>
+                        <TouchableOpacity style={mapStyle.buttonDelete2} onPress={()=> deleteTravel()}>
                             <Text style={{color:"#FFF",padding:"5%"}}>Delete</Text>
                         </TouchableOpacity>
                         {alert("You have already been join.If you want to delete travel, please press the delete button")}
                     </View>
                     }
                     {!isAvailable &&
-                    <TouchableOpacity style={mapStyle.buttonSave} onPress={()=> saveTravel()}>
+                    <TouchableOpacity style={mapStyle.buttonSave2} onPress={()=> saveTravel()}>
                         <Text style={{color:"#FFF",padding:"5%"}}>Join</Text>
                     </TouchableOpacity>
                     }
                     {!isAvailable &&
-                    <TouchableOpacity style={mapStyle.buttonIgnore}>
+                    <TouchableOpacity style={mapStyle.buttonIgnore2} onPress={()=>navigation.navigate("Chat",{ thread: selectedItem })}>
                         <Text style={{color:"#FFF",padding:"5%"}}>Send Message</Text>
                     </TouchableOpacity>
+                    //navigation.navigate("Chat",{ thread: item })
                     }
                     
                 </View>
@@ -161,9 +169,8 @@ export default function SearchStackPage() {
         const [pickUpSelected,setpickUpSelected] = useState({}); 
         const [dropOffSelected,setDropOffSelected] = useState({});
         const [addressResult,setaddressResult] = useState([]);
+      
         
-      
-      
         function getAddressPrediction(userInput){
               axios
             .request({
@@ -181,7 +188,7 @@ export default function SearchStackPage() {
       
         var travels={creater:'',date:'',dropOffLatitude:'',dropOffLongitude:'',female:'',male:'',
         people:'',person:'',pickUpLatitude:'',pickUpLongitude:'',statu:'',Id:'',startPlace:'',endPlace:'',
-        };
+        createrName:'',createrSurname:'',createrPhoto:''};
       
         
       function getAddress(placeId){
@@ -305,6 +312,12 @@ export default function SearchStackPage() {
                                       travels.pickUpLongitude = (snapshot.val() && snapshot.val().pickUppLongitude) || 'Anonymous';
                                       travels.statu = (snapshot.val() && snapshot.val().statu) || 'Anonymous';
                                       travels.Id = (snapshot.val() && snapshot.val().Id) || 'Anonymous';
+
+                                      firebase.database().ref('Users/'+ travels.creater +'/ProfileInformation').once('value',function (get) {
+                                        travels.createrName = (get.val() && get.val().name);
+                                        travels.createrSurname = (get.val() && get.val().surname);
+                                        travels.createrPhoto = (get.val() && get.val().profilePhoto);
+                                      });
                                       {
                                         axios
                                             .request({
@@ -349,6 +362,12 @@ export default function SearchStackPage() {
                                       travels.pickUpLongitude = (snapshot.val() && snapshot.val().pickUppLongitude) || 'Anonymous';
                                       travels.statu = (snapshot.val() && snapshot.val().statu) || 'Anonymous';
                                       travels.Id = (snapshot.val() && snapshot.val().Id) || 'Anonymous';
+
+                                      firebase.database().ref('Users/'+ travels.creater +'/ProfileInformation').once('value',function (get) {
+                                        travels.createrName = (get.val() && get.val().name);
+                                        travels.createrSurname = (get.val() && get.val().surname);
+                                        travels.createrPhoto = (get.val() && get.val().profilePhoto);
+                                      });
                                       {
                                         axios
                                             .request({
@@ -486,6 +505,7 @@ export default function SearchStackPage() {
       
               return(
             <SafeAreaView >
+            <HeaderComponent logo={logo}/>
             <ScrollView
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -512,14 +532,13 @@ export default function SearchStackPage() {
                           <View >
                           <View style={styles.inputDate}>
                           <Text > </Text>
-                              <View style={{flexDirection:"row",alignSelf:"flex-end"}}>
-
-                                  <View style ={{alignItems:"center",marginRight:"5%"}}     >            
-                                  <Button title="Search" onPress={()=> listele(pickUpSelected,dropOffSelected,isSelectedMale,
+                              <View style={{flexDirection:"row",justifyContent: "space-between",}}>
+                                  <View style ={{alignItems:"center",paddingLeft:"2%"}}     >            
+                                  <AppButton title="Search" onPress={()=> listele(pickUpSelected,dropOffSelected,isSelectedMale,
                                     isSelectedFemale,isSelectedPerson,isSelectedPeople)}/>
                                   </View>
-                                  <TouchableOpacity onPress={()=>setSettingTab(!settingTab)} style={{marginRight:"5%"}}>
-                                  <Fontisto name="player-settings" size={30} color="#000" style={{paddingLeft:"5%"}}/>
+                                  <TouchableOpacity onPress={()=>setSettingTab(!settingTab)} style={{marginRight:"2%"}}>
+                                  <Fontisto name="player-settings" size={30} color="#000" style={{paddingLeft:"2%"}}/>
                                   </TouchableOpacity>
                               </View>
                           </View>
@@ -591,48 +610,50 @@ export default function SearchStackPage() {
                    />
                   }
                   {(pickUpSelected && dropOffSelected)&&
-                  <View>
+                  <SafeAreaView style={sty.container}>
                     
                   
       
                     { (resultList && addressResult.length == 0 ) && 
-                    <Text style ={{marginTop:"10%",color:"#000",fontSize:12, fontStyle: "italic",alignItems:"center"}}>
-                      Sonuçlar gözükmüyorsa sayfayı aşağı çekerek yenileyin.
+                    <Text style ={{marginTop:"7%",color:"#000",fontSize:14,fontWeight:"bold", fontStyle: "italic",alignItems:"center",alignSelf:"center"}}>
+                             Sonuçlar gözükmüyorsa sayfayı aşağı çekerek yenileyin.
                     </Text>}
-                    <View>
+                    <View style={sty.container}>
                     
                     <List
                     dataArray={addressResult}
                     keyExtractor={item => item.Id}
                     renderRow={(item)=>
-                            <View>
+                          <View style={sty.container}>
                             <ListItem onPress={()=>joinTravel(item)} button avatar >
-                            <Left  >
-                                <MaterialIcons  name="location-on"/>
-                            </Left>
-                            <Body>
+                            <Body style={{flexDirection:"column"}}>
+                              <View style={{flexDirection:"row"}}>
+                                <Text style={styles.text} >{item.createrName +(" ")+ item.createrSurname}</Text>
+                              </View>
                               <View style={{flexDirection:"row"}}>
                                 <Icon  name="home" style={{marginTop:"1%",marginRight:"1%"}}/>
                                 <Text >{item.startPlace}</Text>
                               </View>
-                              <View style={{flexDirection:"row"}}>
+                              <View style={{flexDirection:"row",marginBottom:"5%"}}>
                                 <Icon  name="send" style={{marginTop:"1%",marginRight:"1%"}}/>
                                 <Text >{item.endPlace}</Text>
                               </View>
-                              <View style={{flexDirection:"row"}}>
+                              <View style={{flexDirection:"row",marginTop:"3%",marginRight:"1%"}}>
                                 <Icon  name="clock-o" style={{marginTop:"1%",marginRight:"1%"}}/>
-                                <Text >{item.date}</Text>
+                                <Text>{item.date} </Text>
                               </View>
                             </Body>
-                            </ListItem>
-                          
+                            <Right style={styles.profileImage}>
+                            <Image source={{uri:item.createrPhoto}} style={styles.image} resizeMode="center"></Image> 
+                            </Right>
+                            </ListItem>  
                         </View>
                     }
       
                    />
-                   </View>
+                </View>
                   
-                  </View>
+            </SafeAreaView>
                   }
             </ScrollView>
             </SafeAreaView>
@@ -642,10 +663,75 @@ export default function SearchStackPage() {
 
 
 
-    return (    
+    return (    //Messages
     <ProfilStack.Navigator options={{headerShown: false}} screenOptions={{headerShown: false}}>
         <ProfilStack.Screen name="Search" component={SearchBox}/>
         <ProfilStack.Screen name="Join" component={JoinTravelPage} />
+        <ProfilStack.Screen name="Chat" component={ChatPage} options={({ route }) => ({title: route.params})}/>
+        <ProfilStack.Screen name='Messages' component={Messages}options={({ route }) => ({title: route.params.thread.name
+        })} 
+        />
     </ProfilStack.Navigator>
     );
   }
+
+  const sty = StyleSheet.create({
+    container: {
+        flex:1, 
+        alignSelf:'auto', 
+        alignItems:"stretch",
+        justifyContent:'center',
+    },
+    image: {
+      flex: 1,
+      width: null,
+      alignSelf: "auto",
+      borderRadius:20,
+      borderColor:"#f5f5f5",
+      borderWidth:1,
+  },
+    titleBar: {
+        flexDirection: "row",
+        marginBottom: "3%",
+        backgroundColor:'#f5f5f5',
+        borderRadius: 15
+    },
+    textBar: {
+        flexDirection: "column",
+        marginHorizontal:"3%",
+        width:"80%"
+    },
+    subText: {
+        fontSize: 16,
+        color: "black",
+        fontWeight: "500"
+    },
+    subTextName: {
+        fontSize: 18,
+        color: "black",
+        fontWeight: 'bold',
+        fontWeight: "700"
+    },
+    profileImage: {
+        width: 150,
+        height: 150,
+        borderRadius: 35,
+        overflow: "hidden",
+        alignItems:"stretch",
+        justifyContent:'center',
+        //alignSelf:"center"
+        borderColor:"#f5f5f5",
+        borderWidth :2
+    },
+   textInput: {
+      textAlign: "center",
+      borderWidth:1, 
+      borderColor:"gray", 
+      borderRadius: 30,
+      marginVertical: 5, 
+      padding:10, 
+      height:40, 
+      alignSelf: "stretch", 
+      fontSize: 18, 
+  },
+});
