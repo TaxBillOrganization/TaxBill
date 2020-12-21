@@ -6,11 +6,13 @@ import IconButton from '../../components/IconButton';
 import { Text,StyleSheet,Image,View } from 'react-native'
 import {Header,Body} from "native-base";
 import * as firebase from 'firebase'
+import useStatusBar from '../../hooks/useStatusBar';
 import 'firebase/firestore'
 
 var User ={Username:'',Usersurname:''};
 
 export default function Messages({ route,navigation }) {
+useStatusBar('light-content');
 const [userstate,setUser] = useState({});
 const { thread } = route.params
 const [messages, setMessages] = useState([

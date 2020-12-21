@@ -1,11 +1,13 @@
-
 import React, { useState, useEffect } from 'react'
 import {View,StyleSheet,Text,FlatList,TouchableOpacity,ActivityIndicator,Button,Image} from 'react-native'
 import * as firebase from 'firebase';
 import Separator from '../../components/Firebase/Separator'
 import HeaderComponent from "../../components/Header";
+import useStatusBar from '../../hooks/useStatusBar';
 const logo = require('../../assets/logo.png');
+
 export default function ChatRoom({navigation,route}) {
+  useStatusBar('light-content');
    const [threads, setThreads] = useState([])
    const [loading, setLoading] = useState(true)
    const [editThreads,setEdit] = useState([])

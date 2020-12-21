@@ -17,12 +17,14 @@ import MapView from "react-native-maps";
 import MapViewDirections from 'react-native-maps-directions';
 import mapStyle from "./Styles/mapStyle";
 import HeaderComponent from "../components/Header";
+import useStatusBar from '../hooks/useStatusBar';
 
 const logo = require('../assets/logo.png');
 const ProfilStack = createStackNavigator();
 
 
 export default function TravelStackPage() {
+  useStatusBar('light-content');
 
     const [currentTravel,setCurrentTravel] = useState([]);
     const [oldTravel,setOldTravel] = useState([]);
@@ -41,6 +43,7 @@ export default function TravelStackPage() {
     }
     
   function TravelPage({navigation}){
+    useStatusBar('light-content');
     const [refreshing, setRefreshing] = React.useState(false);
       
           const onRefresh = React.useCallback(() => {
@@ -331,7 +334,7 @@ export default function TravelStackPage() {
 
 
   function deleteTravelPage({navigation}){
-   
+    useStatusBar('light-content');
     
 
   function deleteTravel(){

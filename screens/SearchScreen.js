@@ -22,6 +22,7 @@ import ChatRoom from './ChatScreens/ChatRoom';
 import Messages from './ChatScreens/Messages';
 import CreateChatRoom from './ChatScreens/CreateChatRoom'
 import HeaderComponent from "../components/Header";
+import useStatusBar from '../hooks/useStatusBar';
 const logo = require('../assets/logo.png');
 
 const wait = (timeout) => {
@@ -31,7 +32,7 @@ const wait = (timeout) => {
   }
 
 export default function SearchStackPage() {
-
+    useStatusBar('light-content');
     const [selectedItem,setSelectedItem] = useState(null);
     const [userstate,setUser] = useState({});
     const [region,setRegion] = useState({});
@@ -39,7 +40,7 @@ export default function SearchStackPage() {
 
 
     function JoinTravelPage({navigation}){
-
+      useStatusBar('light-content');
         function saveTravel(){
             var user = firebase.auth().currentUser;
             var passengerCount;
@@ -161,7 +162,7 @@ export default function SearchStackPage() {
 
 
       function SearchBox({navigation}){
-
+        useStatusBar('light-content');
         const [point,setPoint] = useState();
         const [resultList,setResultList] = useState(false);
         const [isSelected,setSelected] = useState();

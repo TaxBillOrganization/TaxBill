@@ -6,7 +6,7 @@ import Colors from '../utils/colors';
 import useStatusBar from '../hooks/useStatusBar';
 
 export default function WelcomeScreen({ navigation }) {
-  useStatusBar('dark-content');
+  useStatusBar('light-content');
 
   return (
     <View style={styles.container}>

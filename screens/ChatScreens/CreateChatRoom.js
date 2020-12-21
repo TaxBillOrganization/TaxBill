@@ -1,8 +1,11 @@
 import React,{ useState } from 'react';
 import { Text, View, Button,TouchableOpacity,TextInput,StyleSheet } from 'react-native';
 import * as firebase from 'firebase';
+import useStatusBar from '../../hooks/useStatusBar';
 var User ={Username:'',Usersurname:''};
+
 export default function CreateChatRoom({navigation,route}) {
+  useStatusBar('light-content');
   // ... rest remains same
   const [roomName, onChangeText] = React.useState();
   const [userstate,setUser] = useState({});

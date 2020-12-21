@@ -9,14 +9,17 @@ import Photo from '../components/Firebase/storagePhoto'
 import Change from '../components/Firebase/changeEmailPassword'
 import Comment from '../components/Firebase/comment'
 import HeaderComponent from "../components/Header";
+import useStatusBar from '../hooks/useStatusBar';
 const ProfilStack = createStackNavigator();
 const logo = require('../assets/logo.png');
 const user ={email:'',Username:'',Usersurname:'',Userage:'', Usergender:'', image:''};
 var uid='';
 export default function ProfilStackPage(kullanıcı) {
+    useStatusBar('light-content');
     const [userstate,setUser] = useState({});
     
     function ProfilPage({navigation}) {
+      useStatusBar('light-content');
         return (
           <SafeAreaView style={styles.container}>
           <HeaderComponent logo={logo}/>
@@ -55,6 +58,7 @@ export default function ProfilStackPage(kullanıcı) {
       }
 
       function ProfilSettingsPage({navigation}) {
+        useStatusBar('light-content');
         return (
           <SafeAreaView style={styles.container}>
             <HeaderComponent logo={logo}/>
