@@ -6,7 +6,7 @@ import Search from '../screens/SearchScreen';
 import Chat from '../screens/ChatScreens/ChatScreen';
 import Travel from '../screens/TravelScreen';
 import Colors from '../utils/colors';
-import Profil from '../screens/ProfileScreen'
+import Profil from '../screens/ProfileScreens/ProfileStackScreen'
 import useStatusBar from '../hooks/useStatusBar';
 
 const Tab = createBottomTabNavigator();

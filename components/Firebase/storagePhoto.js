@@ -40,10 +40,6 @@ export default class Photo extends React.Component {
     firebase.database().ref('Users/'+ uid.uid +('/ProfileInformation')).update({
     profilePhoto:url,
     });
-    firebase.database().ref('Users/'+ uid.uid +('/ProfileInformation')).update({
-    profilePhoto:url,
-    });
-    uid.Object.photoURL=url
   }
 
   render() {

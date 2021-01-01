@@ -22,7 +22,6 @@ const [messages, setMessages] = useState([
         createdAt: new Date().getTime(),
         system: true
       },
-
     ])
 
 const active = firebase.auth().currentUser.toJSON();

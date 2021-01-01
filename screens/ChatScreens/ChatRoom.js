@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {View,StyleSheet,Text,FlatList,TouchableOpacity,ActivityIndicator,Button,Image} from 'react-native'
+import {View,StyleSheet,Text,FlatList,TouchableOpacity,ActivityIndicator,Image} from 'react-native'
 import * as firebase from 'firebase';
 import Separator from '../../components/Firebase/Separator'
 import HeaderComponent from "../../components/Header";
@@ -10,94 +10,79 @@ export default function ChatRoom({navigation,route}) {
   useStatusBar('light-content');
    const [threads, setThreads] = useState([])
    const [loading, setLoading] = useState(true)
-   const [editThreads,setEdit] = useState([])
-   
    
    const [userstate,setUser] = useState({});
    const [withWho,setWithWho] = useState({});
 
-   //const {selectedTravel}=travel
    useEffect(() => {
     var User ={Username:'',Usersurname:'',Userphoto:''};
     var withUser ={Username:'',Usersurname:'',Userphoto:''};
     var roomName;
      
      const user = firebase.auth().currentUser.toJSON(roomName);
-            firebase.database().ref('Users/'+ user.uid +'/ProfileInformation').once('value',function (snapshot) {
-                User.Username = (snapshot.val() && snapshot.val().name);
-                User.Usersurname = (snapshot.val() && snapshot.val().surname);
-                User.Userphoto = (snapshot.val() && snapshot.val().profilePhoto);
-                setUser(User);
-      });
+    firebase.database().ref('Users/'+ user.uid +'/ProfileInformation').once('value',function (snapshot) {
+        User.Username = (snapshot.val() && snapshot.val().name);
+        User.Usersurname = (snapshot.val() && snapshot.val().surname);
+        User.Userphoto = (snapshot.val() && snapshot.val().profilePhoto);
+        setUser(User);
+    });
       
-      if(route.params !=null && route.params !="undefined"){
-        roomName = route.params.thread.creater;
-        firebase.database().ref('Users/'+ roomName +'/ProfileInformation').once('value',function (snapshot) {
-          withUser.Username = (snapshot.val() && snapshot.val().name);
-          withUser.Usersurname = (snapshot.val() && snapshot.val().surname);
-          withUser.Userphoto = (snapshot.val() && snapshot.val().profilePhoto);
-          setWithWho(withUser);
-        });
-        
-       firebase.firestore()
-            .collection('MESSAGE_THREADS')
-            .add({
-              name: User.Username + (" ") +User.Usersurname,
-              with: withUser.Username + (" ") + withUser.Usersurname,
-              Id:roomName,
-              latestMessage: {
-                text: `Start chat `,
-                createdAt: new Date().getTime()
-              }
-            })
-            .then(docRef => {
-              docRef.collection('MESSAGES').add({
-                text: `Start chat `,
-                createdAt: new Date().getTime(),
-                system: true
-              })
-            });
-  
-      }
-      else{
-        withUser.Username = "TaxBill";
-        withUser.Usersurname = "Limited A.Ş.";
-        withUser.Userphoto = "https://firebasestorage.googleapis.com/v0/b/taxbill-e4abb.appspot.com/o/images%2Flogo.png?alt=media&token=f7aee502-f1c1-4b78-852c-81138730b66f";
+    if(route.params !=null && route.params !="undefined"){
+      roomName = route.params.thread.creater;
+      firebase.database().ref('Users/'+ roomName +'/ProfileInformation').once('value',function (snapshot) {
+        withUser.Username = (snapshot.val() && snapshot.val().name);
+        withUser.Usersurname = (snapshot.val() && snapshot.val().surname);
+        withUser.Userphoto = (snapshot.val() && snapshot.val().profilePhoto);
         setWithWho(withUser);
-      }
+      });
+    
+      firebase.firestore()
+          .collection('MESSAGE_THREADS')
+          .add({
+            name: User.Username + (" ") +User.Usersurname,
+            with: withUser.Username + (" ") + withUser.Usersurname,
+            Id:roomName+user.uid,
+            UserPhoto:User.Userphoto,
+            WithPhoto:withUser.Userphoto,
+            latestMessage: {
+              text: `Start chat `,
+              createdAt: new Date().getTime()
+            }
+          })
+          .then(docRef => {
+            docRef.collection('MESSAGES').add({
+              text: `Start chat `,
+              createdAt: new Date().getTime(),
+              system: true
+            })
+          });
 
-     const unsubscribe = firebase.firestore()
-       .collection('MESSAGE_THREADS')
-       .orderBy('latestMessage.createdAt', 'desc',)
-       .onSnapshot(querySnapshot => {
-         const threads = querySnapshot.docs.map(documentSnapshot => {
-           return {
-             _id: documentSnapshot.id,
-             name: '',
-             latestMessage: { text: '' },
-             ...documentSnapshot.data()
-           }
-         })
-         if(route.params != null && route.param !="undefined"){
-          var x = withUser.Username;
-          const serchingData = threads.filter(item => {
-            const name = `${item.with.toLowerCase()} ${item.name.toLowerCase()}`;
-            return name.indexOf(x.toLowerCase()) > -1})
-          setThreads(serchingData)
-          if (loading) {
-            setLoading(false)
-          }
-         }else{
-          if (loading) {
-            setLoading(false)
-          }
-          setThreads(threads);
-         }
-         
-       })
+    }
 
-     return () => unsubscribe()
-   }, [])
+    const unsubscribe = firebase.firestore()
+      .collection('MESSAGE_THREADS')
+      .orderBy('latestMessage.createdAt', 'desc',)
+      .onSnapshot(querySnapshot => {
+        const threads = querySnapshot.docs.map(documentSnapshot => {
+          return {
+            _id: documentSnapshot.id,
+            name: '',
+            latestMessage: { text: '' },
+            ...documentSnapshot.data()
+          }
+        })
+        var x = User.Username;
+        const serchingData = threads.filter(item => {
+          const name = `${item.with.toLowerCase()} ${item.name.toLowerCase()}`;
+          return name.indexOf(x.toLowerCase()) > -1})
+        setThreads(serchingData)
+        if (loading) {
+          setLoading(false)
+        }
+      })
+
+    return () => unsubscribe()
+    }, [])
  
    if (loading) {
      return <ActivityIndicator size='large' color='#555' />
@@ -114,37 +99,29 @@ export default function ChatRoom({navigation,route}) {
             <TouchableOpacity style={styles.titleBar} onPress={() => navigation.navigate('Messages', { thread: item })}>
               <View style={styles.row}>
                 <View style={styles.content}>
-            {(item.name==(userstate.Username+(" ")+userstate.Usersurname))&&
 
+            {(item.name==(userstate.Username+(" ")+userstate.Usersurname))&&
                   <View style={styles.titleBar}>
                      <View style={styles.profileImage}>
-                        <Image source={{uri:withWho.Userphoto}} style={styles.image} resizeMode="center"></Image>                                     
+                        <Image source={{uri:item.WithPhoto}} style={styles.image} resizeMode="center"></Image>                                     
                      </View>
                      <View style={styles.textBar}>
-                        <Text style={styles.nameText}>{item.with}</Text>
-                        <Text style={styles.contentText}>
-                          {item.latestMessage.text.slice(0, 90)}
-                        </Text>
+                        <Text style={styles.nameText}>  {item.with}</Text>
+                        <Text style={styles.contentText}>  {item.latestMessage.text.slice(0, 90)}</Text>
                      </View>
                   </View>
-
             }
-
-             {(item.name!=(userstate.Username+(" ")+userstate.Usersurname))&&
-
-                  <View style={styles.header}>
-                    <View style={styles.profileImage}>
-                        <Image source={{uri:userstate.Userphoto}} style={styles.image} resizeMode="center"></Image>                                     
+            {(item.with==(userstate.Username+(" ")+userstate.Usersurname))&&
+                  <View style={styles.titleBar}>
+                     <View style={styles.profileImage}>
+                        <Image source={{uri:item.UserPhoto}} style={styles.image} resizeMode="center"></Image>                                     
                      </View>
-                     <View>
-                        <Text style={styles.nameText}>{item.name}</Text>
-                        <Text style={styles.contentText}>
-                          {item.latestMessage.text.slice(0, 90)}
-                        </Text>
+                     <View style={styles.textBar}>
+                        <Text style={styles.nameText}>  {item.name}</Text>
+                        <Text style={styles.contentText}>  {item.latestMessage.text.slice(0, 90)}</Text>
                      </View>
                   </View>
-
-                  }
+            }
                 </View>
               </View>
             </TouchableOpacity>

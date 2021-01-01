@@ -20,7 +20,6 @@ import ChatPage from "./ChatScreens/ChatRoom";
 const ProfilStack = createStackNavigator();
 import ChatRoom from './ChatScreens/ChatRoom';
 import Messages from './ChatScreens/Messages';
-import CreateChatRoom from './ChatScreens/CreateChatRoom'
 import HeaderComponent from "../components/Header";
 import useStatusBar from '../hooks/useStatusBar';
 const logo = require('../assets/logo.png');
