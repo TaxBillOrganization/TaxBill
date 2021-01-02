@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, Text, View, Image,KeyboardAvoidingView,
+import { StyleSheet, TouchableOpacity, Text, View, Image,KeyboardAvoidingView,StatusBar,
   ScrollView} from 'react-native';
 import * as Yup from 'yup';
 
@@ -55,11 +55,11 @@ export default function LoginScreen({ navigation }) {
   return (
     
     <SafeView style={styles.container}>
-     <ScrollView>
+      <StatusBar barStyle="light-content" backgroundColor="black"/>
     <View style={styles.logoFrame}>
       <Image source={require('../assets/logo.png')} style={styles.logo} />
     </View>
-    
+    <View>
       <Form
         initialValues={{ email: '', password: '' }}
         validationSchema={validationSchema}
@@ -104,7 +104,7 @@ export default function LoginScreen({ navigation }) {
         size={30}
         onPress={() => navigation.goBack()}
       />
-     </ScrollView> 
+      </View>
     </SafeView>
     
   );
@@ -113,6 +113,7 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
+    justifyContent: 'space-between',
     backgroundColor: Colors.backgroundColor
   },
   footerButtonContainer: {
@@ -130,12 +131,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   logo: {
-    width: 215,
-    height: 190,
-    marginBottom:20,
+    width: 200,
+    height: 200,
   },
   logoFrame: {
-    paddingTop: 25,
+    top:5,
     alignItems: 'center',
     
     

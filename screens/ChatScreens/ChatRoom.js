@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import {View,StyleSheet,Text,FlatList,TouchableOpacity,ActivityIndicator,Image} from 'react-native'
+import {View,StyleSheet,Text,FlatList,TouchableOpacity,ActivityIndicator,Image,StatusBar} from 'react-native'
 import * as firebase from 'firebase';
 import Separator from '../../components/Firebase/Separator'
 import HeaderComponent from "../../components/Header";
-import useStatusBar from '../../hooks/useStatusBar';
 const logo = require('../../assets/logo.png');
 
 export default function ChatRoom({navigation,route}) {
-  useStatusBar('light-content');
    const [threads, setThreads] = useState([])
    const [loading, setLoading] = useState(true)
    
@@ -98,6 +96,7 @@ export default function ChatRoom({navigation,route}) {
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.titleBar} onPress={() => navigation.navigate('Messages', { thread: item })}>
               <View style={styles.row}>
+              <StatusBar barStyle="light-content" backgroundColor="black"/>
                 <View style={styles.content}>
 
             {(item.name==(userstate.Username+(" ")+userstate.Usersurname))&&

@@ -31,4 +31,6 @@ firebase.database().ref('Users/'+ uid +('/ProfileInformation')).set({
   email:email,
   gender:gender,
   profilePhoto:'https://firebasestorage.googleapis.com/v0/b/taxbill-e4abb.appspot.com/o/images%2Flogo.png?alt=media&token=f7aee502-f1c1-4b78-852c-81138730b66f',
+  travel:0,
+  starPoint:0,
 });

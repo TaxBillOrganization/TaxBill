@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet,ScrollView,Image,View,Text} from 'react-native';
+import { StyleSheet,ScrollView,Image,View,Text,StatusBar} from 'react-native';
 import * as Yup from 'yup';
 import { RadioButton } from 'react-native-paper';
 import Colors from '../utils/colors';
@@ -96,6 +96,7 @@ export default function RegisterScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="black"/>
       <View style={styles.logoFrame}>
       <Image source={require("../assets/logo.png")} style={styles.logo}/>
       </View>
@@ -215,8 +216,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundColor
   },
   logo: {
-    width: 180,
-    height: 180,
+    width: 200,
+    height: 200,
   },
   logoFrame: {
     paddingTop: 45,

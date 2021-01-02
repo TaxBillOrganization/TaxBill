@@ -1,8 +1,10 @@
 import React from 'react'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet,StatusBar } from 'react-native'
 
 export default function Separator() {
-  return <View style={styles.separator} />
+  return <View style={styles.separator}>
+  <StatusBar barStyle="light-content" backgroundColor="black"/>
+  </View>
 }
 
 const styles = StyleSheet.create({

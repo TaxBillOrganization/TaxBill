@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, TextInput, Button, Alert, } from 'react-native';
+import { ScrollView, StyleSheet, TextInput, StatusBar, Alert, } from 'react-native';
 import * as firebase from 'firebase';
 import Colors from '../../utils/colors';
 import AppButton from '../../components/ChangeButton';
@@ -64,7 +64,7 @@ export default class Change extends React.Component {
   render() {
     return (
       <ScrollView style={{flex: 1, flexDirection: "column", paddingVertical: "3%", paddingHorizontal: "5%",}}>
-
+        <StatusBar barStyle="light-content" backgroundColor="black"/>
         <TextInput style={styles.textInput} value={this.state.currentPassword}
           placeholder="Current Password" autoCapitalize="none" secureTextEntry={true}
           onChangeText={(text) => { this.setState({currentPassword: text}) }}

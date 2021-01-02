@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image } from 'react-native';
+import { View, StyleSheet, Text, Image, StatusBar } from 'react-native';
 
 import AppButton from '../components/AppButton';
 import Colors from '../utils/colors';
@@ -10,6 +10,7 @@ export default function WelcomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="black"/>
       <View style={styles.logoContainer}>
         <Image source={require('../assets/logo.png')} style={styles.logo} />
       </View>

@@ -1,6 +1,6 @@
 import * as firebase from 'firebase';
 import React, {Component} from 'react';
-import {View,Text, FlatList, StyleSheet, TextInput,Image} from 'react-native';
+import {View,Text, FlatList, StyleSheet, TextInput,Image,StatusBar} from 'react-native';
 import AppButton from '../../components/commentButton';
 
 export default class Comment extends Component{
@@ -51,6 +51,7 @@ export default class Comment extends Component{
    render(){
    return(
       <View style={styles.container}>
+         <StatusBar barStyle="light-content" backgroundColor="black"/>
          <FlatList style={{width:'100%'}}
             data={this.state.list}
             keyExtractor={(item)=>item.key}

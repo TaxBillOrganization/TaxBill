@@ -3,16 +3,14 @@ import React, { useState, useEffect } from 'react'
 import { GiftedChat } from 'react-native-gifted-chat'
 import AsyncStorage from '@react-native-community/async-storage'
 import IconButton from '../../components/IconButton';
-import { Text,StyleSheet,Image,View } from 'react-native'
+import { Text,StyleSheet,StatusBar,View } from 'react-native'
 import {Header,Body} from "native-base";
 import * as firebase from 'firebase'
-import useStatusBar from '../../hooks/useStatusBar';
 import 'firebase/firestore'
 
 var User ={Username:'',Usersurname:''};
 
 export default function Messages({ route,navigation }) {
-useStatusBar('light-content');
 const [userstate,setUser] = useState({});
 const { thread } = route.params
 const [messages, setMessages] = useState([
@@ -111,6 +109,7 @@ const user = firebase.auth().currentUser.toJSON();
         </View>           
         </Body>
       </Header>
+      <StatusBar barStyle="light-content" backgroundColor="black"/>
       <GiftedChat
           messages={messages}
           onSend={handleSend}

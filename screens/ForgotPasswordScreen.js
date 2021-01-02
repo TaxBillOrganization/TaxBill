@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet,Image,View } from 'react-native';
+import { StyleSheet,Image,View,StatusBar } from 'react-native';
 import * as Yup from 'yup';
 
 import Colors from '../utils/colors';
@@ -37,10 +37,11 @@ export default function ForgotPasswordScreen({ navigation }) {
 
   return (
     <SafeView style={styles.container}>
+    <StatusBar barStyle="light-content" backgroundColor="black"/>
     <View style={styles.logoFrame}>
       <Image source={require('../assets/logo.png')} style={styles.logo} />
     </View>
-
+    <View>
       <Form
         initialValues={{ email: '' }}
         validationSchema={validationSchema}
@@ -53,7 +54,7 @@ export default function ForgotPasswordScreen({ navigation }) {
           autoCapitalize="none"
           keyboardType="email-address"
           textContentType="emailAddress"
-          autoFocus={true}
+          autoFocus={false}
         />
         <FormButton title="Forgot Password" />
         {<FormErrorMessage error={customError} visible={true} />}
@@ -65,6 +66,7 @@ export default function ForgotPasswordScreen({ navigation }) {
         size={30}
         onPress={() => navigation.goBack()}
       />
+      </View>
     </SafeView>
   );
 }
@@ -72,6 +74,7 @@ export default function ForgotPasswordScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
+    justifyContent: 'space-between',
     backgroundColor: Colors.backgroundColor
   },
   backButton: {
@@ -80,12 +83,12 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   logo: {
-    width: 215,
-    height: 190
+    width: 200,
+    height: 200
     
   },
   logoFrame: {
-    paddingTop: 40,
+    paddingTop: 5,
     alignItems: 'center',
   },
 });
