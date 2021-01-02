@@ -248,16 +248,29 @@ export default function SearchStackPage() {
             alert("Please select setting");
           }else{
             
-            firebase.database().ref('Travels/').once('value',function (items) {
-              items.forEach(function(snapshot)
+            //console.error("geldi");
+            travels = {creater:'',date:'',dropOffLatitude:'',dropOffLongitude:'',female:'',male:'',
+            people:'',person:'',pickUpLatitude:'',pickUpLongitude:'',statu:'',Id:'',startPlace:'',endPlace:'',
+            createrName:'',createrSurname:'',createrPhoto:''};
+            var ItemArray=[];
+            firebase.database().ref('Travels').on('value',function (items) {
+              items.forEach(function(snap){
+                ItemArray.push(snap.val());
+              });
+            })
+              //var arrayItems = ItemArray;
+              //console.error(JSON.stringify(ItemArray));
+              //console.error(JSON.stringify(ItemArray[0]));
+              ItemArray.forEach(function(snapshot)
                 {
-                  if(snapshot.val().statu == "c"){
+                  
+                  if(snapshot.statu == "c"){
                     //defineGender
                     var creatorGender='';
                     
                     
                     
-                    firebase.database().ref('Users/'+snapshot.val().creater+'/ProfileInformation').on('value',function (userList) {
+                    firebase.database().ref('Users/'+snapshot.creater+'/ProfileInformation').once('value',function (userList) {
                     
                       creatorGender = userList.gender;
                     });
@@ -267,136 +280,108 @@ export default function SearchStackPage() {
                      
                         var currentUser = firebase.auth().currentUser;
                         var passengerGender='';
-                        firebase.database().ref('Users/'+currentUser.uid+'/ProfileInformation').on('value',function (userList) {
+                        firebase.database().ref('Users/'+currentUser.uid+'/ProfileInformation').once('value',function (userList) {
                           passengerGender = userList.gender;
                         });
       
-                        if((snapshot.val().female && snapshot.val().male) || (snapshot.val().female && passengerGender =='Female') ||
+                        if((snapshot.female && snapshot.male) || (snapshot.female && passengerGender =='Female') ||
                         (snapshot.val().male && passengerGender =='Male')) {
                         
-                          if((person == snapshot.val().person) && (snapshot.val().people == people)){ //Kişi sayısı
-      
+                          if((person == snapshot.person) && (snapshot.people == people)){ //Kişi sayısı
+                             
                                 
+                            axios.get("https://maps.googleapis.com/maps/api/distancematrix/json", {
+                              params: {
+                                origins: start.location.lat +','+start.location.lng,
+                                destinations : snapshot.pickUppLatidute +','+snapshot.pickUppLongitude,
+                                mode:"driving",
+                                key:"AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI"
+                              }
+                            })
+                            .then( (baslangicUzaklik)=> {
+                              
+                              axios.get("https://maps.googleapis.com/maps/api/distancematrix/json", {
+                                params: {
+                                  origins: end.location.lat +','+end.location.lng,
+                                  destinations : snapshot.dropOffLatidute +','+snapshot.dropOffLongitude,
+                                  mode:"driving",
+                                  key:"AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI"
+                                }
+                              })
+                              
+                              .then( (bitisUzaklik) =>{
+  
+                                if(baslangicUzaklik.data.rows[0].elements[0].distance.value < 1000 && bitisUzaklik.data.rows[0].elements[0].distance.value < 1000){
+                                  
+                                  firebase.database().ref('Users/'+ snapshot.creater +'/ProfileInformation').once('value',function (get) {
+                                    dataArray.push({
+                                    
+                                      creater : (snapshot && snapshot.creater) || 'Anonymous',                   
+                                      date : (snapshot && snapshot.date) || 'Anonymous',
+                                      dropOffLatitude : (snapshot && snapshot.dropOffLatidute) || 'Anonymous',
+                                      dropOffLongitude : (snapshot && snapshot.dropOffLongitude) || 'Anonymous',
+                                      female : (snapshot && snapshot.female) || 'Anonymous',
+                                      male : (snapshot && snapshot.male) || 'Anonymous',
+                                      people : (snapshot && snapshot.people) || 'Anonymous',
+                                      person : (snapshot && snapshot.person) || 'Anonymous',
+                                      pickUpLatitude : (snapshot && snapshot.pickUppLatidute) || 'Anonymous',
+                                      pickUpLongitude : (snapshot && snapshot.pickUppLongitude) || 'Anonymous',
+                                      statu : (snapshot && snapshot.statu) || 'Anonymous',
+                                      Id : (snapshot && snapshot.Id) || 'Anonymous',
+                                      startPlace : (snapshot && snapshot.startPointId) || 'Anonymous',
+                                      endPlace : (snapshot && snapshot.endPointId) || 'Anonymous',
+                                      createrName : (get.val() && get.val().name),
+                                      createrSurname : (get.val() && get.val().surname),
+                                      createrPhoto : (get.val() && get.val().profilePhoto),
+                                      });
+                                     // console.error(JSON.stringify((get.val() && get.val().surname)));
+                                  });
+                                  
+                              }else{
+                                 
+                                  var m1 =( (end.location.lng - start.location.lng)/(end.location.lat - start.location.lat));
+                                  var m2 = (snapshot.dropOffLongitude - snapshot.pickUppLongitude)/(snapshot.dropOffLatidute - snapshot.pickUppLatidute);
+                                 
+                                  var m = m1 / m2;
+                                  if(((m > -1.2 && m < 1.2) && baslangicUzaklik.data.rows[0].elements[0].distance.value < 1000 ) ||
+                                  ((m > -1.2 && m < 1.2) && (bitisUzaklik.data.rows[0].elements[0].distance.value < 1000))){
+                                   
+                                  
+                                  
+
+                                    firebase.database().ref('Users/'+ snapshot.creater +'/ProfileInformation').once('value',function (get) {
+                                      dataArray.push({
+                                      
+                                        creater : (snapshot && snapshot.creater) || 'Anonymous',                   
+                                        date : (snapshot && snapshot.date) || 'Anonymous',
+                                        dropOffLatitude : (snapshot && snapshot.dropOffLatidute) || 'Anonymous',
+                                        dropOffLongitude : (snapshot && snapshot.dropOffLongitude) || 'Anonymous',
+                                        female : (snapshot && snapshot.female) || 'Anonymous',
+                                        male : (snapshot && snapshot.male) || 'Anonymous',
+                                        people : (snapshot && snapshot.people) || 'Anonymous',
+                                        person : (snapshot && snapshot.person) || 'Anonymous',
+                                        pickUpLatitude : (snapshot && snapshot.pickUppLatidute) || 'Anonymous',
+                                        pickUpLongitude : (snapshot && snapshot.pickUppLongitude) || 'Anonymous',
+                                        statu : (snapshot && snapshot.statu) || 'Anonymous',
+                                        Id : (snapshot && snapshot.Id) || 'Anonymous',
+                                        startPlace : (snapshot && snapshot.startPointId) || 'Anonymous',
+                                        endPlace : (snapshot && snapshot.endPointId) || 'Anonymous',
+                                        createrName : (get.val() && get.val().name),
+                                        createrSurname : (get.val() && get.val().surname),
+                                        createrPhoto : (get.val() && get.val().profilePhoto),
+                                        });
+                                    });
+                                  //console.error("23------"+JSON.stringify(travels))
+                                  
+                                    
+                                  }
+                                  
+                              }
+  
+                              });
                                 
-                                axios.get("https://maps.googleapis.com/maps/api/distancematrix/json", {
-                                  params: {
-                                    origins: start.location.lat +','+start.location.lng,
-                                    destinations : snapshot.val().pickUppLatidute +','+snapshot.val().pickUppLongitude,
-                                    mode:"driving",
-                                    key:"AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI"
-                                  }
-                                })
-                                .then(function (baslangicUzaklik) {
-      
-                                  axios.get("https://maps.googleapis.com/maps/api/distancematrix/json", {
-                                    params: {
-                                      origins: end.location.lat +','+end.location.lng,
-                                      destinations : snapshot.val().dropOffLatidute +','+snapshot.val().dropOffLongitude,
-                                      mode:"driving",
-                                      key:"AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI"
-                                    }
-                                  })
-                                  .then(function (bitisUzaklik) {
-      
-                                    if(baslangicUzaklik.data.rows[0].elements[0].distance.value < 1000 && bitisUzaklik.data.rows[0].elements[0].distance.value < 1000){
-                                      
-                                      travels.creater = (snapshot.val() && snapshot.val().creater) || 'Anonymous';
-                                      travels.date = (snapshot.val() && snapshot.val().date) || 'Anonymous';
-                                      travels.dropOffLatitude = (snapshot.val() && snapshot.val().dropOffLatidute) || 'Anonymous';
-                                      travels.dropOffLongitude = (snapshot.val() && snapshot.val().dropOffLongitude) || 'Anonymous';
-                                      travels.female = (snapshot.val() && snapshot.val().female) || 'Anonymous';
-                                      travels.male = (snapshot.val() && snapshot.val().male) || 'Anonymous';
-                                      travels.people = (snapshot.val() && snapshot.val().people) || 'Anonymous';
-                                      travels.person = (snapshot.val() && snapshot.val().person) || 'Anonymous';
-                                      travels.pickUpLatitude = (snapshot.val() && snapshot.val().pickUppLatidute) || 'Anonymous';
-                                      travels.pickUpLongitude = (snapshot.val() && snapshot.val().pickUppLongitude) || 'Anonymous';
-                                      travels.statu = (snapshot.val() && snapshot.val().statu) || 'Anonymous';
-                                      travels.Id = (snapshot.val() && snapshot.val().Id) || 'Anonymous';
-
-                                      firebase.database().ref('Users/'+ travels.creater +'/ProfileInformation').once('value',function (get) {
-                                        travels.createrName = (get.val() && get.val().name);
-                                        travels.createrSurname = (get.val() && get.val().surname);
-                                        travels.createrPhoto = (get.val() && get.val().profilePhoto);
-                                      });
-                                      {
-                                        axios
-                                            .request({
-                                            method: 'post',
-                                            url: `https://maps.googleapis.com/maps/api/place/details/json?placeid=${snapshot.val().startPointId}&key=AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI`,
-                                          })
-                                          .then((sonuc)=>{
-                                            travels.startPlace = sonuc.data.result.formatted_address;
-                                          })
-                                      }
-                                      {
-                                        axios
-                                        .request({
-                                          method: 'post',
-                                          url: `https://maps.googleapis.com/maps/api/place/details/json?placeid=${snapshot.val().endPointId}&key=AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI`,
-                                        })
-                                        .then((sonuc)=>{
-                                          travels.endPlace = sonuc.data.result.formatted_address;
-                                        })
-                                      }
-                                      dataArray.push(travels);
-                                      
-                                  }else{
-                                     
-                                      var m1 =( (end.location.lng - start.location.lng)/(end.location.lat - start.location.lat));
-                                      var m2 = (snapshot.val().dropOffLongitude - snapshot.val().pickUppLongitude)/(snapshot.val().dropOffLatidute - snapshot.val().pickUppLatidute);
-                                     
-                                      var m = m1 / m2;
-                                      if(((m > -1.2 && m < 1.2) && baslangicUzaklik.data.rows[0].elements[0].distance.value < 1000 ) ||
-                                      ((m > -1.2 && m < 1.2) && (bitisUzaklik.data.rows[0].elements[0].distance.value < 1000))){
-                                       
-                                      
-                                      travels.creater = (snapshot.val() && snapshot.val().creater) || 'Anonymous';
-                                      travels.date = (snapshot.val() && snapshot.val().date) || 'Anonymous';
-                                      travels.dropOffLatitude = (snapshot.val() && snapshot.val().dropOffLatidute) || 'Anonymous';
-                                      travels.dropOffLongitude = (snapshot.val() && snapshot.val().dropOffLongitude) || 'Anonymous';
-                                      travels.female = (snapshot.val() && snapshot.val().female) || 'Anonymous';
-                                      travels.male = (snapshot.val() && snapshot.val().male) || 'Anonymous';
-                                      travels.people = (snapshot.val() && snapshot.val().people) || 'Anonymous';
-                                      travels.person = (snapshot.val() && snapshot.val().person) || 'Anonymous';
-                                      travels.pickUpLatitude = (snapshot.val() && snapshot.val().pickUppLatidute) || 'Anonymous';
-                                      travels.pickUpLongitude = (snapshot.val() && snapshot.val().pickUppLongitude) || 'Anonymous';
-                                      travels.statu = (snapshot.val() && snapshot.val().statu) || 'Anonymous';
-                                      travels.Id = (snapshot.val() && snapshot.val().Id) || 'Anonymous';
-
-                                      firebase.database().ref('Users/'+ travels.creater +'/ProfileInformation').once('value',function (get) {
-                                        travels.createrName = (get.val() && get.val().name);
-                                        travels.createrSurname = (get.val() && get.val().surname);
-                                        travels.createrPhoto = (get.val() && get.val().profilePhoto);
-                                      });
-                                      {
-                                        axios
-                                            .request({
-                                            method: 'post',
-                                            url: `https://maps.googleapis.com/maps/api/place/details/json?placeid=${snapshot.val().startPointId}&key=AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI`,
-                                          })
-                                          .then((sonuc)=>{
-                                            travels.startPlace = sonuc.data.result.formatted_address;
-                                          })
-                                      }
-                                      {
-                                        axios
-                                        .request({
-                                          method: 'post',
-                                          url: `https://maps.googleapis.com/maps/api/place/details/json?placeid=${snapshot.val().endPointId}&key=AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI`,
-                                        })
-                                        .then((sonuc)=>{
-                                          travels.endPlace = sonuc.data.result.formatted_address;
-                                        })
-                                      }
-                                      dataArray.push(travels);
-                                        
-                                      }
-                                      
-                                  }
-      
-                                  })
-      
-                                }); 
+                            }); 
+                               
                           }
                           
                         }
@@ -405,11 +390,12 @@ export default function SearchStackPage() {
                 }
               
               });
-              setaddressResult(dataArray);
-            });
-      
-          }
+              
             
+            
+          }
+          //console.error("/***"+JSON.stringify(dataArray)+"***/");
+          setaddressResult(dataArray);
           setResultList(true);
         }
       
@@ -619,7 +605,7 @@ export default function SearchStackPage() {
                              Sonuçlar gözükmüyorsa sayfayı aşağı çekerek yenileyin.
                     </Text>}
                     <View style={sty.container}>
-                    
+                   
                     <List
                     dataArray={addressResult}
                     keyExtractor={item => item.Id}
@@ -681,6 +667,7 @@ export default function SearchStackPage() {
         alignSelf:'auto', 
         alignItems:"stretch",
         justifyContent:'center',
+        marginBottom:"5%",
     },
     image: {
       flex: 1,
@@ -721,7 +708,8 @@ export default function SearchStackPage() {
         justifyContent:'center',
         //alignSelf:"center"
         borderColor:"#f5f5f5",
-        borderWidth :2
+        borderWidth :2,
+        
     },
    textInput: {
       textAlign: "center",

@@ -1,5 +1,5 @@
 import React from "react";
-import {View,Dimensions} from "react-native";
+import {View,Dimensions,Text} from "react-native";
 import MapView from "react-native-maps";
 import styles from "./MapContainerStyles";
 import SearchBox from "../SearchBox";
@@ -60,7 +60,7 @@ export const MapContainer = ({region, date, getInputData,toggleSearchResultModal
                 
             }
        
-        
+       
             </MapView>
             
             <SearchBox getInputData={getInputData} toggleSearchResultModal={toggleSearchResultModal}
@@ -80,7 +80,7 @@ export const MapContainer = ({region, date, getInputData,toggleSearchResultModal
             }
             
             {    (selectedDropOff && selectedPickUp && date) &&
-
+                
                 <InfoButton selectedAddress={selectedAddress} 
                 saveTrack={saveTrack}
                 date={date}

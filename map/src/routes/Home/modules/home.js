@@ -109,6 +109,7 @@ export function getSelectedAdress(payload){
                   type:GET_SELECTED_ADDRESS,
                   payload:results.data.result.geometry.location,
                   selectedTitle:selectedItem,
+                  selectedPlacePoint:results.data.result.formatted_address,
                   selectedPlaceId:payload
               }),
               
@@ -257,7 +258,7 @@ function handleGetSelectedAddress(state,action){
             
         },
         startEndPoint:{
-            [action.selectedTitle]:{$set:action.selectedPlaceId}
+            [action.selectedTitle]:{$set:action.selectedPlacePoint}
             
         },
 		resultTypes:{
@@ -317,8 +318,14 @@ function guidGenerator() {
 }
 
 function handeleSaveTrack(state,action){
+    var DATE = action.payload.date;
+    //console.error(JSON.stringify(action.payload.date));
+    if( DATE=='' || JSON.stringify(action.payload.date) == null || JSON.stringify(action.payload.date)=={}){
+        DATE = new Date(); 
+    }
     var user = firebase.auth().currentUser;
     var travelID = guidGenerator()
+    //console.error(JSON.stringify(action.payload.date));
     firebase.database().ref('Travels/'+ travelID ).set({
     Id:travelID,
     pickUppLatidute:action.payload.pickUppLatidute,
@@ -330,7 +337,7 @@ function handeleSaveTrack(state,action){
     person: action.payload.isSelectedPerson,
     people: action.payload.isSelectedPeople,
     statu:"c",
-    date:action.payload.date.toString(),
+    date:JSON.stringify(DATE),
     creater:user.uid,
     startPointId:state.startEndPoint.pickUp,
     endPointId:state.startEndPoint.dropOff,

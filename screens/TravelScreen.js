@@ -123,96 +123,82 @@ export default function TravelStackPage() {
           snapshot.forEach(function(item){
             if(item.val().statu == "c"){
 
-              firebase.database().ref('Travels/'+item.val().Id).on('value',function (snapshot) {
-                travels.date = (snapshot.val() && snapshot.val().date) || 'Anonymous';
-                travels.dropOffLatitude = (snapshot.val() && snapshot.val().dropOffLatidute) || 'Anonymous';
-                travels.dropOffLongitude = (snapshot.val() && snapshot.val().dropOffLongitude) || 'Anonymous';
-                travels.female = (snapshot.val() && snapshot.val().female) || 'Anonymous';
-                travels.male = (snapshot.val() && snapshot.val().male) || 'Anonymous';
-                travels.people = (snapshot.val() && snapshot.val().people) || 'Anonymous';
-                travels.person = (snapshot.val() && snapshot.val().person) || 'Anonymous';
-                travels.pickUpLatitude = (snapshot.val() && snapshot.val().pickUppLatidute) || 'Anonymous';
-                travels.pickUpLongitude = (snapshot.val() && snapshot.val().pickUppLongitude) || 'Anonymous';
-                travels.statu = (snapshot.val() && snapshot.val().statu) || 'Anonymous';
-                travels.Id = (snapshot.val() && snapshot.val().Id) || 'Anonymous';
-                travels.creater = (snapshot.val() && snapshot.val().creater) || 'Anonymous';
+              firebase.database().ref('Travels/'+item.val().Id).once('value',function (snapshot) {
 
-                firebase.database().ref('Users/'+ travels.creater +'/ProfileInformation').once('value',function (get) {
-                  travels.name = (get.val() && get.val().name);
-                  travels.surname = (get.val() && get.val().surname);
-                  travels.photo = (get.val() && get.val().profilePhoto);
+                
+                
+
+                firebase.database().ref('Users/'+ snapshot.val().creater +'/ProfileInformation').once('value',function (get) {
+                  
+                  currentResult.push({
+                    date : (snapshot.val() && snapshot.val().date) || 'Anonymous',
+                    dropOffLatitude : (snapshot.val() && snapshot.val().dropOffLatidute) || 'Anonymous',
+                    dropOffLongitude : (snapshot.val() && snapshot.val().dropOffLongitude) || 'Anonymous',
+                    female : (snapshot.val() && snapshot.val().female) || 'Anonymous',
+                    male : (snapshot.val() && snapshot.val().male) || 'Anonymous',
+                    people : (snapshot.val() && snapshot.val().people) || 'Anonymous',
+                    person : (snapshot.val() && snapshot.val().person) || 'Anonymous',
+                    pickUpLatitude : (snapshot.val() && snapshot.val().pickUppLatidute) || 'Anonymous',
+                    pickUpLongitude : (snapshot.val() && snapshot.val().pickUppLongitude) || 'Anonymous',
+                    statu : (snapshot.val() && snapshot.val().statu) || 'Anonymous',
+                    Id : (snapshot.val() && snapshot.val().Id) || 'Anonymous',
+                    creater : (snapshot.val() && snapshot.val().creater) || 'Anonymous',
+                    startPlace : (snapshot.val() && snapshot.val().startPointId) || 'Anonymous',
+                    endPlace : (snapshot.val() && snapshot.val().endPointId) || 'Anonymous',
+                    name : (get.val() && get.val().name),
+                    surname : (get.val() && get.val().surname),
+                    photo : (get.val() && get.val().profilePhoto),
+                    name : (get.val() && get.val().name),
+                    surname : (get.val() && get.val().surname),
+                    photo : (get.val() && get.val().profilePhoto),
+                    
+                    
+                  });
                 });
-                axios
-                  .request({
-                    method: 'post',
-                    url: `https://maps.googleapis.com/maps/api/place/details/json?placeid=${snapshot.val().startPointId}&key=AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI`,
-                  })
-                  .then((result)=>{
-                    
-                    travels.startPlace = result.data.result.formatted_address
-                  
-                  });
-
-                  axios
-                  .request({
-                    method: 'post',
-                    url: `https://maps.googleapis.com/maps/api/place/details/json?placeid=${snapshot.val().endPointId}&key=AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI`,
-                  })
-                  .then((result)=>{
-                    
-                    travels.endPlace = result.data.result.formatted_address
-                  
-                  });
-                currentResult.push(travels);
+                
+                
 
              }); 
 
              
             }else if(item.val().statu == "f"){
 
-              firebase.database().ref('Travels/'+item.val().Id).on('value',function (snapshot) {
-  
-                travels2.date = (snapshot.val() && snapshot.val().date) || 'Anonymous';
-                travels2.dropOffLatitude = (snapshot.val() && snapshot.val().dropOffLatidute) || 'Anonymous';
-                travels2.dropOffLongitude = (snapshot.val() && snapshot.val().dropOffLongitude) || 'Anonymous';
-                travels2.female = (snapshot.val() && snapshot.val().female) || 'Anonymous';
-                travels2.male = (snapshot.val() && snapshot.val().male) || 'Anonymous';
-                travels2.people = (snapshot.val() && snapshot.val().people) || 'Anonymous';
-                travels2.person = (snapshot.val() && snapshot.val().person) || 'Anonymous';
-                travels2.pickUpLatitude = (snapshot.val() && snapshot.val().pickUppLatidute) || 'Anonymous';
-                travels2.pickUpLongitude = (snapshot.val() && snapshot.val().pickUppLongitude) || 'Anonymous';
-                travels2.statu = (snapshot.val() && snapshot.val().statu) || 'Anonymous';
-                travels2.Id = (snapshot.val() && snapshot.val().Id) || 'Anonymous';
-                travels2.creater = (snapshot.val() && snapshot.val().creater) || 'Anonymous';
+              firebase.database().ref('Travels/'+item.val().Id).once('value',function (snapshot) {
+                
 
-                firebase.database().ref('Users/'+ travels2.creater +'/ProfileInformation').once('value',function (get) {
-                  travels2.name = (get.val() && get.val().name);
-                  travels2.surname = (get.val() && get.val().surname);
-                  travels2.photo = (get.val() && get.val().profilePhoto);
+
+                firebase.database().ref('Users/'+ snapshot.val().creater +'/ProfileInformation').once('value',function (get) {
+                  
+
+                  oldResult.push({
+                    date : (snapshot.val() && snapshot.val().date) || 'Anonymous',
+                    dropOffLatitude : (snapshot.val() && snapshot.val().dropOffLatidute) || 'Anonymous',
+                    dropOffLongitude : (snapshot.val() && snapshot.val().dropOffLongitude) || 'Anonymous',
+                    female : (snapshot.val() && snapshot.val().female) || 'Anonymous',
+                    male : (snapshot.val() && snapshot.val().male) || 'Anonymous',
+                    people : (snapshot.val() && snapshot.val().people) || 'Anonymous',
+                    person : (snapshot.val() && snapshot.val().person) || 'Anonymous',
+                    pickUpLatitude : (snapshot.val() && snapshot.val().pickUppLatidute) || 'Anonymous',
+                    pickUpLongitude : (snapshot.val() && snapshot.val().pickUppLongitude) || 'Anonymous',
+                    statu : (snapshot.val() && snapshot.val().statu) || 'Anonymous',
+                    Id : (snapshot.val() && snapshot.val().Id) || 'Anonymous',
+                    creater : (snapshot.val() && snapshot.val().creater) || 'Anonymous',
+                    startPlace : (snapshot.val() && snapshot.val().startPointId) || 'Anonymous',
+                    endPlace : (snapshot.val() && snapshot.val().endPointId) || 'Anonymous',
+                    name : (get.val() && get.val().name),
+                    surname : (get.val() && get.val().surname),
+                    photo : (get.val() && get.val().profilePhoto),
+                    name : (get.val() && get.val().name),
+                    surname : (get.val() && get.val().surname),
+                    photo : (get.val() && get.val().profilePhoto),
+                    
+                    
+                  });
                 });
 
-                axios
-                  .request({
-                    method: 'post',
-                    url: `https://maps.googleapis.com/maps/api/place/details/json?placeid=${snapshot.val().startPointId}&key=AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI`,
-                  })
-                  .then((result)=>{
-                    
-                    travels2.startPlace = result.data.result.formatted_address
-                  
-                  });
+                
+  
 
-                  axios
-                  .request({
-                    method: 'post',
-                    url: `https://maps.googleapis.com/maps/api/place/details/json?placeid=${snapshot.val().endPointId}&key=AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI`,
-                  })
-                  .then((result)=>{
-                    
-                    travels2.endPlace = result.data.result.formatted_address
-                  
-                  });
-                oldResult.push(travels2);
              }); 
             }
           });

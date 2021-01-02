@@ -112,10 +112,10 @@ const styles = {
 
     },
     profileImage: {
-        width: 140,
-        height: 140,
+        width: 130,
+        height: 130,
         overflow: "hidden",
-        marginTop:"2.7%"
+        marginTop:"2.7%",
     },
     text: { 
         color: "black", 

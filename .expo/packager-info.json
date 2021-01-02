@@ -2,9 +2,9 @@
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 10140,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "packagerPid": 2428,
+  "expoServerNgrokUrl": "https://sj-yi8.anonymous.taxbill.exp.direct",
+  "packagerNgrokUrl": "https://packager.sj-yi8.anonymous.taxbill.exp.direct",
+  "ngrokPid": 18624,
   "webpackServerPort": null
 }
