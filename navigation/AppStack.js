@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/HomeScreen';
 import Search from '../screens/SearchScreen';
 import Chat from '../screens/ChatScreens/ChatScreen';
-import Travel from '../screens/TravelScreen';
+import Travel from '../screens/TravelScreens/TravelStackScreen';
 import Colors from '../utils/colors';
 import Profil from '../screens/ProfileScreens/ProfileStackScreen'
 import useStatusBar from '../hooks/useStatusBar';
