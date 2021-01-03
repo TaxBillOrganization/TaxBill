@@ -7,9 +7,12 @@ const TravelStack = createStackNavigator();
 
 export default function TravelStacScreen() {  
   return (
-    <TravelStack.Navigator options={{headerShown: false}} screenOptions={{headerShown: false}}>
+    <TravelStack.Navigator initialRouteName="TravelPage" options={{headerShown: false}} screenOptions={{headerShown: false}}>
         <TravelStack.Screen name="TravelPage" component={TravelScreen}/>
-        <TravelStack.Screen name="DeleteTravel" component={DeleteTravelScreen}/>
+        <TravelStack.Screen name="DeleteTravel" component={DeleteTravelScreen}
+      options={({ route }) => ({
+      title: route.params.Region
+      })} />
     </TravelStack.Navigator>
     );
   }

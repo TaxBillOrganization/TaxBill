@@ -60,13 +60,15 @@ export default function SearchStackPage() {
                 passenger:passengerCount,
                 statu:status,
              });
-
+             ///////////
             firebase.database().ref('Travels/'+ selectedItem.Id+"/Passengers" ).update({
                [user.uid]:"c",
                 
             });
-            firebase.database().ref('Users/'+user.uid+'/Travels/' ).set({
-                [selectedItem.Id] :"c"
+            firebase.database().ref('Users/'+user.uid+'/Travels/'+selectedItem.Id ).set({
+                Id:[selectedItem.Id],
+                statu:"c",
+                role:"p",
             });
             navigation.navigate("Search");
         }
@@ -169,7 +171,8 @@ export default function SearchStackPage() {
         const [pickUpSelected,setpickUpSelected] = useState({}); 
         const [dropOffSelected,setDropOffSelected] = useState({});
         const [addressResult,setaddressResult] = useState([]);
-      
+        const [startPointTitle,setStartPoint] = useState();
+        const [endPointTitle,setEndPoint] = useState();
         
         function getAddressPrediction(userInput){
               axios
@@ -227,11 +230,13 @@ export default function SearchStackPage() {
               secilen.location=results.data.result.geometry.location;
               secilen.placeId = placeId;
               setpickUpSelected(secilen);
+              setStartPoint(results.data.result.formatted_address);
               
             }else if(isSelected == "dropOff"){
               secilen.location=results.data.result.geometry.location;
               secilen.placeId = placeId;
               setDropOffSelected(secilen);
+              setEndPoint(results.data.result.formatted_address);
             }
           })
           .catch((e) => {
@@ -503,6 +508,7 @@ export default function SearchStackPage() {
                             <Icon name="home" size={15} color="#FF5E3A"/>
                                 <Input onFocus={()=>setSelected("pickUp")}  style ={styles.inputSearch} 
                                 placeholder="Choose pick up location" onChangeText={(value)=>getAddressPrediction(value)}
+                                value={startPointTitle}
                                 />
                             </InputGroup>
                           </View>
@@ -512,6 +518,7 @@ export default function SearchStackPage() {
                             <Icon name="send" size={15} color="#FF5E3A"/>
                                 <Input onFocus={()=>setSelected("dropOff")}  style ={styles.inputSearch} 
                                 placeholder="Choose drop-off location" onChangeText={(value)=>getAddressPrediction(value)}
+                                value={endPointTitle}
                                 />
                             </InputGroup>
                           </View>

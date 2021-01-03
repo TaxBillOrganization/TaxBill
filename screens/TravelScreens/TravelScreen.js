@@ -1,16 +1,10 @@
 import  React,{useState,useEffect} from 'react';
-import { Text, View, SafeAreaView, Image, ScrollView,RefreshControl,TouchableOpacity ,} from "react-native";
-import IconButton from '../../components/IconButton';
+import { Text, View, SafeAreaView, Image, ScrollView,StatusBar,ActivityIndicator,} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import Star from 'react-native-star-view';
 import {List,ListItem, Body,Right} from "native-base";
 import styles from "../Styles/searchScreenStyles";
 import Profilstyles from "../Styles/ProfileScreenStyles";
 import firebase from 'firebase';
-const GOOGLE_MAPS_APIKEY = 'AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI';
-import MapView from "react-native-maps";
-import MapViewDirections from 'react-native-maps-directions';
-import mapStyle from "../Styles/mapStyle";
 import HeaderComponent from "../../components/Header";
 import useStatusBar from '../../hooks/useStatusBar';
 
@@ -19,26 +13,13 @@ const logo = require('../../assets/logo.png');
 export default function TravelScreen({navigation}) {
   useStatusBar('light-content');
 
-  const [currentTravel,setCurrentTravel] = useState([]);
-  const [oldTravel,setOldTravel] = useState([]);
+  const [currentTravel,setCurrentTravel] = useState();
+  const [oldTravel,setOldTravel] = useState();
+  //const [loadingState,setLoading] = useState(true);
   const [selectedItem,setSelectedItem] = useState(null);
-  const [userstate,setUser] = useState({});
-  const [region,setRegion] = useState({});
-  /*const [refreshing, setRefreshing] = React.useState(false);
+  const [regionn,setRegion] = useState({});
 
-  const wait = (timeout) => {
-    return new Promise(resolve => {
-      setTimeout(resolve, timeout);
-    });
-  }
-   
-    const onRefresh = React.useCallback(() => {
-            
-    setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false));
-    }, []);
-*/
-    useEffect(()=>{
+    useEffect(()=>{     
         var user = firebase.auth().currentUser;
         var oldResult=[];
         var currentResult=[];
@@ -65,8 +46,8 @@ export default function TravelScreen({navigation}) {
                         name : (get.val() && get.val().name),
                         surname : (get.val() && get.val().surname),
                         photo : (get.val() && get.val().profilePhoto),                                 
-                    });
-                    //console.error(JSON.stringify(currentResult))
+                    });                 
+                    setCurrentTravel(currentResult);
                     });
                 }); 
 
@@ -94,21 +75,18 @@ export default function TravelScreen({navigation}) {
                         surname : (get.val() && get.val().surname),
                         photo : (get.val() && get.val().profilePhoto),          
                     });
+                    setOldTravel(currentResult);
                     });
                 }); 
             }
             });
-            setCurrentTravel(currentResult);
-            setOldTravel(oldResult);
-            
         });
-    })
+    }, []);
 
     function deleteTravel(item){
     setSelectedItem(item);
             var user = firebase.auth().currentUser;
             var control = false;
-            var passengers=[];
             firebase.database().ref('Users/'+user.uid+'/Travels/'+item.Id).on('value',function (snapshot) {
                 
                 if(snapshot.val() == "c"){
@@ -137,21 +115,11 @@ export default function TravelScreen({navigation}) {
                 latitude:midX,longitude:midY,latitudeDelta:deltaLat+0.5,longitudeDelta:deltaLng+0.5
             }
             setRegion(region);
-
-            var USER ={email:'',Username:'',Usersurname:'',Userage:'', Usergender:'', image:''};
-            firebase.database().ref('Users/'+ item.creater +'/ProfileInformation').once('value',function (snapshot) {
-            USER.Username = (snapshot.val() && snapshot.val().name) || 'Anonymous';
-            USER.Usersurname = (snapshot.val() && snapshot.val().surname) || 'Anonymous';
-            USER.Userage = (snapshot.val() && snapshot.val().age) || 'Anonymous';
-            USER.Usergender = (snapshot.val() && snapshot.val().gender) || 'Anonymous';
-            USER.image=(snapshot.val() && snapshot.val().profilePhoto);
-                setUser(USER);
-            }); 
-    navigation.navigate("DeleteTravel");
+        navigation.navigate("DeleteTravel",{ Region:region , Item:item });
     }
-
     return(
     <SafeAreaView>
+    <StatusBar barStyle="light-content" backgroundColor="black"/>
     <HeaderComponent logo={logo}/>
     <ScrollView>       
         <View >

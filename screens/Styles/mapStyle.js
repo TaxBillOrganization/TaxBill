@@ -79,7 +79,7 @@ const styles ={
         marginLeft:"2%",
         width: windowWidth/3.5,
         height: windowHeight/20,
-        top:windowHeight/1.8,
+        top:windowHeight/2.1,
         backgroundColor:"red",
         borderRadius:8,
         alignItems:"center",
