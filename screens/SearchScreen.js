@@ -520,7 +520,7 @@ export default function SearchStackPage() {
                             <Text style ={{marginTop:"2%",color:"#000",fontSize:10, fontStyle: "italic"}}>PICK UP</Text>
                           <InputGroup>
                             <Icon name="home" size={15} color="#FF5E3A"/>
-                                <Input onFocus={()=>setSelected("pickUp")}  style ={styles.inputSearch} 
+                                <Input onFocus={()=>{setSelected("pickUp"),setStartPoint(null)}}  style ={styles.inputSearch} 
                                 placeholder="Choose pick up location" onChangeText={(value)=>getAddressPrediction(value)}
                                 value={startPointTitle}
                                 />
@@ -530,7 +530,7 @@ export default function SearchStackPage() {
                             <Text style ={{marginTop:"2%",color:"#000",fontSize:10, fontStyle: "italic"}}>DROP-OFF</Text>
                             <InputGroup>
                             <Icon name="send" size={15} color="#FF5E3A"/>
-                                <Input onFocus={()=>setSelected("dropOff")}  style ={styles.inputSearch} 
+                                <Input onFocus={()=>{setSelected("dropOff"),setEndPoint(null)}}  style ={styles.inputSearch} 
                                 placeholder="Choose drop-off location" onChangeText={(value)=>getAddressPrediction(value)}
                                 value={endPointTitle}
                                 />

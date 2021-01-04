@@ -218,6 +218,11 @@ function handleToggleSearchResult(state,action){
             },
             predictions:{
                 $set:{}
+            },
+            startEndPoint:{
+                pickUp:{
+                    $set:null
+                }
             }
         });
     }
@@ -233,6 +238,11 @@ function handleToggleSearchResult(state,action){
             },
             predictions:{
                 $set:{}
+            },
+            startEndPoint:{
+                dropOff:{
+                    $set:null
+                }
             }
         });
     }

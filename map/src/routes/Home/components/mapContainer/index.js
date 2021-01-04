@@ -12,7 +12,7 @@ import DateTime from "../Date/index";
 
 export const MapContainer = ({region, date, getInputData,toggleSearchResultModal,getAddressPrediction,
      resultTypes, predictions, getSelectedAdress, selectedAddress, saveTrack,settings,openSettings,getSettings,
-     setSettings, getDate,startEndAddress,startEnd}) => {
+     setSettings, getDate,startEndAddress,startEnd,startEndPoint}) => {
      
         const { selectedPickUp, selectedDropOff } = selectedAddress || {};
         const GOOGLE_MAPS_APIKEY = 'AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI';
@@ -64,7 +64,8 @@ export const MapContainer = ({region, date, getInputData,toggleSearchResultModal
             </MapView>
             
             <SearchBox getInputData={getInputData} toggleSearchResultModal={toggleSearchResultModal}
-            getAddressPrediction={getAddressPrediction} selectedAddress = {selectedAddress}
+            getAddressPrediction={getAddressPrediction} selectedAddress = {selectedAddress}  startEndAddress={startEndAddress}
+            startEndPoint={startEndPoint}
             />
             <DateTime  settings={settings} getDate={getDate} />
             {   (resultTypes.pickUp || resultTypes.dropOff) &&
