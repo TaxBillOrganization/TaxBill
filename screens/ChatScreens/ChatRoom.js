@@ -5,57 +5,21 @@ import Separator from '../../components/Firebase/Separator'
 import HeaderComponent from "../../components/Header";
 const logo = require('../../assets/logo.png');
 
-export default function ChatRoom({navigation,route}) {
+export default function ChatRoom({navigation}) {
    const [threads, setThreads] = useState([])
    const [loading, setLoading] = useState(true)
-   
    const [userstate,setUser] = useState({});
-   const [withWho,setWithWho] = useState({});
 
    useEffect(() => {
     var User ={Username:'',Usersurname:'',Userphoto:''};
-    var withUser ={Username:'',Usersurname:'',Userphoto:''};
-    var roomName;
      
-     const user = firebase.auth().currentUser.toJSON(roomName);
+     const user = firebase.auth().currentUser;
     firebase.database().ref('Users/'+ user.uid +'/ProfileInformation').once('value',function (snapshot) {
         User.Username = (snapshot.val() && snapshot.val().name);
         User.Usersurname = (snapshot.val() && snapshot.val().surname);
         User.Userphoto = (snapshot.val() && snapshot.val().profilePhoto);
         setUser(User);
     });
-      
-    if(route.params !=null && route.params !="undefined"){
-      roomName = route.params.thread.creater;
-      firebase.database().ref('Users/'+ roomName +'/ProfileInformation').once('value',function (snapshot) {
-        withUser.Username = (snapshot.val() && snapshot.val().name);
-        withUser.Usersurname = (snapshot.val() && snapshot.val().surname);
-        withUser.Userphoto = (snapshot.val() && snapshot.val().profilePhoto);
-        setWithWho(withUser);
-      });
-    
-      firebase.firestore()
-          .collection('MESSAGE_THREADS')
-          .add({
-            name: User.Username + (" ") +User.Usersurname,
-            with: withUser.Username + (" ") + withUser.Usersurname,
-            Id:roomName+user.uid,
-            UserPhoto:User.Userphoto,
-            WithPhoto:withUser.Userphoto,
-            latestMessage: {
-              text: `Start chat `,
-              createdAt: new Date().getTime()
-            }
-          })
-          .then(docRef => {
-            docRef.collection('MESSAGES').add({
-              text: `Start chat `,
-              createdAt: new Date().getTime(),
-              system: true
-            })
-          });
-
-    }
 
     const unsubscribe = firebase.firestore()
       .collection('MESSAGE_THREADS')

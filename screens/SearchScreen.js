@@ -1,5 +1,5 @@
-import  React,{useState} from 'react';
-import { Text, View, SafeAreaView, Image, ScrollView,Button,RefreshControl,TouchableOpacity,StyleSheet } from "react-native";
+import  React,{useEffect, useState} from 'react';
+import { Text, View, SafeAreaView, Image, ScrollView,Alert,RefreshControl,TouchableOpacity,StyleSheet } from "react-native";
 import IconButton from '../components/IconButton';
 import Icon from "react-native-vector-icons/FontAwesome";
 import Fontisto from "react-native-vector-icons/Fontisto";
@@ -16,12 +16,12 @@ const GOOGLE_MAPS_APIKEY = 'AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI';
 import MapView from "react-native-maps";
 import MapViewDirections from 'react-native-maps-directions';
 import mapStyle from "./Styles/mapStyle";
-import ChatPage from "./ChatScreens/ChatRoom";
 const ProfilStack = createStackNavigator();
 import ChatRoom from './ChatScreens/ChatRoom';
 import Messages from './ChatScreens/Messages';
 import HeaderComponent from "../components/Header";
 import useStatusBar from '../hooks/useStatusBar';
+import { creatRoom } from '../components/Firebase/firebase';
 const logo = require('../assets/logo.png');
 
 const wait = (timeout) => {
@@ -34,12 +34,22 @@ export default function SearchStackPage() {
     useStatusBar('light-content');
     const [selectedItem,setSelectedItem] = useState(null);
     const [userstate,setUser] = useState({});
+    const [activeUser,setActiveUser] = useState({});
     const [region,setRegion] = useState({});
     const [isAvailable,setAvailable] = useState();
+    const uid = firebase.auth().currentUser.uid
+
 
 
     function JoinTravelPage({navigation}){
       useStatusBar('light-content');
+
+
+        function creatChatRoom(){
+          creatRoom(uid,activeUser.Username,activeUser.Usersurname,activeUser.Userphoto,
+            selectedItem.creater,selectedItem.createrName,selectedItem.createrSurname,selectedItem.createrPhoto);
+            navigation.navigate("ChatRoom")
+        }
         function saveTravel(){
             var user = firebase.auth().currentUser;
             var passengerCount;
@@ -52,8 +62,6 @@ export default function SearchStackPage() {
                 }else if(snapshot.val().people && passengerCount+1 == 3){
                     status="f";
                 }
-                
-
             });
             passengerCount++;
             firebase.database().ref('Travels/'+ selectedItem.Id).update({
@@ -149,10 +157,9 @@ export default function SearchStackPage() {
                     </TouchableOpacity>
                     }
                     {!isAvailable &&
-                    <TouchableOpacity style={mapStyle.buttonIgnore2} onPress={()=>navigation.navigate("Chat",{ thread: selectedItem })}>
+                    <TouchableOpacity style={mapStyle.buttonIgnore2} onPress={()=>creatChatRoom()}>
                         <Text style={{color:"#FFF",padding:"5%"}}>Send Message</Text>
                     </TouchableOpacity>
-                    //navigation.navigate("Chat",{ thread: item })
                     }
                     
                 </View>
@@ -409,7 +416,7 @@ export default function SearchStackPage() {
             var user = firebase.auth().currentUser;
             var control = false;
             var passengers=[];
-            firebase.database().ref('Users/'+user.uid+'/Travels/'+item.Id).on('value',function (snapshot) {
+            firebase.database().ref('Users/'+user.uid+'/Travels/'+item.Id).once('value',function (snapshot) {
                  
                 if(snapshot.val() == "c"){
                     control = true;
@@ -438,6 +445,13 @@ export default function SearchStackPage() {
                 latitude:midX,longitude:midY,latitudeDelta:deltaLat+0.5,longitudeDelta:deltaLng+0.5
             }
             setRegion(region);
+            var activeuser ={Username:'',Usersurname:'',Userphoto:''};
+            firebase.database().ref('Users/'+ uid +'/ProfileInformation').once('value',function (snapshot) {
+              activeuser.Username = (snapshot.val() && snapshot.val().name);
+              activeuser.Usersurname = (snapshot.val() && snapshot.val().surname);
+              activeuser.Userphoto = (snapshot.val() && snapshot.val().profilePhoto);
+              setActiveUser(activeuser)
+          });
 
             var user ={email:'',Username:'',Usersurname:'',Userage:'', Usergender:'', image:''};
             firebase.database().ref('Users/'+ item.creater +'/ProfileInformation').once('value',function (snapshot) {
@@ -654,16 +668,12 @@ export default function SearchStackPage() {
           
       }
 
-
-
     return (    //Messages
     <ProfilStack.Navigator options={{headerShown: false}} screenOptions={{headerShown: false}}>
         <ProfilStack.Screen name="Search" component={SearchBox}/>
         <ProfilStack.Screen name="Join" component={JoinTravelPage} />
-        <ProfilStack.Screen name="Chat" component={ChatPage} options={({ route }) => ({title: route.params})}/>
-        <ProfilStack.Screen name='Messages' component={Messages}options={({ route }) => ({title: route.params.thread.name
-        })} 
-        />
+        <ProfilStack.Screen name="ChatRoom" component={ChatRoom} />
+        <ProfilStack.Screen name='Messages' component={Messages}/>
     </ProfilStack.Navigator>
     );
   }

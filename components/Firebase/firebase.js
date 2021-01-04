@@ -34,3 +34,26 @@ firebase.database().ref('Users/'+ uid +('/ProfileInformation')).set({
   travel:0,
   starPoint:0,
 });
+
+export const creatRoom = (uid,name,surname,photo,uid2,Cname,Csurname,Cphoto) => {
+  firebase.firestore()
+  .collection('MESSAGE_THREADS')
+  .add({
+    name: name + (" ") + surname,
+    with: Cname + (" ") + Csurname,
+    Id: uid2 + uid,
+    UserPhoto: photo,
+    WithPhoto: Cphoto,
+    latestMessage: {
+      text: `Start chat `,
+      createdAt: new Date().getTime()
+    }
+  })
+  .then(docRef => {
+    docRef.collection('MESSAGES').add({
+      text: `Start chat `,
+      createdAt: new Date().getTime(),
+      system: true
+    })
+  });
+}

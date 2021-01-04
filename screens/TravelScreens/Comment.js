@@ -1,5 +1,5 @@
 import  React,{useEffect, useState} from 'react';
-import { Text, View, SafeAreaView, Image, ScrollView,StatusBar,TextInput,StyleSheet} from "react-native";
+import { Text, View, SafeAreaView, Image, ScrollView,StatusBar,TextInput,StyleSheet,TouchableOpacity} from "react-native";
 import IconButton from '../../components/IconButton';
 import Star from 'react-native-star-view';
 import Profilstyles from "../Styles/ProfileScreenStyles";
@@ -7,6 +7,7 @@ import firebase from 'firebase';
 import mapStyle from "../Styles/mapStyle";
 import HeaderComponent from "../../components/Header";
 import AppButton from '../../components/commentButton';
+import { Ionicons } from '@expo/vector-icons';
 
 const logo = require('../../assets/logo.png');
 
@@ -15,6 +16,10 @@ export default function TravelStackPage({route,navigation}) {
     const [activeUser,setActive]=useState({});
     const [starScore,setScor] = useState();
     const [comment,setComment] = useState();
+    const [starState,setStar] = useState(
+        {one:'md-star',two:'md-star',three:'md-star-half',four:'md-star-outline',five:'md-star-outline'});
+    const [starNumber,setStarNumber] = useState(2.5);
+    
     const selectedItem = route.params.SelectedItem
     const activeUid=firebase.auth().currentUser.uid
   
@@ -59,8 +64,32 @@ export default function TravelStackPage({route,navigation}) {
            text:comment,
            key:activeUid,
            });
+           firebase.database().ref('Users/'+ selectedItem.creater +('/ProfileInformation/')).update({
+            starPoint:userstate.starPoint+starNumber,
+            travel:userstate.travel+1,
+            });
          }
       }
+    const oneStar=()=>{
+        setStar({one:'md-star',two:'md-star-outline',three:'md-star-outline',four:'md-star-outline',five:'md-star-outline'});
+        setStarNumber(1);
+    }
+    const twoStar=()=>{
+        setStar({one:'md-star',two:'md-star',three:'md-star-outline',four:'md-star-outline',five:'md-star-outline'});
+        setStarNumber(2);
+    }
+    const threeStar=()=>{
+        setStar({one:'md-star',two:'md-star',three:'md-star',four:'md-star-outline',five:'md-star-outline'});
+        setStarNumber(3);
+    }
+    const fourStar=()=>{
+        setStar({one:'md-star',two:'md-star',three:'md-star',four:'md-star',five:'md-star-outline'});
+        setStarNumber(4);
+    }
+    const fiveStar=()=>{
+        setStar({one:'md-star',two:'md-star',three:'md-star',four:'md-star',five:'md-star'});
+        setStarNumber(5);
+    }
 
   return(
         <SafeAreaView style={Profilstyles.container}>
@@ -88,8 +117,8 @@ export default function TravelStackPage({route,navigation}) {
                     <Text style={[Profilstyles.text, Profilstyles.subText]}>Travel</Text>
                 </View>
                 <View style={Profilstyles.statsBox}>
-                    <Star  style={mapStyle.starStyle} score={starScore} />
-                    <Text style={[Profilstyles.text, Profilstyles.subText]}>{starScore}</Text>
+                    <Star  style={mapStyle.starStyle} score={Number(starScore.toFixed(1))} />
+                    <Text style={[Profilstyles.text, Profilstyles.subText]}>{Number(starScore.toFixed(1))}</Text>
                     <Text style={[Profilstyles.text, Profilstyles.subText]}>Companion Score</Text>
                 </View>
             </View>
@@ -105,6 +134,25 @@ export default function TravelStackPage({route,navigation}) {
                               placeholder="Your Comment" autoCapitalize="words"
                               onChangeText={(text) => { setComment(text)}}
                               />
+                              <View style={{flexDirection: "row"}}>
+                                <TouchableOpacity>
+                                    <Ionicons name={starState.one} color="black" size={35} onPress={oneStar}/>
+                                </TouchableOpacity>
+                                <TouchableOpacity>
+                                    <Ionicons name={starState.two} color="black" size={35} onPress={twoStar}/>
+                                </TouchableOpacity>  
+                                <TouchableOpacity>
+                                    <Ionicons name={starState.three} color="black" size={35} onPress={threeStar}/>
+                                </TouchableOpacity>  
+                                <TouchableOpacity>
+                                    <Ionicons name={starState.four} color="black" size={35} onPress={fourStar}/>
+                                </TouchableOpacity>  
+                                <TouchableOpacity>
+                                    <Ionicons name={starState.five} color="black" size={35} onPress={fiveStar}/>
+                                </TouchableOpacity>  
+                              </View>
+
+
                               <AppButton title="Comment" onPress={() => onCommentPress()}/>
                            </View>
                      </View>
