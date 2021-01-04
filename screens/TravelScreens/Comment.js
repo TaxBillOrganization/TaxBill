@@ -1,25 +1,21 @@
 import  React,{useEffect, useState} from 'react';
-import { Text, View, SafeAreaView, Image, ScrollView,StatusBar,TouchableOpacity,} from "react-native";
+import { Text, View, SafeAreaView, Image, ScrollView,StatusBar,TextInput,StyleSheet} from "react-native";
 import IconButton from '../../components/IconButton';
 import Star from 'react-native-star-view';
 import Profilstyles from "../Styles/ProfileScreenStyles";
 import firebase from 'firebase';
-const GOOGLE_MAPS_APIKEY = 'AIzaSyCBoKDUv3Agp1IOImoTfwYqJ2R4jOtqMFI';
-import MapView from "react-native-maps";
-import MapViewDirections from 'react-native-maps-directions';
 import mapStyle from "../Styles/mapStyle";
 import HeaderComponent from "../../components/Header";
-import useStatusBar from '../../hooks/useStatusBar';
+import AppButton from '../../components/commentButton';
 
 const logo = require('../../assets/logo.png');
 
 export default function TravelStackPage({route,navigation}) {
-    useStatusBar('light-content');
     const [userstate,setUser] = useState({});
+    const [activeUser,setActive]=useState({});
     const [starScore,setScor] = useState();
-    const [loadingState,setLoading] = useState(false);
-    const selectedItem = route.params.Item
-    const region = route.params.Region
+    const [comment,setComment] = useState();
+    const selectedItem = route.params.SelectedItem
     const activeUid=firebase.auth().currentUser.uid
   
      useEffect(()=>{
@@ -44,22 +40,34 @@ export default function TravelStackPage({route,navigation}) {
         setScor(Score);
      })
 
-  function deleteTravel(){
-      firebase.database().ref('Travels/'+ selectedItem.Id).remove();
-      firebase.database().ref('Users/'+activeUid+'/Travels/'+selectedItem.Id ).remove();
-      //yolcudan da sil
-      navigation.navigate("TravelPage");
-  }
-  function leaveTravel(){
-    firebase.database().ref('Travels/'+ selectedItem.Id+"/Passengers/"+activeUid).remove();
-    firebase.database().ref('Users/'+activeUid+'/Travels/'+selectedItem.Id ).remove();
-    navigation.navigate("TravelPage");
-}
+     useEffect(()=>{
+        var User ={Username:'',Usersurname:'', image:''};         
+        firebase.database().ref('Users/'+activeUid+'/ProfileInformation').once('value', function (snapshot) {
+            User.Username = (snapshot.val() && snapshot.val().name);
+            User.Usersurname = (snapshot.val() && snapshot.val().surname);
+            User.image=(snapshot.val() && snapshot.val().profilePhoto);
+            setActive(User);          
+        })
+     },[])
+
+    function onCommentPress() {
+        if(comment==""){
+           console.error("You must enter your comment");
+         }
+         else{
+           firebase.database().ref('Users/'+ selectedItem.creater +('/Comments/')+ activeUid).set({
+           text:comment,
+           key:activeUid,
+           });
+         }
+      }
+
   return(
         <SafeAreaView style={Profilstyles.container}>
         <StatusBar barStyle="light-content" backgroundColor="black"/>
         <HeaderComponent logo={logo}/>
         <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={{marginBottom:"5%"}}>
             <View style={Profilstyles.titleBar}>
                 <View style={Profilstyles.titleBar}>
                 <View style={Profilstyles.profileImage}>
@@ -85,51 +93,90 @@ export default function TravelStackPage({route,navigation}) {
                     <Text style={[Profilstyles.text, Profilstyles.subText]}>Companion Score</Text>
                 </View>
             </View>
-
-            <View style={mapStyle.viewContainer2}>
-                
-                <MapView
-                    provider={MapView.PROVIDER_GOOGLE}
-                    style ={mapStyle.map}
-                    showsUserLocation={true}
-                    region ={region}
-                >
-                    <MapView.Marker
-                    coordinate={{latitude:selectedItem.pickUpLatitude, longitude:selectedItem.pickUpLongitude}}
-                        pinColor = "blue"
-                    />
-                    <MapView.Marker
-                    coordinate={{latitude:selectedItem.dropOffLatitude, longitude:selectedItem.dropOffLongitude}}
-                        pinColor = "red"
-                    />
-                
-                <MapViewDirections
-                    origin={{latitude:selectedItem.pickUpLatitude, longitude:selectedItem.pickUpLongitude}}
-                    destination={{latitude:selectedItem.dropOffLatitude, longitude:selectedItem.dropOffLongitude}}
-                    apikey={GOOGLE_MAPS_APIKEY}
-                    strokeWidth={5}
-                    strokeColor={"#669df6"}
-                    strokeOpacity= {5.0}
-                    strokeWeight= {5}
-                />
-                </MapView>
-                
-                {selectedItem.creater==activeUid &&
-                <View>
-                    <TouchableOpacity style={mapStyle.buttonDelete2} onPress={()=> deleteTravel()}>
-                        <Text style={{color:"#FFF",padding:"5%"}}>Delete</Text>
-                    </TouchableOpacity>      
-                </View>
-                }
-                {selectedItem.creater!=activeUid &&
-                <View>
-                    <TouchableOpacity style={mapStyle.buttonDelete2} onPress={()=> leaveTravel()}>
-                        <Text style={{color:"#FFF",padding:"5%"}}>Leave</Text>
-                    </TouchableOpacity>      
-                </View>
-                }          
+            </View>
+            <View style={styles.titleBar}>
+                     <View style={styles.profileImage}>
+                        <Image source={{uri:activeUser.image}} style={styles.image} resizeMode="center"></Image>                                     
+                     </View>
+                     <View style={styles.textBar}>
+                     <Text style={styles.subTextName}>{activeUser.Username+' '+activeUser.Usersurname}</Text>             
+                           <View>
+                              <TextInput style={styles.textInput} 
+                              placeholder="Your Comment" autoCapitalize="words"
+                              onChangeText={(text) => { setComment(text)}}
+                              />
+                              <AppButton title="Comment" onPress={() => onCommentPress()}/>
+                           </View>
+                     </View>
             </View>
         </ScrollView>
     </SafeAreaView>
     )
   }
+  const styles = StyleSheet.create({
+    container: {
+        flex:1, 
+        alignSelf:'auto', 
+        justifyContent:'center',
+        paddingLeft:"2%",
+        paddingRight:"2%",
+        marginHorizontal:"2%"
+    },
+    image: {
+      flex: 1,
+      width: null,
+      alignSelf: "auto",
+      borderRadius:20,
+      borderColor:"#f5f5f5",
+      borderWidth:1,
+  },
+    titleBar: {
+        flexDirection: "row",
+        marginBottom: "3%",
+        backgroundColor:'#f5f5f5',
+        borderRadius: 15
+    },
+    textBar: {
+        flexDirection: "column",
+        marginHorizontal:"3%",
+        width:"80%"
+    },
+    subText: {
+        fontSize: 16,
+        color: "black",
+        fontWeight: "500"
+    },
+    subText1: {
+      fontSize: 16,
+      color: "red",
+      fontWeight: "500"
+  },
+    subTextName: {
+        fontSize: 18,
+        color: "black",
+        fontWeight: 'bold',
+        fontWeight: "700"
+    },
+    profileImage: {
+        width: 60,
+        height: 60,
+        borderRadius: 35,
+        overflow: "hidden",
+        alignItems:"stretch",
+        justifyContent:'center',
+        //alignSelf:"center"
+        borderColor:"#f5f5f5",
+        borderWidth :2
+    },
+   textInput: {
+      textAlign: "center",
+      borderWidth:1, 
+      borderColor:"gray", 
+      borderRadius: 30,
+      marginVertical: 5, 
+      padding:10, 
+      height:40, 
+      alignSelf: "stretch", 
+      fontSize: 18, 
+  },
+});

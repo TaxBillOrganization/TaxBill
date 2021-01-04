@@ -1,5 +1,5 @@
 import  React,{useState,useEffect} from 'react';
-import { Text, View, SafeAreaView, Image, ScrollView,StatusBar,ActivityIndicator,} from "react-native";
+import { Text, View, SafeAreaView, Image, ScrollView,StatusBar,TouchableOpacity,} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import {List,ListItem, Body,Right} from "native-base";
 import styles from "../Styles/searchScreenStyles";
@@ -7,6 +7,7 @@ import Profilstyles from "../Styles/ProfileScreenStyles";
 import firebase from 'firebase';
 import HeaderComponent from "../../components/Header";
 import useStatusBar from '../../hooks/useStatusBar';
+import AppButton from '../../components/commentButton';
 
 const logo = require('../../assets/logo.png');
 
@@ -75,7 +76,7 @@ export default function TravelScreen({navigation}) {
                         surname : (get.val() && get.val().surname),
                         photo : (get.val() && get.val().profilePhoto),          
                     });
-                    setOldTravel(currentResult);
+                    setOldTravel(oldResult);
                     });
                 }); 
             }
@@ -117,11 +118,15 @@ export default function TravelScreen({navigation}) {
             setRegion(region);
         navigation.navigate("DeleteTravel",{ Region:region , Item:item });
     }
+    function CommentTravel(item){
+        setSelectedItem(item);
+        navigation.navigate("Comment",{SelectedItem:item});
+    }
     return(
     <SafeAreaView>
-    <StatusBar barStyle="light-content" backgroundColor="black"/>
-    <HeaderComponent logo={logo}/>
-    <ScrollView>       
+        <StatusBar barStyle="light-content" backgroundColor="black"/>
+        <HeaderComponent logo={logo}/>
+        <ScrollView>       
         <View >
             <View style ={{alignItems:"center"}}>
             <Text style={[Profilstyles.text, { color: "#AEB5BC", fontSize: 18,alignSelf:"center",marginBottom:"1%" }]}>Current Travels</Text>
@@ -154,51 +159,44 @@ export default function TravelScreen({navigation}) {
                             </Right>
                             </ListItem>  
                         </View>
-                    }
-    
-                    />
+                    }/>
         </View>
         <View style={{marginTop:30}}>
-        <View style ={{alignItems:"center",fontSize:"bold"}}>
-        <Text style={[Profilstyles.text, { color: "#AEB5BC", fontSize: 18,alignSelf:"center",marginBottom:"1%" }]}>
-            Old Travels
-            </Text>
-        </View>
-        
-        <List
-        dataArray={oldTravel}
-        keyExtractor={item => item.Id}
-        renderRow={(item)=>
-                <View style={Profilstyles.container}>
-                <ListItem onPress={()=>deleteTravel(item)} button avatar >
-                <Body style={{flexDirection:"column"}}>
-                <View style={{flexDirection:"row"}}>
-                    <Text style={styles.text} >{item.name +(" ")+ item.surname}</Text>
-                </View>
-                <View style={{flexDirection:"row"}}>
-                    <Icon  name="home" style={{marginTop:"1%",marginRight:"1%"}}/>
-                    <Text >{item.startPlace}</Text>
-                </View>
-                <View style={{flexDirection:"row",marginBottom:"5%"}}>
-                    <Icon  name="send" style={{marginTop:"1%",marginRight:"1%"}}/>
-                    <Text >{item.endPlace}</Text>
-                </View>
-                <View style={{flexDirection:"row",marginTop:"3%",marginRight:"1%"}}>
-                    <Icon  name="clock-o" style={{marginTop:"1%",marginRight:"1%"}}/>
-                    <Text>{item.date} </Text>
-                </View>
-                </Body>
-                <Right style={styles.profileImage}>
-                <Image source={{uri:item.photo}} style={styles.image} resizeMode="center"></Image> 
-                </Right>
-                </ListItem>  
+            <View style ={{alignItems:"center",fontSize:"bold"}}>
+            <Text style={[Profilstyles.text, { color: "#AEB5BC", fontSize: 18,alignSelf:"center",marginBottom:"1%" }]}>Old Travels</Text>
             </View>
-            }
-
-            />     
+                <List
+                dataArray={oldTravel}
+                keyExtractor={item => item.Id}
+                renderRow={(item)=>
+                    <View style={Profilstyles.container}>
+                    <ListItem onPress={()=>CommentTravel(item)} button avatar >
+                    <Body style={{flexDirection:"column"}}>
+                    <View style={{flexDirection:"row"}}>
+                        <Text style={styles.text} >{item.name +(" ")+ item.surname}</Text>
+                    </View>
+                    <View style={{flexDirection:"row"}}>
+                        <Icon  name="home" style={{marginTop:"1%",marginRight:"1%"}}/>
+                        <Text >{item.startPlace}</Text>
+                    </View>
+                    <View style={{flexDirection:"row",marginBottom:"5%"}}>
+                        <Icon  name="send" style={{marginTop:"1%",marginRight:"1%"}}/>
+                        <Text >{item.endPlace}</Text>
+                    </View>
+                    <View style={{flexDirection:"row",marginTop:"3%",marginRight:"1%"}}>
+                        <Icon  name="clock-o" style={{marginTop:"1%",marginRight:"1%"}}/>
+                        <Text>{item.date} </Text>
+                    </View>
+                    </Body>
+                    <Right style={styles.profileImage}>
+                    <Image source={{uri:item.photo}} style={styles.image} resizeMode="center"></Image> 
+                    </Right>
+                    </ListItem>  
+                </View>
+                }/>     
             </View>
         </ScrollView>
-            </SafeAreaView>
+    </SafeAreaView>
     ) 
-    }
+}
   
