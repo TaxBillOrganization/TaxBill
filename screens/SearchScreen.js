@@ -23,7 +23,8 @@ import HeaderComponent from "../components/Header";
 import useStatusBar from '../hooks/useStatusBar';
 import { creatRoom } from '../components/Firebase/firebase';
 const logo = require('../assets/logo.png');
-
+var creatorGender="";
+var passengerGender='';
 const wait = (timeout) => {
     return new Promise(resolve => {
       setTimeout(resolve, timeout);
@@ -170,7 +171,15 @@ export default function SearchStackPage() {
 
 
       function SearchBox({navigation}){
+
         useStatusBar('light-content');
+              
+            //setting tabs states
+        const [settingTab,setSettingTab] = useState();
+        const [isSelectedFemale,setFemale] = useState(false);
+        const [isSelectedMale,setMale] = useState(false);
+        const [isSelectedPeople,setPeople] = useState(false);
+        const [isSelectedPerson,setPerson] = useState(false);
         const [point,setPoint] = useState();
         const [resultList,setResultList] = useState(false);
         const [isSelected,setSelected] = useState();
@@ -178,9 +187,22 @@ export default function SearchStackPage() {
         const [pickUpSelected,setpickUpSelected] = useState({}); 
         const [dropOffSelected,setDropOffSelected] = useState({});
         const [addressResult,setaddressResult] = useState([]);
-        const [startPointTitle,setStartPoint] = useState();
-        const [endPointTitle,setEndPoint] = useState();
+        const [startPointTitle,setStartPoint] = useState(null);
+        const [endPointTitle,setEndPoint] = useState(null);
         
+        useEffect(()=>{
+          
+          
+          if(startPointTitle !=null && endPointTitle != null && (isSelectedFemale || isSelectedMale || isSelectedPeople  || isSelectedPerson )){
+            
+            listele(pickUpSelected,dropOffSelected,isSelectedMale,
+              isSelectedFemale,isSelectedPerson,isSelectedPeople);
+              onRefresh();
+          }
+         
+        },[(startPointTitle,endPointTitle,isSelectedFemale,isSelectedMale,isSelectedPeople,isSelectedPerson)]);
+
+
         function getAddressPrediction(userInput){
               axios
             .request({
@@ -255,12 +277,12 @@ export default function SearchStackPage() {
       
         function listele(start,end,male,female,person,people){
           var dataArray=[];
-      
+          
+          const currentUser = firebase.auth().currentUser;
           if(!male && !female && !person && !people){
             alert("Please select setting");
           }else{
             
-            //console.error("geldi");
             travels = {creater:'',date:'',dropOffLatitude:'',dropOffLongitude:'',female:'',male:'',
             people:'',person:'',pickUpLatitude:'',pickUpLongitude:'',statu:'',Id:'',startPlace:'',endPlace:'',
             createrName:'',createrSurname:'',createrPhoto:''};
@@ -270,37 +292,39 @@ export default function SearchStackPage() {
                 ItemArray.push(snap.val());
               });
             })
-              //var arrayItems = ItemArray;
-              //console.error(JSON.stringify(ItemArray));
-              //console.error(JSON.stringify(ItemArray[0]));
+
               ItemArray.forEach(function(snapshot)
                 {
                   
-                  if(snapshot.statu == "c"){
-                    //defineGender
-                    var creatorGender='';
-                    
-                    
-                    
+                  if(snapshot.statu == "c" && currentUser.uid != snapshot.creater){
+
                     firebase.database().ref('Users/'+snapshot.creater+'/ProfileInformation').once('value',function (userList) {
                     
-                      creatorGender = userList.gender;
+                      if(userList.val().gender == "Male"){
+                        creatorGender = "Male";
+                      }else{
+                        creatorGender = "Female";
+                      }
                     });
-                    
-                    if((female && male) || (female && creatorGender=='Female')
-                    || (male && creatorGender=='Male')){  
+
+                    firebase.database().ref('Users/'+currentUser.uid+'/ProfileInformation').once('value',function (userList) {
+                      if(userList.val().gender == "Male"){
+                        passengerGender = "Male";
+                      }else{
+                        passengerGender = "Female";
+                      }
+                    });
+
+                    if( (female && male) || (female && creatorGender=='Female'&&( (snapshot.female &&creatorGender=='Female') || (snapshot.male &&creatorGender=='Male')) ) ||
+                     (male && creatorGender=='Male' && ((snapshot.female && passengerGender=='Female') || (snapshot.male && passengerGender=='Male') ) )){  
                      
-                        var currentUser = firebase.auth().currentUser;
-                        var passengerGender='';
-                        firebase.database().ref('Users/'+currentUser.uid+'/ProfileInformation').once('value',function (userList) {
-                          passengerGender = userList.gender;
-                        });
-      
-                        if((snapshot.female && snapshot.male) || (snapshot.female && passengerGender =='Female') ||
-                        (snapshot.val().male && passengerGender =='Male')) {
                         
+                        
+      
+                       
+                          
                           if((person == snapshot.person) && (snapshot.people == people)){ //Kişi sayısı
-                             
+                            //console.error("4"+snapshot.Id);
                                 
                             axios.get("https://maps.googleapis.com/maps/api/distancematrix/json", {
                               params: {
@@ -324,7 +348,7 @@ export default function SearchStackPage() {
                               .then( (bitisUzaklik) =>{
   
                                 if(baslangicUzaklik.data.rows[0].elements[0].distance.value < 1000 && bitisUzaklik.data.rows[0].elements[0].distance.value < 1000){
-                                  
+                                 // console.error("5"+snapshot.Id);
                                   firebase.database().ref('Users/'+ snapshot.creater +'/ProfileInformation').once('value',function (get) {
                                     dataArray.push({
                                     
@@ -350,14 +374,14 @@ export default function SearchStackPage() {
                                   });
                                   
                               }else{
-                                 
+                                
                                   var m1 =( (end.location.lng - start.location.lng)/(end.location.lat - start.location.lat));
                                   var m2 = (snapshot.dropOffLongitude - snapshot.pickUppLongitude)/(snapshot.dropOffLatidute - snapshot.pickUppLatidute);
                                  
                                   var m = m1 / m2;
                                   if(((m > -1.2 && m < 1.2) && baslangicUzaklik.data.rows[0].elements[0].distance.value < 1000 ) ||
                                   ((m > -1.2 && m < 1.2) && (bitisUzaklik.data.rows[0].elements[0].distance.value < 1000))){
-                                   
+                                   // console.error("6"+snapshot.Id);
                                   
                                   
 
@@ -383,9 +407,7 @@ export default function SearchStackPage() {
                                         createrPhoto : (get.val() && get.val().profilePhoto),
                                         });
                                     });
-                                  //console.error("23------"+JSON.stringify(travels))
-                                  
-                                    
+
                                   }
                                   
                               }
@@ -396,7 +418,7 @@ export default function SearchStackPage() {
                                
                           }
                           
-                        }
+                        
                     }
       
                 }
@@ -409,6 +431,7 @@ export default function SearchStackPage() {
           //console.error("/***"+JSON.stringify(dataArray)+"***/");
           setaddressResult(dataArray);
           setResultList(true);
+          onRefresh();
         }
       
         function joinTravel(item){
@@ -479,13 +502,7 @@ export default function SearchStackPage() {
             getDate(currentDate);
             setDate(currentDate);
           };
-      
-            //setting tabs states
-            const [settingTab,setSettingTab] = useState();
-            const [isSelectedFemale,setFemale] = useState();
-            const [isSelectedMale,setMale] = useState();
-            const [isSelectedPeople,setPeople] = useState();
-            const [isSelectedPerson,setPerson] = useState();
+
             
       
           const showMode = (currentMode) => {
@@ -619,12 +636,6 @@ export default function SearchStackPage() {
                   {(pickUpSelected && dropOffSelected)&&
                   <SafeAreaView style={sty.container}>
                     
-                  
-      
-                    { (resultList && addressResult.length == 0 ) && 
-                    <Text style ={{marginTop:"7%",color:"#000",fontSize:14,fontWeight:"bold", fontStyle: "italic",alignItems:"center",alignSelf:"center"}}>
-                             Sonuçlar gözükmüyorsa sayfayı aşağı çekerek yenileyin.
-                    </Text>}
                     <View style={sty.container}>
                    
                     <List

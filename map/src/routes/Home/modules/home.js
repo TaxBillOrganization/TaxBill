@@ -300,6 +300,34 @@ export function saveTrack(payload,date,settings){
     if(deltaLng < 0 ){
         deltaLng = deltaLng * (-1);
     }
+
+    
+
+    var female,male;
+    
+    if((settings.isSelectedFemale==false || settings.isSelectedFemale=="undefined" || settings.isSelectedFemale== null) 
+    &&(settings.isSelectedMale==false || settings.isSelectedMale=="undefined" ||settings.isSelectedMale== null)){
+        female = true;
+        male = true;
+    }else{
+        female = settings.isSelectedFemale ;
+        male = settings.isSelectedMale;
+    }
+
+    var person,people;
+    if((settings.isSelectedPerson==false || settings.isSelectedPerson=="undefined" || settings.isSelectedPerson== null) 
+    &&(settings.isSelectedPeople==false || settings.isSelectedPeople=="undefined" ||settings.isSelectedPeople== null)){
+        person = false;
+        people = true;
+    }else if(settings.isSelectedPerson && settings.isSelectedPerson){
+        people = false;
+        person = true;
+    }
+    else{
+        person = settings.isSelectedPerson;
+        people = settings.isSelectedPeople;
+    }
+
 return ({
     type: SAVE_TRACK,
     payload:{
@@ -312,10 +340,10 @@ return ({
         middleY:midY,
         deltaLatitude:deltaLat+0.5,
         deltaLongitude:deltaLng+0.1,
-        isSelectedFemale : (settings.isSelectedFemale ? settings.isSelectedFemale: true),
-        isSelectedMale : (settings.isSelectedMale ? settings.isSelectedMale:true),
-        isSelectedPerson : (settings.isSelectedPerson ? settings.isSelectedPerson:true),
-        isSelectedPeople : (settings.isSelectedPeople ? settings.isSelectedPeople:true),
+        isSelectedFemale : female,
+        isSelectedMale : male,
+        isSelectedPerson : person,
+        isSelectedPeople : people,
     }
     }
 );
@@ -371,6 +399,16 @@ function handeleSaveTrack(state,action){
             },
             longitudeDelta: {
                 $set:action.payload.deltaLongitude
+            }
+        }, settings:{
+            isSelectedPeople :{
+                $set:action.payload.isSelectedPeople
+            },isSelectedPerson :{
+                $set:action.payload.isSelectedPerson
+            },isSelectedFemale :{
+                $set:action.payload.isSelectedFemale
+            },isSelectedMale :{
+                $set:action.payload.isSelectedMale
             }
         }
     })
