@@ -2,7 +2,7 @@ import  React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import TravelScreen from './TravelScreen'
 import DeleteTravelScreen from './DeleteTravelScreen'
-import Comment from './Comment'
+import Comment from './AddComment'
 const TravelStack = createStackNavigator();
 
 export default function TravelStacScreen() {  

@@ -2,6 +2,7 @@ import * as firebase from 'firebase';
 import React, {Component} from 'react';
 import {View,Text, FlatList, StyleSheet, TextInput,Image,StatusBar} from 'react-native';
 import AppButton from '../../components/commentButton';
+import Star from 'react-native-star-view';
 
 export default class Comment extends Component{
    constructor(props){
@@ -17,7 +18,7 @@ export default class Comment extends Component{
             var li = []
             data.forEach((child)=>{    
                var user = {Username:'',Usersurname:'', image:''}              
-               firebase.database().ref('Users/'+ child.val().key +'/ProfileInformation').on('value',function (information) {
+               firebase.database().ref('Users/'+ child.val().key +'/ProfileInformation').once('value',function (information) {
                   user.Username = information.val().name
                   user.Usersurname = information.val().surname
                   user.image= information.val().profilePhoto
@@ -25,15 +26,16 @@ export default class Comment extends Component{
                      key: child.val().key,
                      text:child.val().text,
                      answer:child.val().answer,
+                     star:child.val().star,
                      name:user.Username,
                      surname:user.Usersurname,
                      photo:user.image
-                  })   
+                  })      
                });
             })
          this.setState({list:li})   
       })
-   }
+    }
 
    onAnswerPress = (commentId) => {
       if(this.state.answer==""){
@@ -62,8 +64,12 @@ export default class Comment extends Component{
                         <Image source={{uri:item.photo}} style={styles.image} resizeMode="center"></Image>                                     
                      </View>
                      <View style={styles.textBar}>
-                        <Text style={styles.subTextName}>{item.name} {item.surname}</Text>
+                        <View style={{flexDirection:"row",justifyContent:"space-between"}}>
+                           <Text style={styles.subTextName}>{item.name} {item.surname}</Text>
+                           <Star  style={styles.starStyle} score={item.star} />
+                        </View>               
                         <Text style={styles.subText}>{item.text}</Text>
+                        
                         {(!item.answer || item.answer == "")&&
                            <View>
                               <TextInput style={styles.textInput} 
@@ -151,4 +157,8 @@ const styles = StyleSheet.create({
       alignSelf: "stretch", 
       fontSize: 18, 
   },
+  starStyle : {
+   width: 100,
+   height: 20,
+   }
 });

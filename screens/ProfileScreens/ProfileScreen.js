@@ -1,18 +1,28 @@
 import React,{ useState, useEffect } from 'react';
-import { Text, View, SafeAreaView, Image, ScrollView,LogBox,StatusBar} from "react-native";
+import { Text, View, SafeAreaView, Image, ScrollView,LogBox,StatusBar,RefreshControl,TouchableOpacity} from "react-native";
 import IconButton from '../../components/IconButton';
-import { createStackNavigator } from '@react-navigation/stack';
 import Star from 'react-native-star-view';
 import styles from '../Styles/ProfileScreenStyles';
 import * as firebase from 'firebase';
 import Comment from '../../components/Firebase/comment'
 import HeaderComponent from "../../components/Header";
 const logo = require('../../assets/logo.png');
-
+const wait = (timeout) => {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  });
+}
 export default function ProfilStackPage({navigation}) {
     const [userstate,setUser] = useState({});
     const uid=firebase.auth().currentUser.uid;
     const [starScore,setScor] = useState();
+    const [refreshing, setRefreshing] = useState(false);
+    const [oldTravel, setTravel] = useState(0);
+    const [commentVisible,setCommentVisible] = useState(false);
+    const onRefresh = React.useCallback(() => {
+      setRefreshing(true);
+      wait(2000).then(() => setRefreshing(false));
+    }, []);
 
     useEffect(()=>{
         var user ={email:'',Username:'',Usersurname:'',Userage:'', Usergender:'', image:'',travel:0,starPoint:0};
@@ -27,19 +37,26 @@ export default function ProfilStackPage({navigation}) {
             user.starPoint=(snapshot.val() && snapshot.val().starPoint);
             setUser(user);          
           })
-          if(userstate.travel==0){
-            Score=0;
-          }
+          if(userstate.travel==0)Score=0
           else{
             Score=userstate.starPoint/userstate.travel
+            Score=Number(Score.toFixed(1))
           }
           setScor(Score);
+          if(userstate.travel!=oldTravel){
+            setTravel(userstate.travel)
+            if(commentVisible==true)setCommentVisible(false)
+            else setCommentVisible(true) 
+          }     
     })
+
         return (
           <SafeAreaView style={styles.container}>
           <StatusBar barStyle="light-content" backgroundColor="black"/>
           <HeaderComponent logo={logo}/>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView showsVerticalScrollIndicator={false} efreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
               <View style={styles.titleBar}>
                 <View style={styles.titleBar}>
                   <View style={styles.profileImage}>
@@ -66,8 +83,9 @@ export default function ProfilStackPage({navigation}) {
                   </View>
               </View>
               <View style={{ marginTop: "1.5%" }}>
-                <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18,alignSelf:"center",marginBottom:"1%" }]}>COMMENTS</Text>      
-              <Comment/>     
+                <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18,alignSelf:"center",marginBottom:"1%" }]}>COMMENTS</Text>   
+                {commentVisible==false && <Comment/>}
+                {commentVisible==true && <Comment/>}      
               </View>
           </ScrollView>
       </SafeAreaView>);

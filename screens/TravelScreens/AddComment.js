@@ -8,6 +8,7 @@ import mapStyle from "../Styles/mapStyle";
 import HeaderComponent from "../../components/Header";
 import AppButton from '../../components/commentButton';
 import { Ionicons } from '@expo/vector-icons';
+import Comment from '../../components/Firebase/comment'
 
 const logo = require('../../assets/logo.png');
 
@@ -15,11 +16,14 @@ export default function TravelStackPage({route,navigation}) {
     const [userstate,setUser] = useState({});
     const [activeUser,setActive]=useState({});
     const [starScore,setScor] = useState();
+    const [starNumber,setStarNumber] = useState(2.5);
+    const [starNumber2,setStarNumber2] = useState();
     const [comment,setComment] = useState();
+    const [commentVisible,setCommentVisible] = useState(false);
+    const [buttonText,setButton] = useState("Comment");
     const [starState,setStar] = useState(
         {one:'md-star',two:'md-star',three:'md-star-half',four:'md-star-outline',five:'md-star-outline'});
-    const [starNumber,setStarNumber] = useState(2.5);
-    
+   
     const selectedItem = route.params.SelectedItem
     const activeUid=firebase.auth().currentUser.uid
   
@@ -38,11 +42,13 @@ export default function TravelStackPage({route,navigation}) {
         })
         if(userstate.travel==0){
             Score=0;
+            setScor(Score);
         }
         else{
             Score=userstate.starPoint/userstate.travel
+            Score=Number(Score.toFixed(1))
+            setScor(Score);
         }
-        setScor(Score);
      })
 
      useEffect(()=>{
@@ -53,21 +59,50 @@ export default function TravelStackPage({route,navigation}) {
             User.image=(snapshot.val() && snapshot.val().profilePhoto);
             setActive(User);          
         })
+        firebase.database().ref('Users/'+ selectedItem.creater +('/Comments/')+ activeUid).once('value', function (snapshot){
+            if((snapshot.val())!=null){
+                setButton("Change")
+                setStarNumber2(snapshot.val().star)
+            }
+         })
      },[])
 
     function onCommentPress() {
-        if(comment==""){
-           console.error("You must enter your comment");
-         }
-         else{
-           firebase.database().ref('Users/'+ selectedItem.creater +('/Comments/')+ activeUid).set({
-           text:comment,
-           key:activeUid,
-           });
-           firebase.database().ref('Users/'+ selectedItem.creater +('/ProfileInformation/')).update({
-            starPoint:userstate.starPoint+starNumber,
-            travel:userstate.travel+1,
-            });
+        if(buttonText=="Comment"){        
+            if(comment==""){
+                console.error("You must enter your comment");
+              }else{
+                firebase.database().ref('Users/'+ selectedItem.creater +('/Comments/')+ activeUid).set({
+                text:comment,
+                key:activeUid,
+                star:starNumber
+                });
+                firebase.database().ref('Users/'+ selectedItem.creater +('/ProfileInformation/')).update({
+                 starPoint:userstate.starPoint+starNumber,
+                 travel:userstate.travel+1,
+                 });
+                 setButton("Change")
+                 setStarNumber2(starNumber)
+                 if(commentVisible==true)setCommentVisible(false)
+                 else setCommentVisible(true) 
+              }
+        }else{
+            if(comment==""){
+                console.error("You must enter your comment");
+              }else{
+                firebase.database().ref('Users/'+ selectedItem.creater +('/Comments/')+ activeUid).set({
+                text:comment,
+                key:activeUid,
+                star:starNumber
+                });
+                firebase.database().ref('Users/'+ selectedItem.creater +('/ProfileInformation/')).update({
+                 starPoint:userstate.starPoint-starNumber2+starNumber,
+                 travel:userstate.travel,
+                 });
+                 setStarNumber2(starNumber)
+                 if(commentVisible==true)setCommentVisible(false)
+                 else setCommentVisible(true) 
+              }
          }
       }
     const oneStar=()=>{
@@ -117,8 +152,8 @@ export default function TravelStackPage({route,navigation}) {
                     <Text style={[Profilstyles.text, Profilstyles.subText]}>Travel</Text>
                 </View>
                 <View style={Profilstyles.statsBox}>
-                    <Star  style={mapStyle.starStyle} score={Number(starScore.toFixed(1))} />
-                    <Text style={[Profilstyles.text, Profilstyles.subText]}>{Number(starScore.toFixed(1))}</Text>
+                    <Star  style={mapStyle.starStyle} score={starScore} />
+                    <Text style={[Profilstyles.text, Profilstyles.subText]}>{starScore}</Text>
                     <Text style={[Profilstyles.text, Profilstyles.subText]}>Companion Score</Text>
                 </View>
             </View>
@@ -151,12 +186,12 @@ export default function TravelStackPage({route,navigation}) {
                                     <Ionicons name={starState.five} color="black" size={35} onPress={fiveStar}/>
                                 </TouchableOpacity>  
                               </View>
-
-
-                              <AppButton title="Comment" onPress={() => onCommentPress()}/>
+                              <AppButton title={buttonText} onPress={() => onCommentPress()}/>
                            </View>
                      </View>
             </View>
+            {commentVisible==false && <Comment/>}
+            {commentVisible==true && <Comment/>}        
         </ScrollView>
     </SafeAreaView>
     )
