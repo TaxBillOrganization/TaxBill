@@ -9,7 +9,6 @@ import HeaderComponent from "../../components/Header";
 import AppButton from '../../components/commentButton';
 import { Ionicons } from '@expo/vector-icons';
 import Comment from '../../components/Firebase/comment'
-
 const logo = require('../../assets/logo.png');
 
 export default function TravelStackPage({route,navigation}) {
@@ -23,34 +22,80 @@ export default function TravelStackPage({route,navigation}) {
     const [buttonText,setButton] = useState("Comment");
     const [starState,setStar] = useState(
         {one:'md-star',two:'md-star',three:'md-star-half',four:'md-star-outline',five:'md-star-outline'});
-   
+    const [passenger,setpassenger] = useState();
     const selectedItem = route.params.SelectedItem
     const activeUid=firebase.auth().currentUser.uid
-  
+    
+
+    if(activeUid==selectedItem.creater){
+        var passengers,pasangerId
+        firebase.database().ref('Travels/'+selectedItem.Id+('/Passengers/')).once('value', function (snapshot) {
+            passengers = snapshot.val();
+            for(var a in passengers){
+                pasangerId=a
+            }
+            setpassenger(pasangerId)
+        })       
+    }
      useEffect(()=>{
-        var user ={email:'',Username:'',Usersurname:'',Userage:'', Usergender:'', image:'',travel:0,starPoint:0};
-        var Score=0.0;            
-        firebase.database().ref('Users/'+selectedItem.creater+'/ProfileInformation').once('value', function (snapshot) {
-            user.Username = (snapshot.val() && snapshot.val().name);
-            user.Usersurname = (snapshot.val() && snapshot.val().surname);
-            user.Userage = (snapshot.val() && snapshot.val().age);
-            user.Usergender = (snapshot.val() && snapshot.val().gender);
-            user.image=(snapshot.val() && snapshot.val().profilePhoto);
-            user.travel=(snapshot.val() && snapshot.val().travel);
-            user.starPoint=(snapshot.val() && snapshot.val().starPoint);
-            setUser(user);          
-        })
-        if(userstate.travel==0){
-            Score=0;
-            setScor(Score);
-        }
-        else{
-            Score=userstate.starPoint/userstate.travel
-            Score=Number(Score.toFixed(1))
-            setScor(Score);
+        if(activeUid!=selectedItem.creater){
+            var user ={Username:'',Usersurname:'',Userage:'', Usergender:'', image:'',travel:0,starPoint:0};
+                var Score=0.0;            
+                firebase.database().ref('Users/'+selectedItem.creater+'/ProfileInformation').once('value', function (snapshot) {
+                    user.Username = (snapshot.val() && snapshot.val().name);
+                    user.Usersurname = (snapshot.val() && snapshot.val().surname);
+                    user.Userage = (snapshot.val() && snapshot.val().age);
+                    user.Usergender = (snapshot.val() && snapshot.val().gender);
+                    user.image=(snapshot.val() && snapshot.val().profilePhoto);
+                    user.travel=(snapshot.val() && snapshot.val().travel);
+                    user.starPoint=(snapshot.val() && snapshot.val().starPoint);
+                    setUser(user);          
+                })
+                firebase.database().ref('Users/'+ selectedItem.creater +('/Comments/')+ activeUid).once('value', function (snapshot){
+                    if((snapshot.val())!=null){
+                        setButton("Change")
+                        setStarNumber2(snapshot.val().star)
+                    }
+                    })
+            if(userstate.travel==0){
+                Score=0;
+                setScor(Score);
+            }
+            else{
+                Score=userstate.starPoint/userstate.travel
+                Score=Number(Score.toFixed(1))
+                setScor(Score);
+            }
+        }else{
+            var Score=0.0; 
+                var pasanger={Username:'',Usersurname:'',Userage:'', Usergender:'', image:'',travel:0,starPoint:0}
+                firebase.database().ref('Users/'+passenger+('/ProfileInformation/')).once('value', function (information) {  
+                    pasanger.Username = (information.val() && information.val().name);
+                    pasanger.Usersurname = (information.val() && information.val().surname);
+                    pasanger.Userage = (information.val() && information.val().age);
+                    pasanger.Usergender = (information.val() && information.val().gender);
+                    pasanger.image=(information.val() && information.val().profilePhoto);
+                    pasanger.travel=(information.val() && information.val().travel);
+                    pasanger.starPoint=(information.val() && information.val().starPoint);
+                    setUser(pasanger);   
+                })
+                firebase.database().ref('Users/'+ passenger +('/Comments/')+ activeUid).once('value', function (snapshot){
+                    if((snapshot.val())!=null){
+                        setButton("Change")
+                        setStarNumber2(snapshot.val().star)
+                    }
+                 })         
+            if(userstate.travel==0){
+                Score=0;
+                setScor(Score);
+            }
+            else{
+                Score=userstate.starPoint/userstate.travel
+                Score=Number(Score.toFixed(1))
+                setScor(Score);
+            }
         }
      })
-
      useEffect(()=>{
         var User ={Username:'',Usersurname:'', image:''};         
         firebase.database().ref('Users/'+activeUid+'/ProfileInformation').once('value', function (snapshot) {
@@ -59,12 +104,6 @@ export default function TravelStackPage({route,navigation}) {
             User.image=(snapshot.val() && snapshot.val().profilePhoto);
             setActive(User);          
         })
-        firebase.database().ref('Users/'+ selectedItem.creater +('/Comments/')+ activeUid).once('value', function (snapshot){
-            if((snapshot.val())!=null){
-                setButton("Change")
-                setStarNumber2(snapshot.val().star)
-            }
-         })
      },[])
 
     function onCommentPress() {
@@ -105,6 +144,45 @@ export default function TravelStackPage({route,navigation}) {
               }
          }
       }
+    function onCommetPassenger(){
+        if(buttonText=="Comment"){        
+            if(comment==""){
+                console.error("You must enter your comment");
+              }else{
+                firebase.database().ref('Users/'+ passenger + ('/Comments/') + activeUid).set({
+                text:comment,
+                key:activeUid,
+                star:starNumber
+                });
+                firebase.database().ref('Users/'+ passenger + ('/ProfileInformation/')).update({
+                 starPoint:userstate.starPoint+starNumber,
+                 travel:userstate.travel+1,
+                 });
+                 setButton("Change")
+                 setStarNumber2(starNumber)
+                 if(commentVisible==true)setCommentVisible(false)
+                 else setCommentVisible(true) 
+              }
+        }else{
+            if(comment==""){
+                console.error("You must enter your comment");
+              }else{
+                firebase.database().ref('Users/'+ passenger + ('/Comments/') + activeUid).set({
+                text:comment,
+                key:activeUid,
+                star:starNumber
+                });
+                firebase.database().ref('Users/' + passenger + ('/ProfileInformation/')).update({
+                 starPoint:userstate.starPoint-starNumber2+starNumber,
+                 travel:userstate.travel,
+                 });
+                 setStarNumber2(starNumber)
+                 if(commentVisible==true)setCommentVisible(false)
+                 else setCommentVisible(true) 
+              }
+         }
+    }
+
     const oneStar=()=>{
         setStar({one:'md-star',two:'md-star-outline',three:'md-star-outline',four:'md-star-outline',five:'md-star-outline'});
         setStarNumber(1);
@@ -131,33 +209,36 @@ export default function TravelStackPage({route,navigation}) {
         <StatusBar barStyle="light-content" backgroundColor="black"/>
         <HeaderComponent logo={logo}/>
         <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{marginBottom:"5%"}}>
-            <View style={Profilstyles.titleBar}>
+        {activeUid!=selectedItem.creater &&
+        <View>
+            <View style={{marginBottom:"5%"}}>
                 <View style={Profilstyles.titleBar}>
-                <View style={Profilstyles.profileImage}>
-                    <Image source={{uri:userstate.image}} style={Profilstyles.image} resizeMode="center"></Image>                                     
+                    <View style={Profilstyles.titleBar}>
+                    <View style={Profilstyles.profileImage}>
+                        <Image source={{uri:userstate.image}} style={Profilstyles.image} resizeMode="center"></Image>                                     
+                    </View>
+                    <Text style={[Profilstyles.text, {marginTop:"3%" ,fontWeight: "300", fontSize: 30,flexDirection: "column"}]}>{userstate.Username+' '+userstate.Usersurname}</Text>
+                    </View>
+                    <IconButton style = {{marginTop:"3%"}}iconName="keyboard-backspace" color="black" size={30} onPress={() => navigation.goBack()}/>                          
                 </View>
-                <Text style={[Profilstyles.text, {marginTop:"3%" ,fontWeight: "300", fontSize: 30,flexDirection: "column"}]}>{userstate.Username+' '+userstate.Usersurname}</Text>
+                    <View style={{marginLeft:"5%"}}>
+                        <Text style={[Profilstyles.text, { color: "#AEB5BC", fontSize: 18  }]}>{('Age: ')+userstate.Userage }</Text>
+                        <Text style={[Profilstyles.text, { color: "#AEB5BC", fontSize: 18 }]}>{('Gender: ')+userstate.Usergender}</Text>
+                    </View>
+                <View style={mapStyle.statsContainer}>
+                    <View style={Profilstyles.statsBox}>
+                        <Text style={[Profilstyles.text, { fontSize: 24 }]}>{userstate.travel}</Text>
+                        <Text style={[Profilstyles.text, Profilstyles.subText]}></Text>
+                        <Text style={[Profilstyles.text, Profilstyles.subText]}>Travel</Text>
+                    </View>
+                    <View style={Profilstyles.statsBox}>
+                        <Star  style={mapStyle.starStyle} score={starScore} />
+                        <Text style={[Profilstyles.text, Profilstyles.subText]}>{starScore}</Text>
+                        <Text style={[Profilstyles.text, Profilstyles.subText]}>Companion Score</Text>
+                    </View>
                 </View>
-                <IconButton style = {{marginTop:"3%"}}iconName="keyboard-backspace" color="black" size={30} onPress={() => navigation.goBack()}/>                          
             </View>
-                <View style={{marginLeft:"5%"}}>
-                    <Text style={[Profilstyles.text, { color: "#AEB5BC", fontSize: 18  }]}>{('Age: ')+userstate.Userage }</Text>
-                    <Text style={[Profilstyles.text, { color: "#AEB5BC", fontSize: 18 }]}>{('Gender: ')+userstate.Usergender}</Text>
-                </View>
-            <View style={mapStyle.statsContainer}>
-                <View style={Profilstyles.statsBox}>
-                    <Text style={[Profilstyles.text, { fontSize: 24 }]}>{userstate.travel}</Text>
-                    <Text style={[Profilstyles.text, Profilstyles.subText]}></Text>
-                    <Text style={[Profilstyles.text, Profilstyles.subText]}>Travel</Text>
-                </View>
-                <View style={Profilstyles.statsBox}>
-                    <Star  style={mapStyle.starStyle} score={starScore} />
-                    <Text style={[Profilstyles.text, Profilstyles.subText]}>{starScore}</Text>
-                    <Text style={[Profilstyles.text, Profilstyles.subText]}>Companion Score</Text>
-                </View>
-            </View>
-            </View>
+
             <View style={styles.titleBar}>
                      <View style={styles.profileImage}>
                         <Image source={{uri:activeUser.image}} style={styles.image} resizeMode="center"></Image>                                     
@@ -190,8 +271,76 @@ export default function TravelStackPage({route,navigation}) {
                            </View>
                      </View>
             </View>
-            {commentVisible==false && <Comment/>}
-            {commentVisible==true && <Comment/>}        
+        </View>
+        }
+        {activeUid==selectedItem.creater &&
+        <View>
+            <View style={{marginBottom:"5%"}}>
+                <View style={Profilstyles.titleBar}>
+                    <View style={Profilstyles.titleBar}>
+                    <View style={Profilstyles.profileImage}>
+                        <Image source={{uri:userstate.image}} style={Profilstyles.image} resizeMode="center"></Image>                                     
+                    </View>
+                    <Text style={[Profilstyles.text, {marginTop:"3%" ,fontWeight: "300", fontSize: 30,flexDirection: "column"}]}>{userstate.Username+' '+userstate.Usersurname}</Text>
+                    </View>
+                    <IconButton style = {{marginTop:"3%"}}iconName="keyboard-backspace" color="black" size={30} onPress={() => navigation.goBack()}/>                          
+                </View>
+                    <View style={{marginLeft:"5%"}}>
+                        <Text style={[Profilstyles.text, { color: "#AEB5BC", fontSize: 18  }]}>{('Age: ')+userstate.Userage }</Text>
+                        <Text style={[Profilstyles.text, { color: "#AEB5BC", fontSize: 18 }]}>{('Gender: ')+userstate.Usergender}</Text>
+                    </View>
+                <View style={mapStyle.statsContainer}>
+                    <View style={Profilstyles.statsBox}>
+                        <Text style={[Profilstyles.text, { fontSize: 24 }]}>{userstate.travel}</Text>
+                        <Text style={[Profilstyles.text, Profilstyles.subText]}></Text>
+                        <Text style={[Profilstyles.text, Profilstyles.subText]}>Travel</Text>
+                    </View>
+                    <View style={Profilstyles.statsBox}>
+                        <Star  style={mapStyle.starStyle} score={starScore} />
+                        <Text style={[Profilstyles.text, Profilstyles.subText]}>{starScore}</Text>
+                        <Text style={[Profilstyles.text, Profilstyles.subText]}>Companion Score</Text>
+                    </View>
+                </View>
+            </View>
+
+            <View style={styles.titleBar}>
+                     <View style={styles.profileImage}>
+                        <Image source={{uri:activeUser.image}} style={styles.image} resizeMode="center"></Image>                                     
+                     </View>
+                     <View style={styles.textBar}>
+                     <Text style={styles.subTextName}>{activeUser.Username+' '+activeUser.Usersurname}</Text>             
+                           <View>
+                              <TextInput style={styles.textInput} 
+                              placeholder="Your Comment" autoCapitalize="words"
+                              onChangeText={(text) => { setComment(text)}}
+                              />
+                              <View style={{flexDirection: "row"}}>
+                                <TouchableOpacity>
+                                    <Ionicons name={starState.one} color="black" size={35} onPress={oneStar}/>
+                                </TouchableOpacity>
+                                <TouchableOpacity>
+                                    <Ionicons name={starState.two} color="black" size={35} onPress={twoStar}/>
+                                </TouchableOpacity>  
+                                <TouchableOpacity>
+                                    <Ionicons name={starState.three} color="black" size={35} onPress={threeStar}/>
+                                </TouchableOpacity>  
+                                <TouchableOpacity>
+                                    <Ionicons name={starState.four} color="black" size={35} onPress={fourStar}/>
+                                </TouchableOpacity>  
+                                <TouchableOpacity>
+                                    <Ionicons name={starState.five} color="black" size={35} onPress={fiveStar}/>
+                                </TouchableOpacity>  
+                              </View>
+                              <AppButton title={buttonText} onPress={() => onCommetPassenger()}/>
+                           </View>
+                     </View>
+            </View>
+        </View>
+        } 
+            {(commentVisible==true && activeUid!=selectedItem.creater) && <Comment id={selectedItem.creater} />}
+            {(commentVisible==false && activeUid!=selectedItem.creater) && <Comment id={selectedItem.creater}/>}
+            {(commentVisible==true && activeUid==selectedItem.creater) && <Comment id={passenger}/>}       
+            {(commentVisible==false && activeUid==selectedItem.creater) && <Comment id={passenger}/>} 
         </ScrollView>
     </SafeAreaView>
     )

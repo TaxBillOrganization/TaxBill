@@ -1,5 +1,5 @@
 import * as firebase from 'firebase';
-import React, {Component} from 'react';
+import React, {Component,useEffect} from 'react';
 import {View,Text, FlatList, StyleSheet, TextInput,Image,StatusBar} from 'react-native';
 import AppButton from '../../components/commentButton';
 import Star from 'react-native-star-view';
@@ -10,11 +10,15 @@ export default class Comment extends Component{
    this.state={ 
    list:[],
    answer:"",
+   uid:"",
+   refreshing:false
    } }
-   
+ 
    componentDidMount(){
-         var user = firebase.auth().currentUser;
-         firebase.database().ref('Users/'+ user.uid + ('/Comments')).once('value', (data) =>{
+      var userUid=firebase.auth().currentUser.uid
+      this.setState({uid:userUid})
+         firebase.database().ref('Users/'+ this.props.id + ('/Comments')).once('value', (data) =>{
+            console.log(this.props.id)
             var li = []
             data.forEach((child)=>{    
                var user = {Username:'',Usersurname:'', image:''}              
@@ -46,11 +50,13 @@ export default class Comment extends Component{
          firebase.database().ref('Users/'+ user.uid +('/Comments/')+ commentId).update({
          answer:this.state.answer,
          });
+         firebase.database().ref('Users/'+ user.uid +('/ProfileInformation/')).update({
+         refresh:this.state.answer,
+         });
        }
     }
-    
    
-   render(){
+   render(){      
    return(
       <View style={styles.container}>
          <StatusBar barStyle="light-content" backgroundColor="black"/>
@@ -69,19 +75,31 @@ export default class Comment extends Component{
                            <Star  style={styles.starStyle} score={item.star} />
                         </View>               
                         <Text style={styles.subText}>{item.text}</Text>
-                        
-                        {(!item.answer || item.answer == "")&&
+                        {this.state.uid==this.props.id &&
                            <View>
-                              <TextInput style={styles.textInput} 
-                              placeholder="Your Answer" autoCapitalize="words"
-                              onChangeText={(text) => { this.setState({answer: text})}}
-                              />
-                              <AppButton title="Answer" onPress={() => this.onAnswerPress(item.key)}/>
+                              {(!item.answer || item.answer == "")&&
+                                 <View>
+                                    <TextInput style={styles.textInput} 
+                                    placeholder="Your Answer" autoCapitalize="words"
+                                    onChangeText={(text) => { this.setState({answer: text})}}
+                                    />
+                                    <AppButton title="Answer" onPress={() => this.onAnswerPress(item.key)}/>
+                                 </View>
+                              }  
+                              {(item.answer )&&
+                                 <View>
+                                    <Text style={styles.subText1}>{item.answer}</Text> 
+                                 </View>
+                              }
                            </View>
-                        }  
-                        {(item.answer)&&
+                        }
+                        {this.state.uid!=this.props.id &&
                            <View>
-                              <Text style={styles.subText1}>{item.answer}</Text> 
+                              {(item.answer )&&
+                                 <View>
+                                    <Text style={styles.subText1}>{item.answer}</Text> 
+                                 </View>
+                              }
                            </View>
                         }  
                      </View>

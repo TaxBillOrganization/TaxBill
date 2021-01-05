@@ -18,6 +18,7 @@ export default function ProfilStackPage({navigation}) {
     const [starScore,setScor] = useState();
     const [refreshing, setRefreshing] = useState(false);
     const [oldTravel, setTravel] = useState(0);
+    const [oldRefresh, setRefresh] = useState(0);
     const [commentVisible,setCommentVisible] = useState(false);
     const onRefresh = React.useCallback(() => {
       setRefreshing(true);
@@ -35,6 +36,7 @@ export default function ProfilStackPage({navigation}) {
             user.image=(snapshot.val() && snapshot.val().profilePhoto);
             user.travel=(snapshot.val() && snapshot.val().travel);
             user.starPoint=(snapshot.val() && snapshot.val().starPoint);
+            user.refresh=(snapshot.val() && snapshot.val().refresh);
             setUser(user);          
           })
           if(userstate.travel==0)Score=0
@@ -43,8 +45,9 @@ export default function ProfilStackPage({navigation}) {
             Score=Number(Score.toFixed(1))
           }
           setScor(Score);
-          if(userstate.travel!=oldTravel){
+          if(userstate.travel!=oldTravel||userstate.refresh!=oldRefresh){
             setTravel(userstate.travel)
+            setRefresh(userstate.refresh)
             if(commentVisible==true)setCommentVisible(false)
             else setCommentVisible(true) 
           }     
@@ -84,8 +87,8 @@ export default function ProfilStackPage({navigation}) {
               </View>
               <View style={{ marginTop: "1.5%" }}>
                 <Text style={[styles.text, { color: "#AEB5BC", fontSize: 18,alignSelf:"center",marginBottom:"1%" }]}>COMMENTS</Text>   
-                {commentVisible==false && <Comment/>}
-                {commentVisible==true && <Comment/>}      
+                {commentVisible==false && <Comment id={uid}/>}
+                {commentVisible==true && <Comment id={uid}/>}      
               </View>
           </ScrollView>
       </SafeAreaView>);
