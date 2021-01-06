@@ -310,8 +310,15 @@ export function saveTrack(payload,date,settings){
         female = true;
         male = true;
     }else{
+
         female = settings.isSelectedFemale ;
+        if(settings.isSelectedFemale == false || settings.isSelectedFemale == "undefined" || settings.isSelectedFemale == null){
+            female =  false;
+        }
         male = settings.isSelectedMale;
+        if(settings.isSelectedMale == false || settings.isSelectedMale == "undefined" || settings.isSelectedMale == null){
+            male =  false;
+        }
     }
 
     var person,people;
@@ -325,7 +332,14 @@ export function saveTrack(payload,date,settings){
     }
     else{
         person = settings.isSelectedPerson;
+        if(settings.isSelectedPerson == false || settings.isSelectedPerson == "undefined" || settings.isSelectedPerson == null){
+            person =  false;
+        }
+       
         people = settings.isSelectedPeople;
+        if(settings.isSelectedPeople == false || settings.isSelectedPeople == "undefined" || settings.isSelectedPeople == null){
+            people =  false;
+        }
     }
 
 return ({
@@ -410,7 +424,16 @@ function handeleSaveTrack(state,action){
             },isSelectedMale :{
                 $set:action.payload.isSelectedMale
             }
+        },startEndPoint:{
+            pickUp:{
+                $set:null
+            },dropOff:{
+                $set:null
+            }
+        },selectedAddress:{
+            $set:null
         }
+        
     })
 }
 
