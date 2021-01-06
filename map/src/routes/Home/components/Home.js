@@ -1,5 +1,5 @@
 import React from "react";
-import {View,Text, Button} from "react-native";
+import {StatusBar,Text, Button} from "react-native";
 import MapContanier from "./mapContainer";
 import HeaderComponent from "../../../components/HeaderComponent";
 import { Container} from "native-base";
@@ -19,6 +19,7 @@ class Home extends React.Component{
         return(
             
             <Container>
+                <StatusBar barStyle="light-content" backgroundColor="black"/>
                 <HeaderComponent logo={logo}/>
                 {this.props.region.latitude &&
                 <MapContanier region ={this.props.region} getInputData={this.props.getInputData} 

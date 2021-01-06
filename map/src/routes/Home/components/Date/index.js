@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {View,Text,StyleSheet,TouchableOpacity,Button} from "react-native";
+import {View,StatusBar,StyleSheet,TouchableOpacity,Button} from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import styles from "./dateTimeStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -34,6 +34,7 @@ export const DateTime = ({settings,getDate}) =>{
 
     return (    
       <View style ={styles.searchBox}>
+        <StatusBar barStyle="light-content" backgroundColor="black"/>
         <View style={styles.inputWrapper}>
           <View>
             <Icon name="calendar" size={15} color="#FF5E3A" style={{paddingLeft:7}}/>

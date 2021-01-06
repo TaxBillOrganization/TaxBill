@@ -1,5 +1,5 @@
 import React, { useState }from "react";
-import {Dimensions,StyleSheet,View,TouchableOpacity,Text} from "react-native";
+import {Dimensions,StyleSheet,View,TouchableOpacity,Text,StatusBar} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import {Left,Right,Body} from "native-base";
 
@@ -14,8 +14,9 @@ export const optionsItems = ({settings,openSettings,setSettings,getSettings}) =>
  
         return(
             <View>
+              <StatusBar barStyle="light-content" backgroundColor="black"/>
             {settings.options &&
-
+            
             <View style={styles.container}>
 
             <TouchableOpacity onPress={ ()=>setSettings(settings,"isSelectedFemale",settings.isSelectedFemale)}

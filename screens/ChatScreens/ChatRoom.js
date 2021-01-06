@@ -13,7 +13,7 @@ export default function ChatRoom({navigation}) {
    useEffect(() => {
     var User ={Username:'',Usersurname:'',Userphoto:''};
      
-     const user = firebase.auth().currentUser;
+    const user = firebase.auth().currentUser;
     firebase.database().ref('Users/'+ user.uid +'/ProfileInformation').once('value',function (snapshot) {
         User.Username = (snapshot.val() && snapshot.val().name);
         User.Usersurname = (snapshot.val() && snapshot.val().surname);
@@ -26,6 +26,7 @@ export default function ChatRoom({navigation}) {
       .orderBy('latestMessage.createdAt', 'desc',)
       .onSnapshot(querySnapshot => {
         const threads = querySnapshot.docs.map(documentSnapshot => {
+          console.log(documentSnapshot.data())
           return {
             _id: documentSnapshot.id,
             name: '',
@@ -33,16 +34,16 @@ export default function ChatRoom({navigation}) {
             ...documentSnapshot.data()
           }
         })
-        var x = User.Username;
+        var x = user.uid;
         const serchingData = threads.filter(item => {
-          const name = `${item.with.toLowerCase()} ${item.name.toLowerCase()}`;
-          return name.indexOf(x.toLowerCase()) > -1})
+        const name = `${item.Id.toLowerCase()}`;
+        return name.indexOf(x.toLowerCase()) > -1})
         setThreads(serchingData)
         if (loading) {
           setLoading(false)
         }
       })
-
+      console.log(threads.length)
     return () => unsubscribe()
     }, [])
  

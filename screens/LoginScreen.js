@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, Text, View, Image,KeyboardAvoidingView,StatusBar,
-  ScrollView} from 'react-native';
+import { StyleSheet, TouchableOpacity, Text, View, Image,KeyboardAvoidingView,StatusBar} from 'react-native';
 import * as Yup from 'yup';
-
 import Colors from '../utils/colors';
 import SafeView from '../components/SafeView';
 import Form from '../components/Forms/Form';
@@ -11,8 +9,6 @@ import FormButton from '../components/Forms/FormButton';
 import IconButton from '../components/IconButton';
 import { loginWithEmail } from '../components/Firebase/firebase';
 import FormErrorMessage from '../components/Forms/FormErrorMessage';
-import useStatusBar from '../hooks/useStatusBar';
-import { color } from 'react-native-reanimated';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -26,8 +22,6 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function LoginScreen({ navigation }) {
-  useStatusBar('light-content');
-
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [rightIcon, setRightIcon] = useState('eye');
   const [loginError, setLoginError] = useState('');

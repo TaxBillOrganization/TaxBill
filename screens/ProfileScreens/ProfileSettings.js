@@ -1,13 +1,11 @@
 import React,{ useState, useEffect } from 'react';
 import { Text, View, SafeAreaView, ScrollView,LogBox,StatusBar} from "react-native";
 import IconButton from '../../components/IconButton';
-import { createStackNavigator } from '@react-navigation/stack';
 import Star from 'react-native-star-view';
 import styles from '../Styles/ProfileScreenStyles';
 import * as firebase from 'firebase';
 import Photo from '../../components/Firebase/storagePhoto'
 import Change from '../../components/Firebase/changeEmailPassword'
-
 import HeaderComponent from "../../components/Header";
 const logo = require('../../assets/logo.png');
 

@@ -9,15 +9,12 @@ import MapView from "react-native-maps";
 import MapViewDirections from 'react-native-maps-directions';
 import mapStyle from "../Styles/mapStyle";
 import HeaderComponent from "../../components/Header";
-import useStatusBar from '../../hooks/useStatusBar';
 
 const logo = require('../../assets/logo.png');
 
 export default function TravelStackPage({route,navigation}) {
-    useStatusBar('light-content');
     const [userstate,setUser] = useState({});
     const [starScore,setScor] = useState();
-    const [loadingState,setLoading] = useState(false);
     const selectedItem = route.params.Item
     const region = route.params.Region
     const activeUid=firebase.auth().currentUser.uid

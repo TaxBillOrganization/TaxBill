@@ -1,5 +1,5 @@
 import React from "react";
-import {Text} from "react-native";
+import {Text,StatusBar} from "react-native";
 import styles from "./SearchResultStyles";
 import {View,List,ListItem, Left, Body} from "native-base";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -19,7 +19,7 @@ export const SearchResult = ({predictions,getSelectedAdress,startEnd}) => {
         return(
            
             <View style ={styles.searchResultsWrapper}>
-                
+                <StatusBar barStyle="light-content" backgroundColor="black"/>
                <List
                 dataArray={predictions}
                 keyExtractor={item => item.place_id}

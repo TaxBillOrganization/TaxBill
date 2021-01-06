@@ -40,6 +40,26 @@ export default class Photo extends React.Component {
     firebase.database().ref('Users/'+ uid.uid +('/ProfileInformation')).update({
     profilePhoto:url,
     });
+
+    var user ={Username:'',Usersurname:''};           
+    firebase.database().ref('Users/'+uid.uid+'/ProfileInformation').once('value', function (snapshot) {
+        user.Username = (snapshot.val() && snapshot.val().name);
+        user.Usersurname = (snapshot.val() && snapshot.val().surname);
+        firebase.firestore().collection('MESSAGE_THREADS').onSnapshot(querySnapshot => {
+          querySnapshot.docs.map(documentSnapshot => {
+            if(documentSnapshot.data().name == user.Username+(" ")+user.Usersurname){
+              firebase.firestore().collection('MESSAGE_THREADS').doc(documentSnapshot.id).update({
+                UserPhoto:url
+              })            
+            }
+            else if(documentSnapshot.data().with == user.Username+(" ")+user.Usersurname){
+              firebase.firestore().collection('MESSAGE_THREADS').doc(documentSnapshot.id).update({
+                WithPhoto:url
+              })         
+            }
+          })
+        })       
+      })
   }
 
   render() {

@@ -1,5 +1,5 @@
 import  React,{useEffect, useState} from 'react';
-import { Text, View, SafeAreaView, Image, ScrollView,Alert,RefreshControl,TouchableOpacity,StyleSheet } from "react-native";
+import { Text, View, SafeAreaView, Image, ScrollView,StatusBar,RefreshControl,TouchableOpacity,StyleSheet } from "react-native";
 import IconButton from '../components/IconButton';
 import Icon from "react-native-vector-icons/FontAwesome";
 import Fontisto from "react-native-vector-icons/Fontisto";
@@ -20,7 +20,6 @@ const ProfilStack = createStackNavigator();
 import ChatRoom from './ChatScreens/ChatRoom';
 import Messages from './ChatScreens/Messages';
 import HeaderComponent from "../components/Header";
-import useStatusBar from '../hooks/useStatusBar';
 import { creatRoom } from '../components/Firebase/firebase';
 const logo = require('../assets/logo.png');
 var creatorGender="";
@@ -32,7 +31,6 @@ const wait = (timeout) => {
   }
 
 export default function SearchStackPage() {
-    useStatusBar('light-content');
     const [selectedItem,setSelectedItem] = useState(null);
     const [userstate,setUser] = useState({});
     const [activeUser,setActiveUser] = useState({});
@@ -43,8 +41,6 @@ export default function SearchStackPage() {
 
 
     function JoinTravelPage({navigation}){
-      useStatusBar('light-content');
-
 
         function creatChatRoom(){
           creatRoom(uid,activeUser.Username,activeUser.Usersurname,activeUser.Userphoto,
@@ -92,6 +88,7 @@ export default function SearchStackPage() {
 
         return(
             <SafeAreaView style={Profilstyles.container}>
+            <StatusBar barStyle="light-content" backgroundColor="black"/>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={Profilstyles.titleBar}>
                   <View style={Profilstyles.titleBar}>
@@ -171,8 +168,6 @@ export default function SearchStackPage() {
 
 
       function SearchBox({navigation}){
-
-        useStatusBar('light-content');
               
             //setting tabs states
         const [settingTab,setSettingTab] = useState();
@@ -526,13 +521,14 @@ export default function SearchStackPage() {
           }, []);
       
               return(
-            <SafeAreaView >
+            <SafeAreaView >      
             <HeaderComponent logo={logo}/>
             <ScrollView
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
             >  
+            <StatusBar barStyle="light-content" backgroundColor="black"/>
                         <View style={styles.inputWrapper}>
                             <Text style ={{marginTop:"2%",color:"#000",fontSize:10, fontStyle: "italic"}}>PICK UP</Text>
                           <InputGroup>
@@ -569,6 +565,7 @@ export default function SearchStackPage() {
                       {/*/////////////////////////settingBox/////////////////////////////////////*/}
                        {settingTab &&
                       <View style={styles.container}>
+                        <StatusBar barStyle="light-content" backgroundColor="black"/>
                             <TouchableOpacity onPress={ ()=>setFemale(!isSelectedFemale)}
                             styles={styles.settingsContainer}>
                               <View style={styles.rowContainer}>
@@ -618,6 +615,7 @@ export default function SearchStackPage() {
                     keyExtractor={item => item.place_id}
                     renderRow={(item)=>
                             <View>
+                              <StatusBar barStyle="light-content" backgroundColor="black"/>
                             <ListItem onPress={()=>handleSelectedAddress(item.place_id)} button avatar >
                             <Left  >
                                 <MaterialIcons  name="location-on"/>
@@ -643,6 +641,7 @@ export default function SearchStackPage() {
                     keyExtractor={item => item.Id}
                     renderRow={(item)=>
                           <View style={sty.container}>
+                            <StatusBar barStyle="light-content" backgroundColor="black"/>
                             <ListItem onPress={()=>joinTravel(item)} button avatar >
                             <Body style={{flexDirection:"column"}}>
                               <View style={{flexDirection:"row"}}>

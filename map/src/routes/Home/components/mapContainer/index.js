@@ -1,5 +1,5 @@
 import React from "react";
-import {View,Dimensions,Text} from "react-native";
+import {View,StatusBar,Text} from "react-native";
 import MapView from "react-native-maps";
 import styles from "./MapContainerStyles";
 import SearchBox from "../SearchBox";
@@ -21,6 +21,7 @@ export const MapContainer = ({region, date, getInputData,toggleSearchResultModal
     return(
         
     <View style={styles.container}>
+        <StatusBar barStyle="light-content" backgroundColor="black"/>
             
             <MapView
                 provider={MapView.PROVIDER_GOOGLE}

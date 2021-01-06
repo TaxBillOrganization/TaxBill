@@ -1,5 +1,5 @@
 import React from "react"
-import {View,Button,Dimensions, StyleSheet} from "react-native";
+import {View,Button,Dimensions, StyleSheet,StatusBar} from "react-native";
 
 const windowHeight = Dimensions.get('window').height;   
 const windowWidth = Dimensions.get('window').width;
@@ -12,7 +12,7 @@ function handleSelectedAdress(selectedAddress){
 
     return(
         <View style={styles.buttonContainer}>
-            
+            <StatusBar barStyle="light-content" backgroundColor="black"/>
             <Button title={"Create Track"} onPress={()=>handleSelectedAdress(selectedAddress)}/>
         </View>
     );

@@ -1,24 +1,17 @@
 import  React,{useState,useEffect} from 'react';
-import { Text, View, SafeAreaView, Image, ScrollView,StatusBar,TouchableOpacity,} from "react-native";
+import { Text, View, SafeAreaView, Image, ScrollView,StatusBar,} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import {List,ListItem, Body,Right} from "native-base";
 import styles from "../Styles/searchScreenStyles";
 import Profilstyles from "../Styles/ProfileScreenStyles";
 import firebase from 'firebase';
 import HeaderComponent from "../../components/Header";
-import useStatusBar from '../../hooks/useStatusBar';
-import AppButton from '../../components/commentButton';
 
 const logo = require('../../assets/logo.png');
 
 export default function TravelScreen({navigation}) {
-  useStatusBar('light-content');
-
   const [currentTravel,setCurrentTravel] = useState();
   const [oldTravel,setOldTravel] = useState();
-  //const [loadingState,setLoading] = useState(true);
-  const [selectedItem,setSelectedItem] = useState(null);
-  const [regionn,setRegion] = useState({});
 
     useEffect(()=>{     
         var user = firebase.auth().currentUser;
@@ -57,6 +50,7 @@ export default function TravelScreen({navigation}) {
                 firebase.database().ref('Travels/'+item.val().Id).once('value',function (snapshot) {
     
                     firebase.database().ref('Users/'+ snapshot.val().creater +'/ProfileInformation').once('value',function (get) {
+                    if(snapshot.val().passenger != 0){
                     oldResult.push({
                         date : (snapshot.val() && snapshot.val().date) || 'Anonymous',
                         dropOffLatitude : (snapshot.val() && snapshot.val().dropOffLatidute) || 'Anonymous',
@@ -76,7 +70,8 @@ export default function TravelScreen({navigation}) {
                         surname : (get.val() && get.val().surname),
                         photo : (get.val() && get.val().profilePhoto),          
                     });
-                    setOldTravel(oldResult);
+                }
+                    setOldTravel(oldResult)
                     });
                 }); 
             }
@@ -85,7 +80,6 @@ export default function TravelScreen({navigation}) {
     }, []);
 
     function deleteTravel(item){
-    setSelectedItem(item);
             var user = firebase.auth().currentUser;
             var control = false;
             firebase.database().ref('Users/'+user.uid+'/Travels/'+item.Id).on('value',function (snapshot) {
@@ -115,17 +109,15 @@ export default function TravelScreen({navigation}) {
             var region={
                 latitude:midX,longitude:midY,latitudeDelta:deltaLat+0.5,longitudeDelta:deltaLng+0.5
             }
-            setRegion(region);
         navigation.navigate("DeleteTravel",{ Region:region , Item:item });
     }
     function CommentTravel(item){
-        setSelectedItem(item);
         navigation.navigate("Comment",{SelectedItem:item});
     }
     return(
     <SafeAreaView>
-        <StatusBar barStyle="light-content" backgroundColor="black"/>
         <HeaderComponent logo={logo}/>
+        <StatusBar barStyle="light-content" backgroundColor="black"/>
         <ScrollView>       
         <View >
             <View style ={{alignItems:"center"}}>
@@ -136,6 +128,7 @@ export default function TravelScreen({navigation}) {
                 keyExtractor={item => item.Id}
                 renderRow={(item)=>
                         <View style={Profilstyles.container}>
+                            <StatusBar barStyle="light-content" backgroundColor="black"/>
                             <ListItem onPress={()=>deleteTravel(item)} button avatar >
                             <Body style={{flexDirection:"column"}}>
                             <View style={{flexDirection:"row"}}>
@@ -161,7 +154,7 @@ export default function TravelScreen({navigation}) {
                         </View>
                     }/>
         </View>
-        <View style={{marginTop:30}}>
+        <View style={{marginTop:30,marginBottom:50}}>
             <View style ={{alignItems:"center",fontSize:"bold"}}>
             <Text style={[Profilstyles.text, { color: "#AEB5BC", fontSize: 18,alignSelf:"center",marginBottom:"1%" }]}>Old Travels</Text>
             </View>

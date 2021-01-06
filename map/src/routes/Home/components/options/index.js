@@ -1,5 +1,5 @@
 import React, { useState }from "react";
-import {Dimensions,StyleSheet,View,TouchableOpacity,Text} from "react-native";
+import {Dimensions,StyleSheet,View,TouchableOpacity,StatusBar} from "react-native";
 import Icon from "react-native-vector-icons/Fontisto";
 
 const windowHeight = Dimensions.get('window').height;   
@@ -23,7 +23,7 @@ export const options = ({settings,openSettings,setSettings,getSettings}) => {
         return(
            
             <View style={styles.optionsContainer}>
-              
+              <StatusBar barStyle="light-content" backgroundColor="black"/>
                     <TouchableOpacity onPress={()=> handleOpen(settings) }>
                          <Icon name="player-settings" style={styles.iconContainer}/>
                     </TouchableOpacity>

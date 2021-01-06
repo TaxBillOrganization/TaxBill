@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from "react";
-import {Text} from "react-native";
+import {Text,StatusBar} from "react-native";
 import styles from "./SearchBoxStyles";
 import {View,InputGroup,Input} from "native-base";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -23,6 +23,7 @@ export const SearchBox = ({getInputData, toggleSearchResultModal, getAddressPred
  
         return(
             <View style ={styles.searchBox}>
+                <StatusBar barStyle="light-content" backgroundColor="black"/>
                 <View style={styles.inputWrapper}>
                     <Text style ={styles.label}>PICK UP</Text>
                     <InputGroup>
