@@ -431,7 +431,12 @@ function handeleSaveTrack(state,action){
                 $set:null
             }
         },selectedAddress:{
-            $set:null
+            selectedPickUp:{
+                $set:null
+            },selectedDropOff:{
+                $set:null
+            }
+           
         }
         
     })
