@@ -42,13 +42,30 @@ export default function TravelStackPage({route,navigation}) {
      })
 
   function deleteTravel(){
-      firebase.database().ref('Travels/'+ selectedItem.Id).remove();
       firebase.database().ref('Users/'+activeUid+'/Travels/'+selectedItem.Id ).remove();
-      //yolcudan da sil
-      navigation.navigate("TravelPage");
+
+      firebase.database().ref('Travels/'+selectedItem.Id).once('value', function (travels) {
+          if(travels.val().passenger!=null){
+            var passengers,pasangerId
+            firebase.database().ref('Travels/'+selectedItem.Id+('/Passengers/')).once('value', function (snapshot) {
+                passengers = snapshot.val();
+                for(var a in passengers){
+                    pasangerId=a
+                }
+                firebase.database().ref('Users/'+pasangerId+'/Travels/'+selectedItem.Id ).remove();
+                firebase.database().ref('Travels/'+ selectedItem.Id).remove();
+             })        
+          }
+          else
+          firebase.database().ref('Travels/'+ selectedItem.Id).remove();
+      })
+      navigation.navigate("TravelPage"); 
   }
   function leaveTravel(){
     firebase.database().ref('Travels/'+ selectedItem.Id+"/Passengers/"+activeUid).remove();
+    firebase.database().ref('Travels/'+ selectedItem.Id).update({
+        passenger:0,
+    });
     firebase.database().ref('Users/'+activeUid+'/Travels/'+selectedItem.Id ).remove();
     navigation.navigate("TravelPage");
 }

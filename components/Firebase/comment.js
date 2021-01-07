@@ -18,7 +18,6 @@ export default class Comment extends Component{
       var userUid=firebase.auth().currentUser.uid
       this.setState({uid:userUid})
          firebase.database().ref('Users/'+ this.props.id + ('/Comments')).once('value', (data) =>{
-            console.log(this.props.id)
             var li = []
             data.forEach((child)=>{    
                var user = {Username:'',Usersurname:'', image:''}              

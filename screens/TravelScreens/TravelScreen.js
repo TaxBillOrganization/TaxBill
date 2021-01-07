@@ -11,74 +11,98 @@ const logo = require('../../assets/logo.png');
 
 export default function TravelScreen({navigation}) {
   const [currentTravel,setCurrentTravel] = useState();
-  const [oldTravel,setOldTravel] = useState();
+  const [oldTravel,setOldTravel] = useState([]);
+  
+  const [travels,setTravels]=useState([]);
+  const [travelCount,setCount]=useState(0);
+  const [oldtravelCount,setoldCount]=useState(0);
+  const [oldtravellengeth,setoldTravelLengeth]=useState(0);
 
-    useEffect(()=>{     
-        var user = firebase.auth().currentUser;
-        var oldResult=[];
-        var currentResult=[];
-        firebase.database().ref('Users/'+user.uid+"/Travels/").once('value',function (snapshot) {
-            snapshot.forEach(function(item){
-                if(item.val().statu == "c"){
-                firebase.database().ref('Travels/'+item.val().Id).once('value',function (snapshot) {
-                    firebase.database().ref('Users/'+ snapshot.val().creater +'/ProfileInformation').once('value',function (get) {
-                    currentResult.push({
-                        date : (snapshot.val() && snapshot.val().date) || 'Anonymous',
-                        dropOffLatitude : (snapshot.val() && snapshot.val().dropOffLatidute) || 'Anonymous',
-                        dropOffLongitude : (snapshot.val() && snapshot.val().dropOffLongitude) || 'Anonymous',
-                        female : (snapshot.val() && snapshot.val().female) || 'Anonymous',
-                        male : (snapshot.val() && snapshot.val().male) || 'Anonymous',
-                        people : (snapshot.val() && snapshot.val().people) || 'Anonymous',
-                        person : (snapshot.val() && snapshot.val().person) || 'Anonymous',
-                        pickUpLatitude : (snapshot.val() && snapshot.val().pickUppLatidute) || 'Anonymous',
-                        pickUpLongitude : (snapshot.val() && snapshot.val().pickUppLongitude) || 'Anonymous',
-                        statu : (snapshot.val() && snapshot.val().statu) || 'Anonymous',
-                        Id : (snapshot.val() && snapshot.val().Id) || 'Anonymous',
-                        creater : (snapshot.val() && snapshot.val().creater) || 'Anonymous',
-                        startPlace : (snapshot.val() && snapshot.val().startPointId) || 'Anonymous',
-                        endPlace : (snapshot.val() && snapshot.val().endPointId) || 'Anonymous',
-                        name : (get.val() && get.val().name),
-                        surname : (get.val() && get.val().surname),
-                        photo : (get.val() && get.val().profilePhoto),                                 
-                    });                 
-                    setCurrentTravel(currentResult);
-                    });
-                }); 
-
-                }else if(item.val().statu == "f"){
-    
-                firebase.database().ref('Travels/'+item.val().Id).once('value',function (snapshot) {
-    
-                    firebase.database().ref('Users/'+ snapshot.val().creater +'/ProfileInformation').once('value',function (get) {
-                    if(snapshot.val().passenger != 0){
-                    oldResult.push({
-                        date : (snapshot.val() && snapshot.val().date) || 'Anonymous',
-                        dropOffLatitude : (snapshot.val() && snapshot.val().dropOffLatidute) || 'Anonymous',
-                        dropOffLongitude : (snapshot.val() && snapshot.val().dropOffLongitude) || 'Anonymous',
-                        female : (snapshot.val() && snapshot.val().female) || 'Anonymous',
-                        male : (snapshot.val() && snapshot.val().male) || 'Anonymous',
-                        people : (snapshot.val() && snapshot.val().people) || 'Anonymous',
-                        person : (snapshot.val() && snapshot.val().person) || 'Anonymous',
-                        pickUpLatitude : (snapshot.val() && snapshot.val().pickUppLatidute) || 'Anonymous',
-                        pickUpLongitude : (snapshot.val() && snapshot.val().pickUppLongitude) || 'Anonymous',
-                        statu : (snapshot.val() && snapshot.val().statu) || 'Anonymous',
-                        Id : (snapshot.val() && snapshot.val().Id) || 'Anonymous',
-                        creater : (snapshot.val() && snapshot.val().creater) || 'Anonymous',
-                        startPlace : (snapshot.val() && snapshot.val().startPointId) || 'Anonymous',
-                        endPlace : (snapshot.val() && snapshot.val().endPointId) || 'Anonymous',
-                        name : (get.val() && get.val().name),
-                        surname : (get.val() && get.val().surname),
-                        photo : (get.val() && get.val().profilePhoto),          
-                    });
-                }
-                    setOldTravel(oldResult)
-                    });
-                }); 
-            }
+  useEffect(()=>{
+    var travel=[];
+    var oldCount=0
+    var user = firebase.auth().currentUser;
+    firebase.database().ref('Users/'+user.uid+"/Travels/").once('value',function (snapshot) {
+        snapshot.forEach(function(item){
+            travel.push({
+                creater:item.val().statu
             });
-        });
-    }, []);
+            if(item.val().statu=="f"){
+                oldCount++
+            }
+        })
+        setTravels(travel);
+        setoldCount(oldCount)
+    });
+  })
 
+  if((travels.length!=travelCount)||(oldtravellengeth!=oldtravelCount)){
+    setoldTravelLengeth(oldtravelCount)
+    setCount(travels.length)
+    var user = firebase.auth().currentUser;
+    var oldResult=[];
+    var currentResult=[];
+    firebase.database().ref('Users/'+user.uid+"/Travels/").once('value',function (snapshot) {
+        snapshot.forEach(function(item){
+            if(item.val().statu == "c"){
+            firebase.database().ref('Travels/'+item.val().Id).once('value',function (snapshot) {
+                firebase.database().ref('Users/'+ snapshot.val().creater +'/ProfileInformation').once('value',function (get) {
+                currentResult.push({
+                    date : (snapshot.val() && snapshot.val().date) || 'Anonymous',
+                    dropOffLatitude : (snapshot.val() && snapshot.val().dropOffLatidute) || 'Anonymous',
+                    dropOffLongitude : (snapshot.val() && snapshot.val().dropOffLongitude) || 'Anonymous',
+                    female : (snapshot.val() && snapshot.val().female) || 'Anonymous',
+                    male : (snapshot.val() && snapshot.val().male) || 'Anonymous',
+                    people : (snapshot.val() && snapshot.val().people) || 'Anonymous',
+                    person : (snapshot.val() && snapshot.val().person) || 'Anonymous',
+                    pickUpLatitude : (snapshot.val() && snapshot.val().pickUppLatidute) || 'Anonymous',
+                    pickUpLongitude : (snapshot.val() && snapshot.val().pickUppLongitude) || 'Anonymous',
+                    statu : (snapshot.val() && snapshot.val().statu) || 'Anonymous',
+                    Id : (snapshot.val() && snapshot.val().Id) || 'Anonymous',
+                    creater : (snapshot.val() && snapshot.val().creater) || 'Anonymous',
+                    startPlace : (snapshot.val() && snapshot.val().startPointId) || 'Anonymous',
+                    endPlace : (snapshot.val() && snapshot.val().endPointId) || 'Anonymous',
+                    name : (get.val() && get.val().name),
+                    surname : (get.val() && get.val().surname),
+                    photo : (get.val() && get.val().profilePhoto),                                 
+                });                 
+                setCurrentTravel(currentResult);
+                });
+            }); 
+
+            }else if(item.val().statu == "f"){
+
+            firebase.database().ref('Travels/'+item.val().Id).once('value',function (snapshot) {
+
+                firebase.database().ref('Users/'+ snapshot.val().creater +'/ProfileInformation').once('value',function (get) {
+                if(snapshot.val().passenger != 0){
+                oldResult.push({
+                    date : (snapshot.val() && snapshot.val().date) || 'Anonymous',
+                    dropOffLatitude : (snapshot.val() && snapshot.val().dropOffLatidute) || 'Anonymous',
+                    dropOffLongitude : (snapshot.val() && snapshot.val().dropOffLongitude) || 'Anonymous',
+                    female : (snapshot.val() && snapshot.val().female) || 'Anonymous',
+                    male : (snapshot.val() && snapshot.val().male) || 'Anonymous',
+                    people : (snapshot.val() && snapshot.val().people) || 'Anonymous',
+                    person : (snapshot.val() && snapshot.val().person) || 'Anonymous',
+                    pickUpLatitude : (snapshot.val() && snapshot.val().pickUppLatidute) || 'Anonymous',
+                    pickUpLongitude : (snapshot.val() && snapshot.val().pickUppLongitude) || 'Anonymous',
+                    statu : (snapshot.val() && snapshot.val().statu) || 'Anonymous',
+                    Id : (snapshot.val() && snapshot.val().Id) || 'Anonymous',
+                    creater : (snapshot.val() && snapshot.val().creater) || 'Anonymous',
+                    startPlace : (snapshot.val() && snapshot.val().startPointId) || 'Anonymous',
+                    endPlace : (snapshot.val() && snapshot.val().endPointId) || 'Anonymous',
+                    name : (get.val() && get.val().name),
+                    surname : (get.val() && get.val().surname),
+                    photo : (get.val() && get.val().profilePhoto),          
+                });
+            }
+                setOldTravel(oldResult)
+                });
+            }); 
+        }
+        });
+    });
+  }
     function deleteTravel(item){
             var user = firebase.auth().currentUser;
             var control = false;

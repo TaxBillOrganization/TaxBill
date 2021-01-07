@@ -7,30 +7,24 @@ import Chat from '../screens/ChatScreens/ChatScreen';
 import Travel from '../screens/TravelScreens/TravelStackScreen';
 import Colors from '../utils/colors';
 import Profil from '../screens/ProfileScreens/ProfileStackScreen'
-import useStatusBar from '../hooks/useStatusBar';
 
 const Tab = createBottomTabNavigator();
 
 export default function AppStack(User) {
   
   function HomePage() {
-    useStatusBar('light-content');
     return (<Home/>);
   }
   function SearchPage() {
-    useStatusBar('light-content');
     return (<Search/>);
   }
   function ChatPage() {
-    useStatusBar('light-content');
     return (<Chat/>);
   }
   function TravelPage() {
-    useStatusBar('light-content');
     return (<Travel/>);
   }
   function ProfilPage() { 
-    useStatusBar('light-content');
     return (<Profil kullanıcı={User}/>);
   }
   

@@ -45,7 +45,7 @@ export default function SearchStackPage() {
         function creatChatRoom(){
           creatRoom(uid,activeUser.Username,activeUser.Usersurname,activeUser.Userphoto,
             selectedItem.creater,selectedItem.createrName,selectedItem.createrSurname,selectedItem.createrPhoto);
-            navigation.navigate("ChatRoom")
+            navigation.navigate("Chat")
         }
         function saveTravel(){
             var user = firebase.auth().currentUser;
@@ -75,7 +75,7 @@ export default function SearchStackPage() {
                 statu:"c",
                 role:"p",
             });
-            navigation.navigate("Search");
+            navigation.navigate("Travel");
         }
 
 

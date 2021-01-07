@@ -26,7 +26,6 @@ export default function ChatRoom({navigation}) {
       .orderBy('latestMessage.createdAt', 'desc',)
       .onSnapshot(querySnapshot => {
         const threads = querySnapshot.docs.map(documentSnapshot => {
-          console.log(documentSnapshot.data())
           return {
             _id: documentSnapshot.id,
             name: '',
@@ -43,7 +42,6 @@ export default function ChatRoom({navigation}) {
           setLoading(false)
         }
       })
-      console.log(threads.length)
     return () => unsubscribe()
     }, [])
  
