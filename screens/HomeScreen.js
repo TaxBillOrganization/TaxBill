@@ -1,27 +1,19 @@
 import React from 'react';
-import { View, StyleSheet, Button } from 'react-native';
+import {StyleSheet,View} from 'react-native';
+import Root from '../map/src/main';
 
-import useStatusBar from '../hooks/useStatusBar';
-import { logout } from '../components/Firebase/firebase';
-
-export default function HomeScreen() {
-  useStatusBar('dark-content');
-  async function handleSignOut() {
-    try {
-      await logout();
-    } catch (error) {
-      console.log(error);
-    }
+export default class App extends React.Component {
+  render() {
+    return (
+      <View style={styles.container}>
+        <Root {...this.props}/>
+      </View>
+    );
   }
-  return (
-    <View style={styles.container}>
-      <Button title="Sign Out" onPress={handleSignOut} />
-    </View>
-  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   }
 });

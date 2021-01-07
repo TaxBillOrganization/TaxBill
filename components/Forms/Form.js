@@ -5,7 +5,7 @@ export default function Form({
   children,
   initialValues,
   onSubmit,
-  validationSchema
+  validationSchema,
 }) {
   return (
     <Formik

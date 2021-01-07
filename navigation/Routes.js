@@ -33,7 +33,7 @@ export default function Routes() {
 
   return (
     <NavigationContainer theme={navigationTheme}>
-      {user ? <AppStack /> : <AuthStack />}
+      {user ? <AppStack User={user}/> : <AuthStack />}
     </NavigationContainer>
   );
 }

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, Text, View, Image,KeyboardAvoidingView,StatusBar} from 'react-native';
 import * as Yup from 'yup';
-
 import Colors from '../utils/colors';
 import SafeView from '../components/SafeView';
 import Form from '../components/Forms/Form';
@@ -10,7 +9,6 @@ import FormButton from '../components/Forms/FormButton';
 import IconButton from '../components/IconButton';
 import { loginWithEmail } from '../components/Firebase/firebase';
 import FormErrorMessage from '../components/Forms/FormErrorMessage';
-import useStatusBar from '../hooks/useStatusBar';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -24,8 +22,6 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function LoginScreen({ navigation }) {
-  useStatusBar('light-content');
-
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [rightIcon, setRightIcon] = useState('eye');
   const [loginError, setLoginError] = useState('');
@@ -51,12 +47,19 @@ export default function LoginScreen({ navigation }) {
   }
 
   return (
+    
     <SafeView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="black"/>
+    <View style={styles.logoFrame}>
+      <Image source={require('../assets/logo.png')} style={styles.logo} />
+    </View>
+    <View>
       <Form
         initialValues={{ email: '', password: '' }}
         validationSchema={validationSchema}
         onSubmit={values => handleOnLogin(values)}
       >
+        <KeyboardAvoidingView>
         <FormField
           name="email"
           leftIcon="email"
@@ -64,8 +67,10 @@ export default function LoginScreen({ navigation }) {
           autoCapitalize="none"
           keyboardType="email-address"
           textContentType="emailAddress"
-          autoFocus={true}
+          autoFocus={false}
         />
+        </KeyboardAvoidingView>
+        <KeyboardAvoidingView>
         <FormField
           name="password"
           leftIcon="lock"
@@ -77,6 +82,7 @@ export default function LoginScreen({ navigation }) {
           rightIcon={rightIcon}
           handlePasswordVisibility={handlePasswordVisibility}
         />
+        </KeyboardAvoidingView>
         <FormButton title={'Login'} />
         {<FormErrorMessage error={loginError} visible={true} />}
       </Form>
@@ -88,31 +94,44 @@ export default function LoginScreen({ navigation }) {
       <IconButton
         style={styles.backButton}
         iconName="keyboard-backspace"
-        color="#fff"
+        color={Colors.black}
         size={30}
         onPress={() => navigation.goBack()}
       />
+      </View>
     </SafeView>
+    
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    backgroundColor: Colors.mediumGrey
+    justifyContent: 'space-between',
+    backgroundColor: Colors.backgroundColor
   },
   footerButtonContainer: {
     marginVertical: 15,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   forgotPasswordButtonText: {
-    color: Colors.white,
+    color: Colors.black,
     fontSize: 18,
     fontWeight: '600'
   },
   backButton: {
     justifyContent: 'center',
     alignItems: 'center'
-  }
+  },
+  logo: {
+    width: 200,
+    height: 200,
+  },
+  logoFrame: {
+    top:5,
+    alignItems: 'center',
+    
+    
+  },
 });

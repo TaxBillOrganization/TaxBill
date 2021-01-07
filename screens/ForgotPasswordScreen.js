@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet,Image,View,StatusBar } from 'react-native';
 import * as Yup from 'yup';
-
 import Colors from '../utils/colors';
 import SafeView from '../components/SafeView';
 import Form from '../components/Forms/Form';
@@ -10,7 +9,6 @@ import FormButton from '../components/Forms/FormButton';
 import IconButton from '../components/IconButton';
 import { passwordReset } from '../components/Firebase/firebase';
 import FormErrorMessage from '../components/Forms/FormErrorMessage';
-import useStatusBar from '../hooks/useStatusBar';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -20,8 +18,6 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function ForgotPasswordScreen({ navigation }) {
-  useStatusBar('light-content');
-
   const [customError, setCustomError] = useState('');
 
   async function handlePasswordReset(values) {
@@ -37,6 +33,11 @@ export default function ForgotPasswordScreen({ navigation }) {
 
   return (
     <SafeView style={styles.container}>
+    <StatusBar barStyle="light-content" backgroundColor="black"/>
+    <View style={styles.logoFrame}>
+      <Image source={require('../assets/logo.png')} style={styles.logo} />
+    </View>
+    <View>
       <Form
         initialValues={{ email: '' }}
         validationSchema={validationSchema}
@@ -49,7 +50,7 @@ export default function ForgotPasswordScreen({ navigation }) {
           autoCapitalize="none"
           keyboardType="email-address"
           textContentType="emailAddress"
-          autoFocus={true}
+          autoFocus={false}
         />
         <FormButton title="Forgot Password" />
         {<FormErrorMessage error={customError} visible={true} />}
@@ -57,10 +58,11 @@ export default function ForgotPasswordScreen({ navigation }) {
       <IconButton
         style={styles.backButton}
         iconName="keyboard-backspace"
-        color={Colors.white}
+        color={Colors.black}
         size={30}
         onPress={() => navigation.goBack()}
       />
+      </View>
     </SafeView>
   );
 }
@@ -68,11 +70,21 @@ export default function ForgotPasswordScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    backgroundColor: Colors.mediumGrey
+    justifyContent: 'space-between',
+    backgroundColor: Colors.backgroundColor
   },
   backButton: {
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 10
-  }
+  },
+  logo: {
+    width: 200,
+    height: 200
+    
+  },
+  logoFrame: {
+    paddingTop: 5,
+    alignItems: 'center',
+  },
 });

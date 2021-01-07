@@ -1,16 +1,13 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image } from 'react-native';
-
+import { View, StyleSheet, Image, StatusBar } from 'react-native';
 import AppButton from '../components/AppButton';
 import Colors from '../utils/colors';
-import useStatusBar from '../hooks/useStatusBar';
-import colors from '../utils/colors';
 
 export default function WelcomeScreen({ navigation }) {
-  useStatusBar('light-content');
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="black"/>
       <View style={styles.logoContainer}>
         <Image source={require('../assets/logo.png')} style={styles.logo} />
       </View>
@@ -30,18 +27,18 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     position: 'absolute',
-    top: 100,
+    top: 70,
     alignItems: 'center'
   },
   logo: {
-    width: 215,
-    height: 190
+    width: 200,
+    height: 200
   },
   subtitle: {
     fontSize: 24,
     fontWeight: 'bold',
     paddingVertical: 20,
-    color: Colors.textColor2
+    color: Colors.textColor
   },
   buttonContainer: {
     padding: 20,
