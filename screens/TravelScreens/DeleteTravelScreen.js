@@ -15,11 +15,13 @@ const logo = require('../../assets/logo.png');
 export default function TravelStackPage({route,navigation}) {
     const [userstate,setUser] = useState({});
     const [starScore,setScor] = useState();
+    const [regionState,setRegion] = useState(route.params.Region);
     const selectedItem = route.params.Item
-    const region = route.params.Region
+    var region
     const activeUid=firebase.auth().currentUser.uid
   
      useEffect(()=>{
+        
         var user ={email:'',Username:'',Usersurname:'',Userage:'', Usergender:'', image:'',travel:0,starPoint:0};
         var Score=0.0;            
         firebase.database().ref('Users/'+selectedItem.creater+'/ProfileInformation').once('value', function (snapshot) {
@@ -39,7 +41,7 @@ export default function TravelStackPage({route,navigation}) {
             Score=userstate.starPoint/userstate.travel
         }
         setScor(Score);
-     })
+     },[regionState])
 
   function deleteTravel(){
       firebase.database().ref('Users/'+activeUid+'/Travels/'+selectedItem.Id ).remove();
@@ -106,7 +108,8 @@ export default function TravelStackPage({route,navigation}) {
                     provider={MapView.PROVIDER_GOOGLE}
                     style ={mapStyle.map}
                     showsUserLocation={true}
-                    region ={region}
+                    region ={regionState}
+                    
                 >
                     <MapView.Marker
                     coordinate={{latitude:selectedItem.pickUpLatitude, longitude:selectedItem.pickUpLongitude}}
